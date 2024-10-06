@@ -1,0 +1,91 @@
+<resources>
+    <string name="transition_name" translatable="false">%1$d : %2$s</string>
+
+    <string name="app_name">Pokédex</string>
+    <string name="search_hint">Suche</string>
+    <string name="scroll_up_description">Nach oben scrollen</string>
+    <string name="stats">Statistiken</string>
+
+    <string name="network_connection_snackbar_message">
+        Liste konnte nicht geladen werden. Bitte prüfen Sie Ihre WLAN-Verbindung.
+    </string>
+    <string name="network_connection_snackbar_action_text">Wiederholen</string>
+    <string name="description">Beschreibung</string>
+    <string name="abilities">Fähigkeiten</string>
+    <string name="hp">KP</string>
+    <string name="attack">Angriff</string>
+    <string name="defense">Verteidigung</string>
+    <string name="special_attack">Spezialangriff</string>
+    <string name="special_defense">Spezialverteidigung</string>
+    <string name="speed">Initiative</string>
+
+    <string name="game_name">Pokémon %s</string>
+    <string name="ability_name_hidden">%s (versteckt)</string>
+
+    <string name="menu_name_list">Liste</string>
+    <string name="menu_name_search">Suche</string>
+    <string name="menu_name_favourites">Favoriten</string>
+    <string name="menu_name_settings">Einstellung</string>
+    <string name="menu_name_licenses">Lizenzen</string>
+
+
+    <string name="page_title_list">Liste</string>
+
+    <string name="fab_text_toggled">Entfernen</string>
+    <string name="fab_text_untoggled">Hinzufügen</string>
+    <string name="resistences">Resistenzen</string>
+    <string name="immune">Immun</string>
+    <string name="weekness">Schwächen</string>
+
+    <string name="weekness_multiplier_half">\u00D7\u00BD</string>
+    <string name="weekness_multiplier_quater">\u00D7\u00BC</string>
+    <string name="weekness_multiplier_double">\u00D72</string>
+    <string name="weekness_multiplier_quadruple">\u00D74</string>
+    <string name="weekness_multiplier_immune">\u00D70</string>
+
+    <string name="content_description_dragging">Ziehen</string>
+    <string name="content_description_add_fav">Favoriten hinzufügen</string>
+    <string name="content_description_pokemon_sprite">Pokémon-Sprite</string>
+    <string name="content_description_type">Pokemontyp</string>
+    <string name="content_description_placeholder_favourite">Platzhalter für Favoritenknopf</string>
+    <string name="searchbar_hint">Suche Pokemon</string>
+    <string name="search">Suche</string>
+    <string name="evolutions">Entwicklungen</string>
+
+    <string name="unknown_pokemon_description">Für dieses Pokemon gibt es keine deutsche Beschreibung.</string>
+    <string name="unknown_pokemon_version">Version unbekannt</string>
+    <string name="unknown_ability_description">Für diese Fähigkeit gibt es keine deutsche Beschreibung.</string>
+    <string name="unknown_pokemon_version_group">Versionsgruppe unbekannt</string>
+
+    <string name="favourite_title">Favouriten</string>
+    <string name="empty_favourites_title">Noch keine Favoriten!</string>
+    <string name="empty_favourites_body">Du hast noch keine Pokémon zu deinen Favoriten hinzugefügt. Tippe einfach auf das Herzsymbol, um deine Lieblings-Pokémon hier zu speichern!</string>
+
+    <string name="empty_query_title">Die aktuelle Suche ist leer.</string>
+    <string name="empty_query_body">Du kannst Pokémon nach Spezies- oder Formnamen suchen, z.B. „Pikachu“ oder „Alola Rattfratz“. Tippe oben auf die Suchleiste, um die Suche zu starten.</string>
+
+    <string name="empty_result_title">Keine Treffer gefunden.</string>
+    <string name="empty_results_body">Versuche es mit einem anderen Spezies- oder Formnamen, z.B. „Glumanda“ oder „Galar Ponita“. Tippe oben auf die Suchleiste, um eine neue Suche zu starten.</string>
+
+    <!-- Error messages -->
+    <string name="error_message_title">Ooops. Etwas ist schief gelaufen.</string>
+
+    <string name="error_message_data_mapping">Die Antwort des Servers konnte nicht korrekt interpretiert werden. Bitte versuche es später noch einmal.</string>
+
+    <string name="error_message_generic">Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es später noch einmal.</string>
+    <string name="error_message_network">Ein Netzwerkfehler ist aufgetreten. Bitte überprüfe die Verbindung und versuche es noch einmal.</string>
+    <string name="error_message_server">Ein Serverfehler ist aufgetreten. Bitte später erneut versuchen.</string>
+    <string name="error_message_data">Die Antwort des Servers ist fehlerhaft. Bitte versuche es später noch einmal.</string>
+
+    <!-- Client-Side Errors (4xx) -->
+    <string name="error_message_http_400_bad_request">Beim Laden der Daten ist ein Fehler aufgetreten. Bitte überprüfe deine Eingabe order versuche es später nocch einmal.</string>
+    <string name="error_message_http_403_forbidden">Der Zugriff ist nicht möglich. Die Anfrage konnte nicht verarbeitet werden. Bitte versuche es später noch einmal.</string>
+    <string name="error_message_http_404_not_found">Die angeforderten Daten konnten nicht gefunden werden.</string>
+    <string name="error_message_http_408_request_timeout">Das Laden der Daten hat zu lange gedauert. Bitte versuche es später noch einmal.</string>
+    <string name="error_message_http_429_too_many_requests">Es wurden zu viele Anfragen gesendet. Bitte warte kurz und versuche es später noch einmal.</string>
+
+    <!-- Server-Side Errors (5xx) -->
+    <string name="error_message_http_500_internal_server_error">Es gab einen unerwarteten Serverfehler. Bitte warte kurz und versuche es später noch einmal.</string>
+    <string name="error_message_http_503_service_unavailable">Der Server ist temporär nicht verfügbar. Bitte versuche es später noch einmal.</string>
+    <string name="erneut_laden">Erneut laden</string>
+</resources>

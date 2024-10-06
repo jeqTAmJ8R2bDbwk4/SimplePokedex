@@ -1,0 +1,32 @@
+<!-- Source: https://www.reshot.com/free-svg-icons/item/app-error-ZADWRPHMST/ -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:height="144dp" android:viewportHeight="48" android:viewportWidth="48" android:width="144dp">
+      
+    <path android:fillColor="#FF000000" android:pathData="M25,48H3a3,3 0,0 1,-3 -3V3A3,3 0,0 1,3 0H25a3,3 0,0 1,3 3V5H26V3a1,1 0,0 0,-1 -1H3A1,1 0,0 0,2 3V45a1,1 0,0 0,1 1H25a1,1 0,0 0,1 -1V43h2v2A3,3 0,0 1,25 48Z"/>
+      
+    <path android:fillColor="#FF000000" android:pathData="M1,8h20v2h-20z"/>
+      
+    <path android:fillColor="#FF000000" android:pathData="M1,38h20v2h-20z"/>
+      
+    <path android:fillColor="#FF000000" android:pathData="M11,4h6v2h-6z"/>
+      
+    <path android:fillColor="#FF000000" android:pathData="M11,42h6v2h-6z"/>
+      
+    <path android:fillColor="#FF000000" android:pathData="M43,44H25a5.006,5.006 0,0 1,-5 -5V36H15a1,1 0,0 1,-0.707 -1.707L20,28.586V9a5.006,5.006 0,0 1,5 -5H43a5.006,5.006 0,0 1,5 5V39A5.006,5.006 0,0 1,43 44ZM17.414,34H21a1,1 0,0 1,1 1v4a3,3 0,0 0,3 3H43a3,3 0,0 0,3 -3V9a3,3 0,0 0,-3 -3H25a3,3 0,0 0,-3 3V29a1,1 0,0 1,-0.293 0.707Z"/>
+      
+    <path android:fillColor="#FF000000" android:pathData="M4,12h2v2h-2z"/>
+      
+    <path android:fillColor="#FF000000" android:pathData="M8,12h2v2h-2z"/>
+      
+    <path android:fillColor="#FF000000" android:pathData="M4,16h2v2h-2z"/>
+      
+    <path android:fillColor="#FF000000" android:pathData="M9,36H5a1,1 0,0 1,-1 -1V31H6v3H9Z"/>
+      
+    <path android:fillColor="#FF000000" android:pathData="M4,27h2v2h-2z"/>
+      
+    <path android:fillColor="#FF000000" android:pathData="M34,34A10,10 0,1 1,44 24,10.011 10.011,0 0,1 34,34ZM34,16a8,8 0,1 0,8 8A8.009,8.009 0,0 0,34 16Z"/>
+      
+    <path android:fillColor="#FF000000" android:pathData="M26.293,30.292l14,-14l1.414,1.414l-14,14z"/>
+      
+    <path android:fillColor="#FF000000" android:pathData="M26.293,17.707l1.414,-1.414l14,14l-1.414,1.414z"/>
+    
+</vector>

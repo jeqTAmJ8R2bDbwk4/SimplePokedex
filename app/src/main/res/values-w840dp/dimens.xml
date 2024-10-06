@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Medium window size class -->
+
+    <dimen name="window_spacing_horizontal">24dp</dimen>
+</resources>

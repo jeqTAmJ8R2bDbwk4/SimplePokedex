@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/linear_layout"
+    android:layout_width="match_parent"
+    android:layout_height="72dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground">
+    <ImageView
+        tools:src="@drawable/bulbasaur"
+        android:id="@+id/iv_pokemon"
+        android:layout_marginStart="@dimen/list_horizontal_padding"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:background="@drawable/pokemon_background"
+        android:contentDescription="@string/content_description_pokemon_sprite" />
+
+
+    <LinearLayout
+        android:id="@+id/name_linear_layout"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/list_horizontal_padding"
+        android:layout_marginEnd="@dimen/list_horizontal_padding"
+        android:layout_weight="1"
+        android:gravity="center_vertical|start"
+        android:orientation="vertical">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_name"
+            style="?attr/textAppearanceBodyLarge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/colorOnSurface"
+            tools:text="Bisasam" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/national_pokedex_number"
+            style="@style/TextAppearance.Material3.BodyMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="#0001" />
+    </LinearLayout>
+
+    <com.google.android.material.imageview.ShapeableImageView
+        app:shapeAppearanceOverlay="@style/circleImageView"
+        app:contentPadding="6dp"
+        android:layout_gravity="center"
+        tools:src="@drawable/grass"
+        tools:background="?attr/colorTypeGrass"
+        android:scaleType="fitCenter"
+        android:id="@+id/iv_primary_type"
+        android:layout_width="32dp"
+        android:layout_height="32dp"/>
+
+    <Space
+        android:id="@+id/s_primary_type"
+        android:layout_width="@dimen/list_horizontal_padding"
+        android:layout_height="wrap_content"/>
+
+    <com.google.android.material.imageview.ShapeableImageView
+        tools:visibility="visible"
+        app:shapeAppearanceOverlay="@style/circleImageView"
+        app:contentPadding="6dp"
+        android:contentDescription="@string/content_description_type"
+        tools:background="?attr/colorTypePoison"
+        android:layout_gravity="center"
+        tools:src="@drawable/poison"
+        android:scaleType="fitCenter"
+
+        android:id="@+id/iv_secondary_type"
+        android:layout_width="32dp"
+        android:layout_height="32dp"/>
+
+    <Space
+        android:id="@+id/s_secondary_type"
+        android:layout_width="@dimen/list_horizontal_padding"
+        android:layout_height="wrap_content"/>
+</LinearLayout>

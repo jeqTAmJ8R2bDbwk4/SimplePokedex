@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/licenses"
+        android:title="@string/menu_name_licenses"
+        android:icon="@drawable/menu_licenses"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/settings"
+        android:icon="@drawable/menu_settings"
+        app:showAsAction="always"
+        android:title="@string/menu_name_settings" />
+</menu>

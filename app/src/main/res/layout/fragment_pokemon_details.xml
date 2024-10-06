@@ -1,0 +1,909 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:transitionGroup="true">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar_layout"
+            style="@style/AppTheme.CollapsingToolbar.ExtraLarge"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/collapsing_toolbar_layout_extra_large_size"
+            android:fitsSystemWindows="true"
+            app:expandedTitleTextColor="@android:color/transparent"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:fitsSystemWindows="true"
+                android:id="@+id/constraint_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/iv_pokemon"
+                    android:layout_width="match_parent"
+
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/content_description_pokemon_sprite"
+                    android:fitsSystemWindows="true"
+                    android:foreground="@drawable/pokemon_details_gradient"
+
+                    android:scaleType="fitCenter"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:src="@drawable/bulbasaur" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_name"
+
+                    style="@style/TextAppearance.Material3.HeadlineLarge"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toStartOf="@id/cb_favourite"
+
+                    android:layout_marginHorizontal="@dimen/window_spacing_horizontal"
+                    android:textColor="?attr/colorOnSurface"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/cb_favourite"
+                    tools:text="Bisasam" />
+
+                <CheckBox
+                    android:id="@+id/cb_favourite"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="@dimen/window_spacing_horizontal"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:button="@drawable/favourite_selector"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:tint="?attr/colorControlNormal"
+                app:layout_collapseMode="pin"
+                app:navigationIcon="@drawable/arrow_back_24dp" />
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:layout_marginTop="10dp"
+        android:id="@+id/progress_indicator"
+        android:fitsSystemWindows="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:layout_anchor="@id/view_flipper" />
+
+    <ViewFlipper
+        android:id="@+id/view_flipper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+            <androidx.constraintlayout.motion.widget.MotionLayout
+                android:id="@+id/motion_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layoutDescription="@xml/fragment_pokemon_details_scene">
+
+                <!-- TYPES -->
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cv_primary_type"
+                    style="@style/Widget.Material3.CardView.Filled"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/window_spacing_horizontal"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintBottom_toBottomOf="@id/iv_pokemon"
+                    app:layout_constraintEnd_toStartOf="@id/cv_secondary_type"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:cardBackgroundColor="?attr/colorTypeGrass">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/tv_primary_type"
+                        style="?attr/textAppearanceBodyLarge"
+                        android:layout_width="100dp"
+                        android:layout_height="30dp"
+                        android:gravity="center"
+                        android:padding="4dp"
+                        android:textColor="@android:color/white"
+                        android:drawablePadding="8dp"
+                        android:layout_marginHorizontal="8dp"
+                        app:drawableTint="@android:color/white"
+                        tools:drawableStart="@drawable/grass"
+                        android:paddingHorizontal="8dp"
+                        tools:text="Pflanze" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cv_secondary_type"
+                    style="@style/Widget.Material3.CardView.Filled"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    tools:cardBackgroundColor="?attr/colorTypePoison"
+                    app:layout_constraintBottom_toBottomOf="@id/iv_pokemon"
+                    app:layout_constraintEnd_toEndOf="@id/iv_pokemon"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+
+                    app:layout_constraintStart_toEndOf="@id/cv_primary_type"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/tv_secondary_type"
+                        style="?attr/textAppearanceBodyLarge"
+                        android:layout_width="100dp"
+                        android:layout_height="30dp"
+                        android:gravity="center"
+                        android:padding="4dp"
+                        android:layout_marginHorizontal="8dp"
+                        android:drawablePadding="8dp"
+                        tools:text="Gift"
+                        android:textColor="@android:color/white"
+                        tools:drawableStart="@drawable/poison"
+                        app:drawableTint="@android:color/white" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- DESCRIPTION -->
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:drawableStart="@drawable/description_24dp"
+                    android:drawablePadding="8dp"
+                    android:id="@+id/tv_description_title"
+                    style="?attr/textAppearanceHeadlineSmall"
+                    android:layout_width="0dp"
+                    android:ellipsize="end"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintHorizontal_bias="0"
+                    android:layout_marginHorizontal="@dimen/window_spacing_horizontal"
+                    android:layout_marginTop="16dp"
+                    app:drawableTint="?attr/colorOnSurface"
+                    android:text="@string/description"
+                    app:layout_constraintEnd_toEndOf="parent"
+
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/cv_primary_type" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:background="@drawable/text_view_placeholder_top"
+                    tools:text="Pokemon Diamant"
+                    android:lines="1"
+                    android:ellipsize="end"
+                    app:layout_constraintTop_toBottomOf="@id/tv_description_title"
+                    style="?attr/textAppearanceBodySmall"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginHorizontal="@dimen/window_spacing_horizontal"
+                    android:id="@+id/tv_description_game_version"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"/>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:background="@drawable/text_view_placeholder_bottom"
+                    tools:text="Pikachgu ist einfeoaiwh awoi efoüiawh eüo oiawjhefüo iawj üawie9jofü paoiwje  üoaiwjefüoijaw ef üaoiwjefüoijaüwefoij audhlfia"
+                    android:id="@+id/tv_description_content"
+                    style="@style/TextAppearance.Material3.BodyMedium"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="8dp"
+                    android:ellipsize="end"
+                    android:lines="2"
+                    android:textColor="?attr/colorOnSurface"
+                    android:layout_marginHorizontal="@dimen/window_spacing_horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toStartOf="parent"
+
+                    app:layout_constraintTop_toBottomOf="@id/tv_description_game_version"/>
+
+                <View
+                    tools:visibility="gone"
+                    android:layout_marginHorizontal="@dimen/window_spacing_horizontal"
+                    android:id="@+id/v_description_clickable"
+                    app:layout_constraintTop_toTopOf="@id/tv_description_title"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_description_content"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"/>
+
+                <!-- STATS -->
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:drawableStart="@drawable/monitoring_24dp"
+                    android:drawablePadding="8dp"
+                    android:id="@+id/tv_stats"
+
+                    style="@style/TextAppearance.Material3.HeadlineSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/window_spacing_horizontal"
+                    android:text="@string/stats"
+                    android:layout_marginTop="16dp"
+                    app:drawableTint="?attr/colorOnSurface"
+                    android:ellipsize="end"
+                    android:textColor="?attr/colorOnSurface"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0"
+
+
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_description_content" />
+
+                <!-- HP -->
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:id="@+id/tv_hp"
+                    android:layout_marginHorizontal="@dimen/window_spacing_horizontal"
+
+                    style="?attr/textAppearanceBodyLarge"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:text="@string/hp"
+                    android:layout_marginTop="16dp"
+                    android:textColor="?attr/colorOnSurface"
+                    app:layout_constraintTop_toBottomOf="@id/tv_stats" />
+
+                <View
+                    android:id="@+id/v_hp_start"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/base_bar_height"
+
+                    android:layout_marginStart="@dimen/window_spacing_horizontal"
+                    android:layout_marginTop="4dp"
+
+                    android:background="@drawable/pill_shaped_stats"
+
+                    android:backgroundTint="?attr/colorSecondaryContainer"
+                    app:layout_constraintEnd_toStartOf="@id/s_hp"
+                    app:layout_constraintStart_toStartOf="parent"
+
+                    app:layout_constraintTop_toBottomOf="@id/tv_hp"
+                    app:layout_constraintWidth="@dimen/base_bar_height" />
+
+                <Space
+                    android:id="@+id/s_hp"
+                    android:layout_width="@dimen/base_bar_horizontal_spacing"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toStartOf="@id/v_hp_end"
+                    app:layout_constraintStart_toEndOf="@id/v_hp_start" />
+
+                <View
+                    android:id="@+id/v_hp_end"
+                    android:layout_width="0dp"
+
+                    android:layout_height="@dimen/base_bar_height"
+
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="@dimen/window_spacing_horizontal"
+
+                    android:background="@drawable/pill_shaped_stats"
+                    android:backgroundTint="?attr/colorTertiaryContainer"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/s_hp"
+                    app:layout_constraintTop_toBottomOf="@id/tv_hp" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    tools:text="test"
+                    android:alpha="0"
+                    android:id="@+id/tv_hp_value"
+                    style="?attr/textAppearanceBodySmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    app:layout_constraintBottom_toBottomOf="@id/v_hp_start"
+                    app:layout_constraintEnd_toEndOf="@+id/v_hp_start"
+                    app:layout_constraintTop_toTopOf="@id/v_hp_start" />
+
+                <!-- ATTACK -->
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:id="@+id/tv_attack"
+                    android:layout_marginHorizontal="@dimen/window_spacing_horizontal"
+
+                    style="?attr/textAppearanceBodyLarge"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:text="@string/attack"
+                    android:layout_marginTop="16dp"
+                    android:textColor="?attr/colorOnSurface"
+                    app:layout_constraintTop_toBottomOf="@id/v_hp_start" />
+
+                <View
+                    android:id="@+id/v_attack_start"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/base_bar_height"
+
+                    android:layout_marginStart="@dimen/window_spacing_horizontal"
+                    android:layout_marginTop="4dp"
+
+                    android:background="@drawable/pill_shaped_stats"
+
+                    android:backgroundTint="?attr/colorSecondaryContainer"
+                    app:layout_constraintEnd_toStartOf="@id/s_attack"
+                    app:layout_constraintStart_toStartOf="parent"
+
+                    app:layout_constraintTop_toBottomOf="@id/tv_attack"
+                    app:layout_constraintWidth="@dimen/base_bar_height" />
+
+                <Space
+                    android:id="@+id/s_attack"
+                    android:layout_width="@dimen/base_bar_horizontal_spacing"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toStartOf="@id/v_attack_end"
+                    app:layout_constraintStart_toEndOf="@id/v_attack_start" />
+
+                <View
+                    android:id="@+id/v_attack_end"
+                    android:layout_width="0dp"
+
+                    android:layout_height="@dimen/base_bar_height"
+
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="@dimen/window_spacing_horizontal"
+
+                    android:background="@drawable/pill_shaped_stats"
+                    android:backgroundTint="?attr/colorTertiaryContainer"
+
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/s_attack"
+                    app:layout_constraintTop_toBottomOf="@id/tv_attack" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    app:layout_constraintTop_toTopOf="@id/v_attack_start"
+                    app:layout_constraintBottom_toBottomOf="@id/v_attack_start"
+                    app:layout_constraintEnd_toEndOf="@+id/v_attack_start"
+                    android:layout_marginEnd="4dp"
+                    style="?attr/textAppearanceBodySmall"
+                    android:id="@+id/tv_attack_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:alpha="0"/>
+
+                <!-- DEFENSE -->
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:id="@+id/tv_defense"
+                    style="?attr/textAppearanceBodyLarge"
+
+                    android:layout_height="wrap_content"
+
+                    android:layout_width="match_parent"
+                    android:layout_marginHorizontal="@dimen/window_spacing_horizontal"
+
+                    android:layout_marginTop="16dp"
+                    android:text="@string/defense"
+                    android:textColor="?attr/colorOnSurface"
+                    app:layout_constraintTop_toBottomOf="@id/v_attack_start" />
+
+                <View
+                    android:id="@+id/v_defense_start"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/base_bar_height"
+
+                    android:layout_marginStart="@dimen/window_spacing_horizontal"
+                    android:layout_marginTop="4dp"
+
+                    android:background="@drawable/pill_shaped_stats"
+
+                    android:backgroundTint="?attr/colorSecondaryContainer"
+                    app:layout_constraintEnd_toStartOf="@id/s_defense"
+
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_defense"
+                    app:layout_constraintWidth="@dimen/base_bar_height" />
+
+                <Space
+                    android:id="@+id/s_defense"
+                    android:layout_width="@dimen/base_bar_horizontal_spacing"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toStartOf="@id/v_defense_end"
+                    app:layout_constraintStart_toEndOf="@id/v_defense_start" />
+
+                <View
+                    android:id="@+id/v_defense_end"
+                    android:layout_width="0dp"
+
+                    android:layout_height="@dimen/base_bar_height"
+
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="@dimen/window_spacing_horizontal"
+                    android:background="@drawable/pill_shaped_stats"
+
+                    android:backgroundTint="?attr/colorTertiaryContainer"
+                    app:layout_constraintEnd_toEndOf="parent"
+
+                    app:layout_constraintStart_toEndOf="@id/s_defense"
+                    app:layout_constraintTop_toBottomOf="@id/tv_defense" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    app:layout_constraintTop_toTopOf="@id/v_defense_start"
+                    app:layout_constraintBottom_toBottomOf="@id/v_defense_start"
+                    app:layout_constraintEnd_toEndOf="@+id/v_defense_start"
+                    android:layout_marginEnd="4dp"
+                    style="?attr/textAppearanceBodySmall"
+                    android:id="@+id/tv_defense_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:alpha="0"/>
+
+                <!-- SPECIAL ATTACK -->
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:id="@+id/tv_special_attack"
+                    android:layout_marginHorizontal="@dimen/window_spacing_horizontal"
+
+                    style="?attr/textAppearanceBodyLarge"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:text="@string/special_attack"
+                    android:layout_marginTop="16dp"
+                    android:textColor="?attr/colorOnSurface"
+                    app:layout_constraintTop_toBottomOf="@id/v_defense_start" />
+
+                <View
+                    android:id="@+id/v_special_attack_start"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/base_bar_height"
+
+                    android:layout_marginStart="@dimen/window_spacing_horizontal"
+                    android:layout_marginTop="4dp"
+
+                    android:background="@drawable/pill_shaped_stats"
+
+                    android:backgroundTint="?attr/colorSecondaryContainer"
+                    app:layout_constraintEnd_toStartOf="@id/s_special_attack"
+                    app:layout_constraintStart_toStartOf="parent"
+
+                    app:layout_constraintTop_toBottomOf="@id/tv_special_attack"
+                    app:layout_constraintWidth="@dimen/base_bar_height" />
+
+                <Space
+                    android:id="@+id/s_special_attack"
+                    android:layout_width="@dimen/base_bar_horizontal_spacing"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toStartOf="@id/v_special_attack_end"
+                    app:layout_constraintStart_toEndOf="@id/v_special_attack_start" />
+
+                <View
+                    android:id="@+id/v_special_attack_end"
+                    android:layout_width="0dp"
+
+                    android:layout_height="@dimen/base_bar_height"
+
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="@dimen/window_spacing_horizontal"
+                    android:background="@drawable/pill_shaped_stats"
+
+                    android:backgroundTint="?attr/colorTertiaryContainer"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/s_special_attack"
+                    app:layout_constraintTop_toBottomOf="@id/tv_special_attack" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    app:layout_constraintTop_toTopOf="@id/v_special_attack_start"
+                    app:layout_constraintBottom_toBottomOf="@id/v_special_attack_start"
+                    app:layout_constraintEnd_toEndOf="@+id/v_special_attack_start"
+                    android:layout_marginEnd="4dp"
+                    android:alpha="0"
+                    style="?attr/textAppearanceBodySmall"
+                    android:id="@+id/tv_special_attack_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <!-- SPECIAL DEFENSE -->
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:id="@+id/tv_special_defense"
+                    android:layout_marginHorizontal="@dimen/window_spacing_horizontal"
+
+                    style="?attr/textAppearanceBodyLarge"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:text="@string/special_defense"
+                    android:layout_marginTop="16dp"
+                    android:textColor="?attr/colorOnSurface"
+                    app:layout_constraintTop_toBottomOf="@id/v_special_attack_start" />
+
+                <View
+                    android:id="@+id/v_special_defense_start"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/base_bar_height"
+
+                    android:layout_marginStart="@dimen/window_spacing_horizontal"
+                    android:layout_marginTop="4dp"
+
+                    android:background="@drawable/pill_shaped_stats"
+
+                    android:backgroundTint="?attr/colorSecondaryContainer"
+                    app:layout_constraintEnd_toStartOf="@id/s_special_defense"
+                    app:layout_constraintStart_toStartOf="parent"
+
+                    app:layout_constraintTop_toBottomOf="@id/tv_special_defense"
+                    app:layout_constraintWidth="@dimen/base_bar_height" />
+
+                <Space
+                    android:id="@+id/s_special_defense"
+                    android:layout_width="@dimen/base_bar_horizontal_spacing"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toStartOf="@id/v_special_defense_end"
+                    app:layout_constraintStart_toEndOf="@id/v_special_defense_start" />
+
+                <View
+                    android:id="@+id/v_special_defense_end"
+                    android:layout_width="0dp"
+
+                    android:layout_height="@dimen/base_bar_height"
+
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="@dimen/window_spacing_horizontal"
+                    android:background="@drawable/pill_shaped_stats"
+
+                    android:backgroundTint="?attr/colorTertiaryContainer"
+                    app:layout_constraintEnd_toEndOf="parent"
+
+                    app:layout_constraintStart_toEndOf="@id/s_special_defense"
+                    app:layout_constraintTop_toBottomOf="@id/tv_special_defense" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    app:layout_constraintTop_toTopOf="@id/v_special_defense_start"
+                    app:layout_constraintBottom_toBottomOf="@id/v_special_defense_start"
+                    app:layout_constraintEnd_toEndOf="@+id/v_special_defense_start"
+                    android:layout_marginEnd="4dp"
+                    style="?attr/textAppearanceBodySmall"
+                    android:id="@+id/tv_special_defense_value"
+                    android:layout_width="wrap_content"
+                    android:alpha="0"
+                    android:layout_height="wrap_content"/>
+
+
+                <!-- SPEED -->
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:id="@+id/tv_speed"
+                    style="?attr/textAppearanceBodyLarge"
+
+                    android:layout_width="match_parent"
+
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/window_spacing_horizontal"
+
+                    android:layout_marginTop="16dp"
+                    android:text="@string/speed"
+                    android:textColor="?attr/colorOnSurface"
+                    app:layout_constraintTop_toBottomOf="@id/v_special_defense_start" />
+
+                <View
+                    android:id="@+id/v_speed_start"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/base_bar_height"
+
+                    android:layout_marginStart="@dimen/window_spacing_horizontal"
+                    android:layout_marginTop="4dp"
+
+                    android:background="@drawable/pill_shaped_stats"
+
+                    android:backgroundTint="?attr/colorSecondaryContainer"
+                    app:layout_constraintEnd_toStartOf="@id/s_speed"
+                    app:layout_constraintTop_toBottomOf="@id/tv_speed"
+
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintWidth="@dimen/base_bar_height" />
+
+                <Space
+                    android:id="@+id/s_speed"
+                    android:layout_width="@dimen/base_bar_horizontal_spacing"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toStartOf="@id/v_speed_end"
+                    app:layout_constraintStart_toEndOf="@id/v_speed_start" />
+
+                <View
+                    android:id="@+id/v_speed_end"
+                    android:layout_width="0dp"
+
+                    android:layout_height="@dimen/base_bar_height"
+
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="@dimen/window_spacing_horizontal"
+                    android:background="@drawable/pill_shaped_stats"
+
+                    android:backgroundTint="?attr/colorTertiaryContainer"
+                    app:layout_constraintEnd_toEndOf="parent"
+
+                    app:layout_constraintStart_toEndOf="@id/s_speed"
+                    app:layout_constraintTop_toBottomOf="@id/tv_speed" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    app:layout_constraintTop_toTopOf="@id/v_speed_start"
+                    app:layout_constraintBottom_toBottomOf="@id/v_speed_start"
+                    app:layout_constraintEnd_toEndOf="@+id/v_speed_start"
+                    android:layout_marginEnd="4dp"
+                    style="?attr/textAppearanceBodySmall"
+                    android:alpha="0"
+                    android:id="@+id/tv_speed_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <!-- Immunities/Resistences/Weaknesses -->
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:drawableStart="@drawable/shield_24dp"
+                    android:drawablePadding="8dp"
+                    android:id="@+id/tv_immunities_title"
+                    style="?attr/textAppearanceHeadlineSmall"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/window_spacing_horizontal"
+                    android:layout_marginTop="16dp"
+                    android:ellipsize="end"
+                    android:text="@string/immune"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0"
+
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/v_speed_end" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:drawableStart="@drawable/shield_24dp"
+                    android:drawablePadding="8dp"
+                    android:id="@+id/rv_immunities"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_immunities_title"
+                    tools:listitem="@layout/adapter_item_type_placeholder"
+                    android:paddingHorizontal="@dimen/window_spacing_horizontal" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:drawableStart="@drawable/shield_24dp"
+                    android:drawablePadding="8dp"
+                    android:id="@+id/tv_resistence_title"
+                    style="?attr/textAppearanceHeadlineSmall"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/window_spacing_horizontal"
+                    android:layout_marginTop="16dp"
+                    android:ellipsize="end"
+                    android:text="@string/resistences"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0"
+
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/rv_immunities" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_resistence_quater"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_resistence_title"
+                    tools:listitem="@layout/adapter_item_type_placeholder"
+                    android:paddingHorizontal="@dimen/window_spacing_horizontal" />
+
+                <Space
+                    app:layout_constraintTop_toBottomOf="@id/rv_resistence_quater"
+                    android:layout_height="8dp"
+                    android:layout_width="wrap_content"
+                    android:id="@+id/space_resistence"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_resistence_half"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/space_resistence"
+                    tools:listitem="@layout/adapter_item_type_placeholder"
+                    android:paddingHorizontal="@dimen/window_spacing_horizontal" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:drawableStart="@drawable/shield_24dp"
+                    android:drawablePadding="8dp"
+                    android:id="@+id/tv_weekness_title"
+                    style="?attr/textAppearanceHeadlineSmall"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/window_spacing_horizontal"
+                    android:layout_marginTop="16dp"
+                    android:ellipsize="end"
+                    android:text="@string/weekness"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0"
+
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/rv_resistence_half" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:layout_marginTop="8dp"
+                    android:id="@+id/rv_weekness_double"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_weekness_title"
+                    tools:listitem="@layout/adapter_item_type_placeholder"
+                    android:paddingHorizontal="@dimen/window_spacing_horizontal" />
+
+                <Space
+                    app:layout_constraintTop_toBottomOf="@id/rv_weekness_double"
+                    android:id="@+id/space_weekness"
+                    android:layout_width="wrap_content"
+                    android:layout_height="8dp"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_weekness_quadruple"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/space_weekness"
+                    tools:listitem="@layout/adapter_item_type_placeholder"
+                    android:paddingHorizontal="@dimen/window_spacing_horizontal" />
+
+                <!-- ABILITIES -->
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_ability_title"
+                    style="?attr/textAppearanceHeadlineSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/window_spacing_horizontal"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/abilities"
+                    android:textColor="?attr/colorOnSurface"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0"
+
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/rv_weekness_quadruple" />
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/vp_ability_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+
+                    android:ellipsize="end"
+                    android:nestedScrollingEnabled="true"
+                    android:textColor="?attr/colorOnSurface"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_ability_title"
+                    tools:layout_height="100dp"
+
+                    tools:listitem="@layout/adapter_item_ability" />
+
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tl_ability_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    app:layout_constraintTop_toBottomOf="@id/vp_ability_text"
+                    app:tabBackground="@drawable/tab_selector"
+                    app:tabGravity="center"
+                    app:tabIndicatorHeight="0dp" />
+
+                <!-- EVOLUTIONS -->
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_evolution_title"
+                    style="?attr/textAppearanceHeadlineSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/window_spacing_horizontal"
+                    android:text="@string/evolutions"
+                    android:textColor="?attr/colorOnSurface"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0"
+
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tl_ability_content" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:nestedScrollingEnabled="false"
+                    android:paddingHorizontal="@dimen/window_spacing_horizontal"
+                    android:clipToPadding="false"
+                    android:layout_marginTop="16dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintTop_toBottomOf="@id/tv_evolution_title"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    tools:itemCount="3"
+                    tools:listitem="@layout/adapter_item_evolution"
+                    android:id="@+id/rv_evolution"
+                    app:layout_constraintVertical_bias="0"
+                    android:paddingBottom="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </androidx.constraintlayout.motion.widget.MotionLayout>
+        </androidx.core.widget.NestedScrollView>
+
+        <include
+            android:id="@+id/i_error_message"
+            layout="@layout/error_message"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </ViewFlipper>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

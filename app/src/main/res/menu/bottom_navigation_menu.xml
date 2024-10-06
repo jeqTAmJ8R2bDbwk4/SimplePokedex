@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/home_graph"
+        android:title="@string/menu_name_list"
+        android:icon="@drawable/list"
+        android:enabled="true"
+    />
+    <item
+        android:id="@+id/search_graph"
+        android:title="@string/search"
+        android:icon="@drawable/search_24dp"
+        android:enabled="true"
+    />
+    <item
+        android:id="@+id/favourite_graph"
+        android:title="@string/menu_name_favourites"
+        android:icon="@drawable/favorite_outlined"
+        android:enabled="true"/>
+</menu>

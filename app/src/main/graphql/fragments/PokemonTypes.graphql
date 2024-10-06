@@ -1,0 +1,5 @@
+fragment pokemon_types_fragment on pokemon_v2_pokemontype {
+    type: pokemon_v2_type {
+        ...pokemon_type_fragment
+    }
+}

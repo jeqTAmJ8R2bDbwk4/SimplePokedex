@@ -1,0 +1,18 @@
+fragment pokemon_fragment on pokemon_v2_pokemon {
+    id
+    forms: pokemon_v2_pokemonforms(limit: 1) {
+        ...pokemon_form_fragment
+    }
+    sprites: pokemon_v2_pokemonsprites(order_by: {id: asc}, limit: 1) {
+        ...pokemon_sprite_fragment
+    }
+    official_sprites: pokemon_v2_pokemonsprites(order_by: {id: asc}, limit: 1) {
+        ...pokemon_official_sprite_fragment
+    }
+    types: pokemon_v2_pokemontypes(limit: 2) {
+        ...pokemon_types_fragment
+    }
+    specy: pokemon_v2_pokemonspecy {
+        ...pokemon_specy_fragment
+    }
+}

@@ -1,0 +1,11 @@
+query PokemonListPage($limit: Int, $offset: Int) {
+  count: pokemon_v2_pokemon_aggregate(where: {is_default: {_eq: true}}) {
+    aggregate {
+      count
+    }
+  }
+
+  pokemon: pokemon_v2_pokemon(limit: $limit, offset: $offset, order_by: {pokemon_species_id: asc}, where: { is_default: {_eq: true} }) {
+    ...pokemon_fragment
+  }
+}

@@ -1,0 +1,6 @@
+fragment pokemon_form_fragment on pokemon_v2_pokemonform {
+    name
+    names: pokemon_v2_pokemonformnames(where: {language_id: {_eq: 6}}, limit: 1) {
+        name: pokemon_name
+    }
+}

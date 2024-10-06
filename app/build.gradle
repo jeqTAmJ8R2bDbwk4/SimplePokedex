@@ -1,0 +1,145 @@
+plugins {
+    id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
+    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.jetbrainsKotlinAndroid)
+    id "com.apollographql.apollo" version "$apollo_version"
+    id 'kotlin-parcelize'
+    id 'androidx.navigation.safeargs.kotlin' version "2.8.2"
+    id 'androidx.room'
+    id('com.google.android.gms.oss-licenses-plugin')
+}
+
+android {
+    namespace 'com.example.pokedex'
+    compileSdk 34
+
+    room {
+        schemaDirectory "$projectDir/schemas"
+    }
+
+    aaptOptions {
+        ignoreAssetsPattern 'bulbasaur.png|screenshots/*.png'
+    }
+
+    defaultConfig {
+        applicationId "com.example.pokedex"
+        minSdk 30
+        targetSdk 35
+        versionCode 1
+        versionName "v0.1.0-alpha"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures {
+        buildConfig true
+        viewBinding true
+    }
+
+    packagingOptions {
+        resources.excludes += "DebugProbesKt.bin"
+    }
+
+    buildTypes {
+        debug {
+            manifestPlaceholders = [
+                screenOrientation: "unspecified"  // Allow rotation in debug
+            ]
+            applicationIdSuffix ".debug"
+            debuggable true
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        release {
+            manifestPlaceholders = [
+                    screenOrientation: "portrait"  // Disable rotation in release
+            ]
+            debuggable false
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug // Temporary solution to build release without signing.
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+apollo {
+    service("service") {
+        packageName.set("com.example.pokedex")
+    }
+}
+
+dependencies {
+    // Room
+    implementation "androidx.room:room-ktx:$room_version"
+    implementation "androidx.room:room-runtime:$room_version"
+    implementation(libs.androidx.window)
+    implementation libs.androidx.window.core.android
+    kapt "androidx.room:room-compiler:$room_version"
+
+    implementation libs.commons.math3
+
+    // AndroidX
+    implementation libs.androidx.animation.core.android
+    implementation libs.androidx.navigation.fragment.ktx
+    implementation libs.androidx.navigation.ui.ktx
+    implementation libs.androidx.navigation.dynamic.features.fragment
+    implementation libs.androidx.core.splashscreen
+    implementation libs.androidx.lifecycle.viewmodel.ktx
+    implementation libs.androidx.lifecycle.livedata.ktx
+    implementation libs.androidx.fragment.ktx
+    implementation libs.androidx.core.ktx
+    implementation libs.androidx.appcompat
+    implementation libs.androidx.activity
+    implementation libs.androidx.constraintlayout
+    implementation libs.androidx.legacy.support.v4
+    implementation libs.androidx.asynclayoutinflater
+    implementation libs.androidx.paging.paging.common.android
+    implementation libs.androidx.paging.runtime.ktx
+
+    // KotlinX
+    implementation libs.kotlinx.coroutines.core
+    implementation libs.kotlinx.coroutines.android
+
+    // Images
+    implementation libs.coil.compose
+
+    // Material
+    implementation libs.material
+
+    // Licenses
+    implementation("com.google.android.gms:play-services-oss-licenses:17.1.0")
+
+    // Dagger/Hilt
+    implementation("com.google.dagger:hilt-android:$hilt_version")
+    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
+
+    // Apollo
+    implementation libs.okhttp
+    implementation("com.apollographql.apollo:apollo-runtime:$apollo_version")
+
+    // Logging
+    implementation(libs.logging.interceptor)
+
+    // Guava
+    implementation libs.guava
+    implementation libs.kotlinx.coroutines.guava
+
+    // Timber Kotlin Extensions
+    implementation libs.timber
+
+    implementation libs.flexbox
+
+    implementation libs.kotlin.reflect
+}
+
+kapt {
+     correctErrorTypes true
+}

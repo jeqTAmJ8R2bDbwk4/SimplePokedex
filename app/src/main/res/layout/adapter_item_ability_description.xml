@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_description"
+        style="?attr/textAppearanceBodyMedium"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingHorizontal="@dimen/window_spacing_horizontal"
+        android:paddingTop="12dp"
+        tools:text="Pikachu speichert Elektrizität in seinen Wangen. Wenn es überrascht oder verärgert ist, kann es diese Elektrizität als Blitzentladung abgeben. Es nutzt diese Fähigkeit, um sich gegen Feinde zu verteidigen oder um elektrische Geräte aufzuladen." />
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_game_name"
+
+        style="?attr/textAppearanceBodySmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/window_spacing_horizontal"
+        android:gravity="end|top"
+        tools:text="Pokémon Blattgrün"
+        android:paddingBottom="12dp"/>
+</LinearLayout>

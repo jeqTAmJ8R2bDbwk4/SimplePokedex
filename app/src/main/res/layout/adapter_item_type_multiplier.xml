@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.textview.MaterialTextView
+    style="?attr/textAppearanceBodySmall"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tv_multiplier"
+    android:layout_height="32dp"
+    android:layout_width="32dp"
+    android:gravity="center"
+    android:background="@drawable/type_background"
+    tools:text="2x" />

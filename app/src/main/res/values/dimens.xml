@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="window_spacing_horizontal">16dp</dimen>
+    <dimen name="list_vertical_padding">8dp</dimen>
+    <dimen name="list_horizontal_padding">16dp</dimen>
+    <dimen name="fab_padding">16dp</dimen>
+    <dimen name="list_between_spacing">8dp</dimen>
+    <dimen name="collapsing_toolbar_layout_extra_large_size">240dp</dimen>
+    <dimen name="scrim_visible_height_trigger_extra_large">112dp</dimen>
+    <dimen name="type_icon_padding">4dp</dimen>
+    <dimen name="base_bar_height">12dp</dimen>
+    <dimen name="base_bar_horizontal_spacing">12dp</dimen>
+    <dimen name="navigation_rail_width">80dp</dimen>
+</resources>

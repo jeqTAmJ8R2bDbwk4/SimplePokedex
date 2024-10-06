@@ -1,0 +1,11 @@
+fragment pokemon_specy_fragment on pokemon_v2_pokemonspecies {
+    id
+    name
+    evolves_from_species_id
+    names: pokemon_v2_pokemonspeciesnames(where: {language_id: {_eq: 6}}, limit: 1) {
+        name
+    }
+    pokedex_numbers: pokemon_v2_pokemondexnumbers(where: {pokemon_v2_pokedex: {id: {_eq: 1}}}, limit: 1) {
+        pokedex_number
+    }
+}

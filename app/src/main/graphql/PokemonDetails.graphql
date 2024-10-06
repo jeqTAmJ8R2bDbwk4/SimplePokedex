@@ -1,0 +1,26 @@
+query PokemonDetails($id: Int) {
+    pokemon: pokemon_v2_pokemon(where: {id: {_eq: $id}}) {
+        ...pokemon_details_fragment
+    }
+    type: pokemon_v2_type {
+        ...pokemon_type_relation_fragment
+    }
+    range_hp: pokemon_v2_pokemonstat_aggregate(where: {stat_id: {_eq: 1}}) {
+        ...pokemon_stats_range_fragment
+    }
+    range_attack: pokemon_v2_pokemonstat_aggregate(where: {stat_id: {_eq: 2}}) {
+        ...pokemon_stats_range_fragment
+    }
+    range_defense: pokemon_v2_pokemonstat_aggregate(where: {stat_id: {_eq: 3}}) {
+        ...pokemon_stats_range_fragment
+    }
+    range_sp_attack: pokemon_v2_pokemonstat_aggregate(where: {stat_id: {_eq: 4}}) {
+        ...pokemon_stats_range_fragment
+    }
+    range_sp_defense: pokemon_v2_pokemonstat_aggregate(where: {stat_id: {_eq: 5}}) {
+        ...pokemon_stats_range_fragment
+    }
+    range_speed: pokemon_v2_pokemonstat_aggregate(where: {stat_id: {_eq: 6}}) {
+        ...pokemon_stats_range_fragment
+    }
+}

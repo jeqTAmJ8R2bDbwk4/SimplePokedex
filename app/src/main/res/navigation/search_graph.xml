@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/search_graph"
+    app:startDestination="@id/search_fragment">
+    <fragment
+        android:id="@+id/search_fragment"
+        android:name="com.example.pokedex.fragments.SearchFragment"
+        android:label="SearchFragment"
+        tools:layout="@layout/fragment_favourite">
+        <action
+            android:id="@+id/search_fragment_to_pokemon_details_fragment"
+            app:destination="@+id/pokemon_details_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/pokemon_details_fragment"
+        android:name="com.example.pokedex.fragments.PokemonDetailsFragment"
+        android:label="PokemonDetailsFragment"
+        tools:layout="@layout/fragment_pokemon_details">
+        <argument
+            android:name="transition"
+            app:argType="com.example.pokedex.models.PokemonDetailsTransition" />
+        <action
+            android:id="@+id/pokemon_defails_fragment_to_pokemon_details_fragment"
+            app:destination="@+id/pokemon_details_fragment"
+            />
+    </fragment>
+</navigation>

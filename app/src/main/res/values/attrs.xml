@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="AppTheme">
+        <attr name="colorTypeQuestionMark" format="color"/>
+        <attr name="colorTypeStellar" format="color"/>
+        <attr name="colorTypeNormal" format="color"/>
+        <attr name="colorTypeFire" format="color"/>
+        <attr name="colorTypeWater" format="color"/>
+        <attr name="colorTypeElectric" format="color"/>
+        <attr name="colorTypeGrass" format="color"/>
+        <attr name="colorTypeIce" format="color"/>
+        <attr name="colorTypeFighting" format="color"/>
+        <attr name="colorTypePoison" format="color"/>
+        <attr name="colorTypeGround" format="color"/>
+        <attr name="colorTypeFlying" format="color"/>
+        <attr name="colorTypePsychic" format="color"/>
+        <attr name="colorTypeBug" format="color"/>
+        <attr name="colorTypeRock" format="color"/>
+        <attr name="colorTypeGhost" format="color"/>
+        <attr name="colorTypeDragon" format="color"/>
+        <attr name="colorTypeDark" format="color"/>
+        <attr name="colorTypeSteel" format="color"/>
+        <attr name="colorTypeFairy" format="color"/>
+    </declare-styleable>
+</resources>
