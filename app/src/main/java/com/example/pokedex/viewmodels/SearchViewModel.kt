@@ -158,6 +158,10 @@ class SearchViewModel @Inject constructor(val repository: Repository): ViewModel
     fun searchPokemon(query: String) {
         Timber.d("%s", query)
         _pokemonQuery.value = query
+
+        /* When the user selects a Pokémon from their history, we want the names to be pre-loaded
+         * for when they open the search window again. */
+        _nameQuery.value = query
     }
 
     fun setIsFavourite(pokemon: Pokemon, isFavourite: Boolean) {

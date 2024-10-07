@@ -115,7 +115,7 @@ dependencies {
     implementation libs.material
 
     // Licenses
-    implementation("com.google.android.gms:play-services-oss-licenses:17.1.0")
+    implementation(libs.gms.play.services.oss.licenses)
 
     // Dagger/Hilt
     implementation("com.google.dagger:hilt-android:$hilt_version")
