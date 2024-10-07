@@ -22,6 +22,8 @@ class Repository @Inject constructor(
 
     suspend fun getHistory() = localRepository.getHistory()
 
+    suspend fun getPopularPokemon() = remoteRepository.getPopularPokemon()
+
     suspend fun addHistoryEntry(historyEntry: HistoryEntry) {
         localRepository.addHistoryEntry(historyEntry)
     }

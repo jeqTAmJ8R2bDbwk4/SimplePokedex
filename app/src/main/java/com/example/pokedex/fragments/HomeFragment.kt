@@ -41,6 +41,7 @@ import com.example.pokedex.utils.fragmentInsets
 import com.example.pokedex.utils.getAppName
 import com.example.pokedex.utils.openLicenses
 import com.example.pokedex.utils.openSettings
+import com.example.pokedex.utils.setRootMenuListener
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
@@ -210,22 +211,7 @@ class HomeFragment : Fragment() {
             MaterialColors.getColor(binding.appBarLayout, R.attr.colorSurface)
         )
         binding.toolbar.title = requireContext().getAppName()
-        binding.toolbar.setOnMenuItemClickListener { menuItem ->
-            return@setOnMenuItemClickListener when (menuItem.itemId) {
-                R.id.settings -> {
-                    requireActivity().openSettings()
-                    true
-                }
-                R.id.licenses -> {
-                    requireActivity().openLicenses()
-                    true
-                }
-                else -> {
-                    Timber.e("Menu Item %s unknown.", menuItem.title)
-                    false
-                }
-            }
-        }
+        requireActivity().setRootMenuListener(binding.toolbar)
     }
 
     private fun setupRecyclerView() {

@@ -88,4 +88,5 @@
     <string name="error_message_http_500_internal_server_error">Es gab einen unerwarteten Serverfehler. Bitte warte kurz und versuche es später noch einmal.</string>
     <string name="error_message_http_503_service_unavailable">Der Server ist temporär nicht verfügbar. Bitte versuche es später noch einmal.</string>
     <string name="erneut_laden">Erneut laden</string>
+    <string name="popular_pokemon_title">Beliebte Pokémon</string>
 </resources>

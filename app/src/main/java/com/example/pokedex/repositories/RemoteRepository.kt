@@ -6,6 +6,7 @@ import androidx.paging.PagingConfig
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Optional
 import com.example.pokedex.PokemonDetailsQuery
+import com.example.pokedex.PokemonListByIdsQuery
 import com.example.pokedex.PokemonNameSearchQuery
 import com.example.pokedex.PokemonSearchQuery
 import com.example.pokedex.models.Ability
@@ -31,37 +32,37 @@ class RemoteRepository @Inject constructor(
     private val apolloClient: ApolloClient,
 ) {
     companion object {
-        private val NAME_IDS_OF_TOP_30_POKEMON_2020 = intArrayOf(
-            7233, // Quajutsu
-            4923, // Lucario
-            8553, // Mimigma
-            61,   // Glurak
-            2162, // Nachtara
-            7695, // Feelinara
-            4890, // Knakrack
-            4219, // Rayquaza
-            3097, // Guardevoir
-            1029, // Gengar
-            9752, // Katapuldra
-            2723, // Despotar
-            6,    // Bisasam
-            9334, // Riffex
-            2734, // Lugia
-            7937, // Bauz
-            7486, // Durengard
-            6694, // Skelabra
-            270,  // Pikachu
-            1458, // Evoli
-            4450, // Luxtra
-            7959, // Silvarro
-            6276, // Zoroark
-            8190, // Wolwerock
-            9048, // Krarmor
-            3625, // Libelldra
-            6980, // Trikephalo
-            2789, // Gewaldro
-            2822, // Lohgock
-            9587  // Snomnom
+        private val NAME_IDS_OF_TOP_30_POKEMON_2020 = listOf(
+            658, // Quajutsu
+            448, // Lucario
+            778, // Mimigma
+            6,   // Glurak
+            197, // Nachtara
+            700, // Feelinara
+            445, // Knakrack
+            384, // Rayquaza
+            282, // Guardevoir
+            94,  // Gengar
+            887, // Katapuldra
+            248, // Despotar
+            1,   // Bisasam
+            849, // Riffex
+            249, // Lugia
+            722, // Bauz
+            681, // Durengard
+            609, // Skelabra
+            25,  // Pikachu
+            133, // Evoli
+            405, // Luxtra
+            724, // Silvarro
+            571, // Zoroark
+            745, // Wolwerock
+            823, // Krarmor
+            330, // Libelldra
+            635, // Trikephalo
+            254, // Gewaldro
+            257, // Lohgock
+            872, // Snomnom
         )
     }
 
@@ -132,6 +133,36 @@ class RemoteRepository @Inject constructor(
         } catch (e: Exception) {
             if (e is CancellationException) {
                 throw e
+            }
+            Timber.e(e)
+            Result.Error(RepositoryError.DataMappingException)
+        }
+    }
+
+    suspend fun getPopularPokemon(): Result<List<Pokemon>, RepositoryError> {
+        return try {
+            val response = apolloClient
+                .query(PokemonListByIdsQuery(NAME_IDS_OF_TOP_30_POKEMON_2020))
+                .execute()
+            val exception = response.exception
+            if (exception != null) {
+                Timber.e(exception)
+                val apolloError = ApolloError.fromException(exception)
+                return Result.Error(RepositoryError.ApolloError(apolloError))
+            }
+            val responseData = response.dataAssertNoErrors
+            val pokemonByIds = responseData.pokemon.map { pokemon -> pokemon.pokemon_fragment }
+            val pokemon = pokemonByIds
+                .map(Pokemon::fromApolloPokemon)
+                .sortedWith(
+                    compareBy { pokemon ->
+                        NAME_IDS_OF_TOP_30_POKEMON_2020.indexOf(pokemon.id)
+                    }
+                )
+            return Result.Success(pokemon)
+        } catch (e: Exception) {
+            if (e is CancellationException) {
+                throw  e
             }
             Timber.e(e)
             Result.Error(RepositoryError.DataMappingException)

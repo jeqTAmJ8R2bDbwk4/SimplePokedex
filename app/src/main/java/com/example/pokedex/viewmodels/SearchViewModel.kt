@@ -1,5 +1,6 @@
 package com.example.pokedex.viewmodels
 
+import android.app.appsearch.SearchSuggestionResult
 import androidx.annotation.IntDef
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,6 +15,8 @@ import com.example.pokedex.repositories.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -33,11 +36,17 @@ import javax.inject.Inject
 class SearchViewModel @Inject constructor(val repository: Repository): ViewModel() {
     companion object {
         private val pokemonPlaceholder = (0 .. 6).map(AdapterItemPokemon::Placeholder)
+        private val popularPokemonPlaceholder = (0 .. 29).map(AdapterItemPokemon::Placeholder)
 
         private const val RECYCLER_VIEW = 0
         private const val EMPTY_QUERY_MESSAGE = 1
         private const val EMPTY_RESULT_MESSAGE = 2
         private const val ERROR_MESSAGE = 3
+    }
+
+    private sealed interface Helper {
+        data class History(val history: List<HistoryEntry>): Helper
+        data class Suggestion(val names: List<String>): Helper
     }
 
     private val _nameQuery = MutableStateFlow("")
@@ -52,8 +61,26 @@ class SearchViewModel @Inject constructor(val repository: Repository): ViewModel
         .distinctUntilChanged()
         .stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
-    private val _nameResults = MutableStateFlow<List<AdapterItemSearch>>(emptyList())
-    val nameResults = _nameResults.asStateFlow()
+    private val popularPokemon = MutableStateFlow<List<AdapterItemPokemon>>(popularPokemonPlaceholder)
+    private val helper = MutableStateFlow<Helper?>(null)
+    val nameResults = combine(helper, popularPokemon) { helper, popularPokemon ->
+        when (helper) {
+            null -> emptyList()
+            is Helper.History -> {
+                buildList<AdapterItemSearch> {
+                    addAll(helper.history.map(AdapterItemSearch::HistoryEntry))
+                    if (popularPokemon.isEmpty()) {
+                        return@buildList
+                    }
+                    add(AdapterItemSearch.PopularTitle)
+                    add(popularPokemon.let(AdapterItemSearch::Popular))
+                }
+            }
+            is Helper.Suggestion -> {
+                helper.names.map(AdapterItemSearch::Suggestion)
+            }
+        }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     private val _error = MutableStateFlow<RepositoryError?>(null)
     val error = _error.asStateFlow()
@@ -77,19 +104,22 @@ class SearchViewModel @Inject constructor(val repository: Repository): ViewModel
         viewModelScope.launch(Dispatchers.IO) {
             nameQuery.debounce(500L).collect { query ->
                 if (query.isEmpty()) {
-                    _nameResults.value = repository.getHistory().map(AdapterItemSearch::HistoryEntry)
+                    helper.value = repository.getHistory().let(Helper::History)
                     return@collect
                 }
-
                 val results = repository.getSuggestion(query)
-                _nameResults.value = when (results) {
-                    is Result.Success -> {
-                        results.data.map(AdapterItemSearch::Suggestion)
-                    }
-                    is Result.Error -> {
-                        emptyList()
-                    }
-                }
+                helper.value = when (results) {
+                    is Result.Success -> results.data
+                    is Result.Error -> emptyList()
+                }.let(Helper::Suggestion)
+            }
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = repository.getPopularPokemon()
+            popularPokemon.value = when (result) {
+                is Result.Error -> emptyList()
+                is Result.Success -> result.data.map(AdapterItemPokemon::Pokemon)
             }
         }
 
@@ -104,7 +134,7 @@ class SearchViewModel @Inject constructor(val repository: Repository): ViewModel
         val searchResultCompareBy = compareBy<Pokemon>(
             { pokemon -> !pokemon.getName().startsWith(query) },
             { pokemon -> !pokemon.getName().startsWith(query, ignoreCase = true)},
-            { pokemon -> !pokemon.getName().contains(query)},
+            { pokemon -> !pokemon.getName().contains(query) },
             { pokemon -> !pokemon.getName().contains(query) }
         )
 
