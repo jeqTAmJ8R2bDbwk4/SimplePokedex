@@ -69,6 +69,7 @@ coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose"
 commons-math3 = { module = "org.apache.commons:commons-math3", version.ref = "commonsMath3" }
 converter-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "converterMoshi" }
 converter-moshi-vlatestversion = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "converterMoshiVersion" }
+firebase-dynamic-links = { module = "com.google.firebase:firebase-dynamic-links" }
 flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "flexbox" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
@@ -91,6 +92,7 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 androidx-legacy-support-v4 = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "legacySupportV4" }
 moshi-kotlin = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "moshiKotlin" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+play-services-oss-licenses = { module = "com.google.android.gms:play-services-oss-licenses", version.ref = "playServicesOssLicenses" }
 preference-v7 = { module = "com.android.support:preference-v7", version.ref = "appcompatV7" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "converterMoshi" }
 shimmer = { module = "com.facebook.shimmer:shimmer", version.ref = "shimmer" }
