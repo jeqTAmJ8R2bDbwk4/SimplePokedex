@@ -1,10 +1,10 @@
-fragment pokemon_stats_range_fragment on pokemon_v2_pokemonstat_aggregate {
+fragment PokemonStatsRangeFragment on pokemon_v2_pokemonstat_aggregate {
     aggregate {
         max {
-            base_stat
+            baseStat: base_stat
         }
         min {
-            base_stat
+            baseStat: base_stat
         }
     }
 }

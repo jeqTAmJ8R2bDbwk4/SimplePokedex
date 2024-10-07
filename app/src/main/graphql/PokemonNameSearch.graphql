@@ -1,8 +1,8 @@
 query PokemonNameSearch($query: String) {
-    specy_names: pokemon_v2_pokemonspeciesname(where: {language_id: {_eq: 6}, name: {_ilike: $query}}) {
+    specyNames: pokemon_v2_pokemonspeciesname(where: {language_id: {_eq: 6}, name: {_ilike: $query}}) {
         name
     }
-    form_names: pokemon_v2_pokemonformname (where: {language_id: {_eq: 6}, pokemon_name: {_ilike: $query, _neq: ""}}) {
+    formNames: pokemon_v2_pokemonformname (where: {language_id: {_eq: 6}, pokemon_name: {_ilike: $query, _neq: ""}}) {
         name: pokemon_name
     }
 }

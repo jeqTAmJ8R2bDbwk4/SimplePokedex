@@ -1,7 +1,7 @@
-fragment pokemon_type_relation_fragment on pokemon_v2_type {
+fragment PokemonTypeRelationFragment on pokemon_v2_type {
     id
     efficacies: pokemon_v2_typeefficacies(where: {damage_factor: {_neq: 100}}) {
-        damage_factor
+        damageFactor: damage_factor
         target: pokemonV2TypeByTargetTypeId {
             id
         }

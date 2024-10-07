@@ -1,5 +1,5 @@
-fragment pokemon_stats_fragment on pokemon_v2_pokemonstat {
-    base_stat
+fragment PokemonStatsFragment on pokemon_v2_pokemonstat {
+    baseStat: base_stat
     stat: pokemon_v2_stat {
         name
         id

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
 import android.view.animation.Interpolator
+import androidx.activity.setViewTreeOnBackPressedDispatcherOwner
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -33,6 +34,7 @@ import com.example.pokedex.utils.errorToMessageResource
 import com.example.pokedex.utils.fragmentInsets
 import com.example.pokedex.utils.openLicenses
 import com.example.pokedex.utils.openSettings
+import com.example.pokedex.utils.setRootMenuListener
 import com.example.pokedex.viewmodels.SearchViewModel
 import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
@@ -135,10 +137,16 @@ class SearchFragment: Fragment() {
             val name = when(item) {
                 is AdapterItemSearch.Suggestion -> item.name
                 is AdapterItemSearch.HistoryEntry -> item.content.query
+                else -> return@setOnItemClickListener
             }
 
             viewModel.searchPokemon(name)
             binding.searchBar.setText(name)
+            binding.searchView.hide()
+        }
+        searchAdapter.setOnPopularPokemonItemClickListener { _, pokemon ->
+            viewModel.searchPokemon(pokemon.getName())
+            binding.searchBar.setText(pokemon.getName())
             binding.searchView.hide()
         }
         searchResultAdapter.setOnFavouriteListener { _, item, isChecked ->
@@ -162,7 +170,6 @@ class SearchFragment: Fragment() {
         }
 
         binding.rvSearch.adapter = searchAdapter
-        binding.rvSearch.setHasFixedSize(true)
         binding.rvSearch.itemAnimator = null
         binding.recyclerView.adapter = searchResultAdapter
         binding.recyclerView.setHasFixedSize(true)
@@ -259,27 +266,18 @@ class SearchFragment: Fragment() {
             return@setOnEditorActionListener false
         }
 
-        binding.searchBar.setOnMenuItemClickListener { menuItem ->
-            return@setOnMenuItemClickListener when (menuItem.itemId) {
-                R.id.settings -> {
-                    requireActivity().openSettings()
-                    true
-                }
-                R.id.licenses -> {
-                    requireActivity().openLicenses()
-                    true
-                }
-                else -> {
-                    Timber.e("Menu Item %s unknown.", menuItem.title)
-                    false
-                }
-            }
+
+        requireActivity().setRootMenuListener(binding.searchBar)
+        binding.searchBar.setNavigationOnClickListener {
+            viewModel.searchPokemon(binding.searchView.text.toString())
+            binding.searchBar.setText(binding.searchView.text)
         }
     }
 
     @OptIn(FlowPreview::class)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Timber.d("onViewCreated %s", SearchFragment::class.qualifiedName)
         postponeEnterTransition()
 
         setupInsets()

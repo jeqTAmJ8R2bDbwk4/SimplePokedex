@@ -1,13 +1,13 @@
-fragment pokemon_ability on pokemon_v2_pokemonability {
-    is_hidden
+fragment PokemonAbilityFragment on pokemon_v2_pokemonability {
+    isHidden: is_hidden
     ability: pokemon_v2_ability {
         id
         name
-        is_main_series
+        isMainSeries: is_main_series
         descriptions: pokemon_v2_abilityflavortexts(where: {language_id: {_eq: 6}}, order_by: {language_id:desc, version_group_id: desc}) {
             description: flavor_text
-            version_group_id
-            version_group: pokemon_v2_versiongroup {
+            versionGroupId: version_group_id
+            versionGroup: pokemon_v2_versiongroup {
                 id
                 name
                 versions: pokemon_v2_versions {

@@ -1,13 +1,13 @@
-fragment pokemon_specy_details_fragment on pokemon_v2_pokemonspecies {
-    ...pokemon_specy_fragment
-    evolution_chain: pokemon_v2_evolutionchain {
+fragment PokemonSpecyDetailsFragment on pokemon_v2_pokemonspecies {
+    ...PokemonSpecyFragment
+    evolutionChain: pokemon_v2_evolutionchain {
         species: pokemon_v2_pokemonspecies {
             pokemons: pokemon_v2_pokemons(where: {is_default: {_eq: true}}) {
-                ...pokemon_fragment
+                ...PokemonFragment
             }
         }
     }
     descriptions: pokemon_v2_pokemonspeciesflavortexts(where: {language_id: {_eq: 6}}, order_by: {version_id: desc}) {
-        ...pokemon_description_fragment
+        ...PokemonDescriptionFragment
     }
 }

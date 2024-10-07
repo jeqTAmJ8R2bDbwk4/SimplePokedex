@@ -1,0 +1,12 @@
+fragment PokemonMinimalFragment on pokemon_v2_pokemon {
+    id
+    forms: pokemon_v2_pokemonforms {
+        ...PokemonFormFragment
+    }
+    specy: pokemon_v2_pokemonspecy {
+        ...PokemonSpecyMinimalFragment
+    }
+    sprites: pokemon_v2_pokemonsprites(order_by: {id: asc}, limit: 1) {
+        ...PokemonSpriteFragment
+    }
+}

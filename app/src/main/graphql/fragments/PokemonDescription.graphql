@@ -1,4 +1,4 @@
-fragment pokemon_description_fragment on pokemon_v2_pokemonspeciesflavortext {
+fragment PokemonDescriptionFragment on pokemon_v2_pokemonspeciesflavortext {
     id
     description: flavor_text
     version: pokemon_v2_version {

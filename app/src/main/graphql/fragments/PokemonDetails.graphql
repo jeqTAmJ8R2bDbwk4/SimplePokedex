@@ -1,22 +1,22 @@
-fragment pokemon_details_fragment on pokemon_v2_pokemon {
+fragment PokemonDetailsFragment on pokemon_v2_pokemon {
     id: id
-    is_default
+    isDefault: is_default
     forms: pokemon_v2_pokemonforms(limit: 1) {
-        ...pokemon_form_fragment
+        ...PokemonFormFragment
     }
     sprites: pokemon_v2_pokemonsprites(order_by: {id: asc}, limit: 1) {
-        ...pokemon_sprite_fragment
+        ...PokemonSpriteFragment
     }
     specy: pokemon_v2_pokemonspecy {
-        ...pokemon_specy_details_fragment
+        ...PokemonSpecyDetailsFragment
     }
     types: pokemon_v2_pokemontypes(limit: 2) {
-        ...pokemon_types_fragment
+        ...PokemonTypesFragment
     }
     stats: pokemon_v2_pokemonstats(order_by: {pokemon_v2_stat: {id: asc}}) {
-        ...pokemon_stats_fragment
+        ...PokemonStatsFragment
     }
     abilities: pokemon_v2_pokemonabilities {
-        ...pokemon_ability
+        ...PokemonAbilityFragment
     }
 }

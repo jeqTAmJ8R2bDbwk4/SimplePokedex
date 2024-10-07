@@ -1,8 +1,8 @@
 package com.example.pokedex.models
 
-import com.example.pokedex.fragment.Pokemon_details_fragment as ApolloPokemon
-import com.example.pokedex.fragment.Pokemon_type_relation_fragment as ApolloTypeRelation
-import com.example.pokedex.fragment.Pokemon_stats_range_fragment as ApolloStatRange
+import com.example.pokedex.fragment.PokemonDetailsFragment as ApolloPokemon
+import com.example.pokedex.fragment.PokemonTypeRelationFragment as ApolloTypeRelation
+import com.example.pokedex.fragment.PokemonStatsRangeFragment as ApolloStatRange
 import com.example.pokedex.utils.NonEmpty
 import com.example.pokedex.utils.squeeze
 import com.example.pokedex.utils.validateNonEmpty
@@ -51,7 +51,13 @@ data class PokemonDetails(
 ) {
     init { validateNonEmpty() }
 
-    fun getName() = formLocalizedName.ifEmpty { specyLocalizedName.ifEmpty { formName.ifEmpty { specyName } } }
+    fun getName() = formLocalizedName.ifEmpty {
+        specyLocalizedName.ifEmpty {
+            formName.ifEmpty {
+                specyName
+            }
+        }
+    }
 
     companion object {
         @Throws(NullPointerException::class)
@@ -65,11 +71,15 @@ data class PokemonDetails(
             specialDefenseRange: ApolloStatRange,
             speedRange: ApolloStatRange
         ): PokemonDetails {
-            val specy = pokemon.specy!!.pokemon_specy_details_fragment
-            val types = pokemon.types.map { type -> type.pokemon_types_fragment.type!!.pokemon_type_fragment }
-            val baseStats = pokemon.stats.map { stat -> stat.pokemon_stats_fragment }
-            val form = pokemon.forms.first().pokemon_form_fragment
-            val descriptions = specy.descriptions.map { description -> description.pokemon_description_fragment }
+            val specy = pokemon.specy!!.pokemonSpecyDetailsFragment
+            val types = pokemon.types.map { type ->
+                type.pokemonTypesFragment.type!!.pokemonTypeFragment
+            }
+            val baseStats = pokemon.stats.map { stat -> stat.pokemonStatsFragment }
+            val form = pokemon.forms.first().pokemonFormFragment
+            val descriptions = specy.descriptions.map { description ->
+                description.pokemonDescriptionFragment
+            }
 
             val baseHP = baseStats.find { stat -> stat.stat!!.id == 1 }!!
             val baseAttack = baseStats.find { stat -> stat.stat!!.id == 2 }!!
@@ -89,11 +99,13 @@ data class PokemonDetails(
                             efficacy.target!!.let { type ->
                                 type.id
                             },
-                            Fraction(efficacy.damage_factor, 100)
+                            Fraction(efficacy.damageFactor, 100)
                         )
                     }
                 }
-                .filter { (_, targetTypeId, _) -> types.map { type -> type.id }.contains(targetTypeId) }
+                .filter { (_, targetTypeId, _) ->
+                    types.map { type -> type.id }.contains(targetTypeId)
+                }
                 .groupBy(Triple<Int, Int, Fraction>::first)
                 .mapValues { (_, triples) ->
                     triples.map(Triple<Int, Int, Fraction>::third).reduce(Fraction::multiply)
@@ -105,26 +117,26 @@ data class PokemonDetails(
                 .filterValues(List<Int>::isNotEmpty)
 
             return PokemonDetails(
-                minHP = hpRange.aggregate!!.min!!.base_stat!!,
-                maxHP = hpRange.aggregate.max!!.base_stat!!,
-                minAttack = attackRange.aggregate!!.min!!.base_stat!!,
-                maxAttack = attackRange.aggregate.max!!.base_stat!!,
-                minDefense = defenseRange.aggregate!!.min!!.base_stat!!,
-                maxDefense = defenseRange.aggregate.max!!.base_stat!!,
-                minSpecialAttack = specialAttackRange.aggregate!!.min!!.base_stat!!,
-                maxSpecialAttack = specialAttackRange.aggregate.max!!.base_stat!!,
-                minSpecialDefense = specialDefenseRange.aggregate!!.min!!.base_stat!!,
-                maxSpecialDefense = specialDefenseRange.aggregate.max!!.base_stat!!,
-                minSpeed = speedRange.aggregate!!.min!!.base_stat!!,
-                maxSpeed = speedRange.aggregate.max!!.base_stat!!,
+                minHP = hpRange.aggregate!!.min!!.baseStat!!,
+                maxHP = hpRange.aggregate.max!!.baseStat!!,
+                minAttack = attackRange.aggregate!!.min!!.baseStat!!,
+                maxAttack = attackRange.aggregate.max!!.baseStat!!,
+                minDefense = defenseRange.aggregate!!.min!!.baseStat!!,
+                maxDefense = defenseRange.aggregate.max!!.baseStat!!,
+                minSpecialAttack = specialAttackRange.aggregate!!.min!!.baseStat!!,
+                maxSpecialAttack = specialAttackRange.aggregate.max!!.baseStat!!,
+                minSpecialDefense = specialDefenseRange.aggregate!!.min!!.baseStat!!,
+                maxSpecialDefense = specialDefenseRange.aggregate.max!!.baseStat!!,
+                minSpeed = speedRange.aggregate!!.min!!.baseStat!!,
+                maxSpeed = speedRange.aggregate.max!!.baseStat!!,
 
                 id = pokemon.id,
-                baseHP = baseHP.base_stat,
-                baseAttack = baseAttack.base_stat,
-                baseDefense = baseDefense.base_stat,
-                baseSpecialAttack = baseSpecialAttack.base_stat,
-                baseSpecialDefense = baseSpecialDefense.base_stat,
-                baseSpeed = baseSpeed.base_stat,
+                baseHP = baseHP.baseStat,
+                baseAttack = baseAttack.baseStat,
+                baseDefense = baseDefense.baseStat,
+                baseSpecialAttack = baseSpecialAttack.baseStat,
+                baseSpecialDefense = baseSpecialDefense.baseStat,
+                baseSpeed = baseSpeed.baseStat,
 
                 primaryType = Type(
                     id = primaryType.id,
@@ -141,41 +153,70 @@ data class PokemonDetails(
                 formName = form.name,
                 formLocalizedName = form.names.firstOrNull()?.name.orEmpty(),
 
-                specyId = specy.pokemon_specy_fragment.id,
-                specyName = specy.pokemon_specy_fragment.name,
-                specyLocalizedName = specy.pokemon_specy_fragment.names.firstOrNull()?.name.orEmpty(),
+                specyId = specy.pokemonSpecyFragment.id,
+                specyName = specy.pokemonSpecyFragment.name,
+                specyLocalizedName = specy
+                    .pokemonSpecyFragment
+                    .names
+                    .firstOrNull()
+                    ?.name
+                    .orEmpty(),
                 specyDescriptions = descriptions.map { description ->
                     Description(
                         gameVersionName = description.version!!.name,
-                        localizedGameVersionName = description.version.names.firstOrNull()?.name.orEmpty(),
+                        localizedGameVersionName = description
+                            .version
+                            .names
+                            .firstOrNull()
+                            ?.name
+                            .orEmpty(),
                         description = description.description.replace('\n', ' ')
                     )
                 },
 
                 abilities = pokemon.abilities.map { ability ->
                     Ability(
-                        id = ability.pokemon_ability.ability!!.id,
-                        name = ability.pokemon_ability.ability.name,
-                        localizedName = ability.pokemon_ability.ability.names.firstOrNull()?.name.orEmpty(),
-                        isHidden = ability.pokemon_ability.is_hidden,
-                        descriptions = ability.pokemon_ability.ability.descriptions.map { description ->
-                            AbilityDescription(
-                                text = description.description.replace('\n', ' '),
-                                versionGroupId = description.version_group!!.id,
-                                versionGroup = description.version_group.versions.map { version ->
-                                    GameVersion(
-                                        id = version.id,
-                                        name = version.name,
-                                        localizedName = version.names.firstOrNull()?.name.orEmpty()
-                                    )
-                                }
-                            )
+                        id = ability.pokemonAbilityFragment.ability!!.id,
+                        name = ability.pokemonAbilityFragment.ability.name,
+                        localizedName = ability
+                            .pokemonAbilityFragment
+                            .ability
+                            .names
+                            .firstOrNull()
+                            ?.name
+                            .orEmpty(),
+                        isHidden = ability.pokemonAbilityFragment.isHidden,
+                        descriptions = ability
+                            .pokemonAbilityFragment
+                            .ability
+                            .descriptions
+                            .map { description ->
+                                AbilityDescription(
+                                    text = description.description.replace('\n', ' '),
+                                    versionGroupId = description.versionGroup!!.id,
+                                    versionGroup = description
+                                        .versionGroup
+                                        .versions
+                                        .map { version ->
+                                            GameVersion(
+                                                id = version.id,
+                                                name = version.name,
+                                                localizedName = version.names.firstOrNull()?.name.orEmpty()
+                                            )
+                                    }
+                                )
                         }
                     )
                 },
 
-                specyEvolutionChain = specy.evolution_chain!!.species.map { specy -> Pokemon.fromApolloPokemon(specy.pokemons.squeeze().pokemon_fragment) },
-                specyNationalPokedexNumber = specy.pokemon_specy_fragment.pokedex_numbers.squeeze().pokedex_number,
+                specyEvolutionChain = specy.evolutionChain!!.species.map { specy ->
+                    Pokemon.fromApolloPokemon(specy.pokemons.squeeze().pokemonFragment)
+                },
+                specyNationalPokedexNumber = specy
+                    .pokemonSpecyFragment
+                    .pokedex_numbers
+                    .squeeze()
+                    .pokedex_number,
                 typeWeekness = typeWeekness
             )
         }

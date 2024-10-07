@@ -45,7 +45,7 @@ class PokemonListPagingSource(
             val responseData = response.dataAssertNoErrors
             val count = responseData.count.aggregate!!.count
             val data = responseData.pokemon.map { pokemon ->
-                Pokemon.fromApolloPokemon(pokemon.pokemon_fragment)
+                Pokemon.fromApolloPokemon(pokemon.pokemonFragment)
             }
             RepositoryUtil.getLoadResult(count, offset, data)
         } catch (e: Exception) {

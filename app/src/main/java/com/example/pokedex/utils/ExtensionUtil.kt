@@ -10,6 +10,7 @@ import android.util.TypedValue
 import android.widget.TextView
 import androidx.annotation.AttrRes
 import androidx.annotation.DrawableRes
+import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.graphics.Insets
@@ -35,6 +36,7 @@ import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.memberProperties
 import com.example.pokedex.R
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
+import timber.log.Timber
 
 
 fun TextView.setLeftDrawable(@DrawableRes id: Int = 0) {
@@ -51,6 +53,25 @@ fun Activity.openSettings() {
 fun Activity.openLicenses() {
     OssLicensesMenuActivity.setActivityTitle(getString(R.string.menu_name_licenses))
     startActivity(Intent(this, OssLicensesMenuActivity::class.java))
+}
+
+fun Activity.setRootMenuListener(toolbar: Toolbar) {
+    toolbar.setOnMenuItemClickListener { menuItem ->
+        return@setOnMenuItemClickListener when (menuItem.itemId) {
+            R.id.settings -> {
+                openSettings()
+                true
+            }
+            R.id.licenses -> {
+                openLicenses()
+                true
+            }
+            else -> {
+                Timber.e("Menu Item %s unknown.", menuItem.title)
+                false
+            }
+        }
+    }
 }
 
 fun <T> List<T>.squeeze(): T {

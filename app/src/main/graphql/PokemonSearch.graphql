@@ -1,5 +1,5 @@
 query PokemonSearch($query: String = "Al%") {
-  pokemon_by_form_name: pokemon_v2_pokemon(
+  pokemonByFormName: pokemon_v2_pokemon(
     order_by: {pokemon_species_id: asc},
     where: {
       pokemon_v2_pokemonforms: {
@@ -10,10 +10,10 @@ query PokemonSearch($query: String = "Al%") {
       }
     }
   ) {
-    ...pokemon_fragment
+    ...PokemonFragment
   }
 
-  pokemon_by_specy_name: pokemon_v2_pokemon(
+  pokemonBySpecyName: pokemon_v2_pokemon(
     order_by: {pokemon_species_id: asc},
     where: {
       pokemon_v2_pokemonspecy: {
@@ -24,6 +24,6 @@ query PokemonSearch($query: String = "Al%") {
       }
     }
   ) {
-    ...pokemon_fragment
+    ...PokemonFragment
   }
 }

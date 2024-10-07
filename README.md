@@ -43,9 +43,9 @@ This project was created to demonstrate my ability to:
 
 ## Screenshots
 
-| Home Fragment                                   | Search Fragment                                     | Favourites Fragment                                         | Details Fragment                                      |
-|-------------------------------------------------|-----------------------------------------------------|-------------------------------------------------------------|-------------------------------------------------------|
-| ![Home Fragment](screenshots/home_fragment.png) | ![Search Fragment](screenshots/search_fragment.png) | ![Favourites Fragment](screenshots/favourites_fragment.png) | ![Details Fragment](screenshots/details_fragment.png) |
+| Home Fragment                                   | Search Fragment                                     | Search Fragment (Suggestions)                                  | Favourites Fragment                                         | Details Fragment                                      |
+|-------------------------------------------------|-----------------------------------------------------|----------------------------------------------------------------|-------------------------------------------------------------|-------------------------------------------------------|
+| ![Home Fragment](screenshots/home_fragment.png) | ![Search Fragment](screenshots/search_fragment.png) | ![Search Fragment](screenshots/search_fragment_suggestion.png) | ![Favourites Fragment](screenshots/favourites_fragment.png) | ![Details Fragment](screenshots/details_fragment.png) |
 
 ## Additional References
 - **Type Colors:** [bulbapedia.bulbagarden.net](https://bulbapedia.bulbagarden.net/wiki/Category:Type_color_templates)

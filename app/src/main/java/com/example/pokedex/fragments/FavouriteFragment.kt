@@ -32,6 +32,7 @@ import com.example.pokedex.utils.collectWithLifecycle
 import com.example.pokedex.utils.fragmentInsets
 import com.example.pokedex.utils.openLicenses
 import com.example.pokedex.utils.openSettings
+import com.example.pokedex.utils.setRootMenuListener
 import com.example.pokedex.viewmodels.FavouritesViewModel
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.transition.MaterialFadeThrough
@@ -95,22 +96,7 @@ class FavouriteFragment: Fragment() {
     }
 
     private fun setupAppBar() {
-        binding.toolbar.setOnMenuItemClickListener { menuItem ->
-            return@setOnMenuItemClickListener when (menuItem.itemId) {
-                R.id.settings -> {
-                    requireActivity().openSettings()
-                    true
-                }
-                R.id.licenses -> {
-                    requireActivity().openLicenses()
-                    true
-                }
-                else -> {
-                    Timber.e("Menu Item %s unknown.", menuItem.title)
-                    false
-                }
-            }
-        }
+        requireActivity().setRootMenuListener(binding.toolbar)
         binding.appBarLayout.setStatusBarForegroundColor(
             MaterialColors.getColor(binding.appBarLayout, R.attr.colorSurface)
         )

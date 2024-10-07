@@ -1,0 +1,5 @@
+query PokemonListByIds($pokemon_ids: [Int!]!) {
+  pokemon: pokemon_v2_pokemon(where: {id: {_in: $pokemon_ids}}) {
+    ...PokemonMinimalFragment
+  }
+}

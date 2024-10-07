@@ -4,7 +4,7 @@ import android.os.Parcelable
 import com.example.pokedex.utils.NonEmpty
 import com.example.pokedex.utils.validateNonEmpty
 import com.example.pokedex.room.views.CompletePokemon as RoomPokemon
-import com.example.pokedex.fragment.Pokemon_fragment as ApolloPokemon
+import com.example.pokedex.fragment.PokemonFragment as ApolloPokemon
 import kotlinx.parcelize.Parcelize
 
 
@@ -64,13 +64,13 @@ data class Pokemon(
 
         @Throws(NullPointerException::class)
         fun fromApolloPokemon(pokemon: ApolloPokemon): Pokemon {
-            val sprite = pokemon.sprites.firstOrNull()?.pokemon_sprite_fragment
-            val officialSprite = pokemon.official_sprites.firstOrNull()?.pokemon_official_sprite_fragment
-            val specy = pokemon.specy!!.pokemon_specy_fragment
-            val pokemonTypes = pokemon.types.map { type -> type.pokemon_types_fragment.type!!.pokemon_type_fragment }
+            val sprite = pokemon.sprites.firstOrNull()?.pokemonSpriteFragment
+            val officialSprite = pokemon.officialSprites.firstOrNull()?.pokemonOfficialSpriteFragment
+            val specy = pokemon.specy!!.pokemonSpecyFragment
+            val pokemonTypes = pokemon.types.map { type -> type.pokemonTypesFragment.type!!.pokemonTypeFragment }
             val primaryType = pokemonTypes.first()
             val secondaryType = pokemonTypes.getOrNull(1)
-            val form = pokemon.forms.firstOrNull()?.pokemon_form_fragment
+            val form = pokemon.forms.firstOrNull()?.pokemonFormFragment
 
             return Pokemon(
                 id = pokemon.id,
@@ -94,7 +94,7 @@ data class Pokemon(
                 },
                 formName = form?.name.orEmpty(),
                 formLocalizedName = form?.names?.firstOrNull()?.name.orEmpty(),
-                specyEvolvedFromSpecyId = specy.evolves_from_species_id
+                specyEvolvedFromSpecyId = specy.evolvesFromSpeciesId
             )
         }
     }

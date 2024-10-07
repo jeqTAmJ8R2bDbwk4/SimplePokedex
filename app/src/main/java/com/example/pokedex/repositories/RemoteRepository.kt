@@ -6,6 +6,7 @@ import androidx.paging.PagingConfig
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Optional
 import com.example.pokedex.PokemonDetailsQuery
+import com.example.pokedex.PokemonListByIdsQuery
 import com.example.pokedex.PokemonNameSearchQuery
 import com.example.pokedex.PokemonSearchQuery
 import com.example.pokedex.models.Ability
@@ -14,6 +15,7 @@ import com.example.pokedex.models.Pokemon
 import com.example.pokedex.models.Description
 import com.example.pokedex.models.GameVersion
 import com.example.pokedex.models.PokemonDetails
+import com.example.pokedex.models.PokemonMinimal
 import com.example.pokedex.models.Type
 import com.example.pokedex.models.errors.ApolloError
 import com.example.pokedex.models.errors.RepositoryError
@@ -31,37 +33,37 @@ class RemoteRepository @Inject constructor(
     private val apolloClient: ApolloClient,
 ) {
     companion object {
-        private val NAME_IDS_OF_TOP_30_POKEMON_2020 = intArrayOf(
-            7233, // Quajutsu
-            4923, // Lucario
-            8553, // Mimigma
-            61,   // Glurak
-            2162, // Nachtara
-            7695, // Feelinara
-            4890, // Knakrack
-            4219, // Rayquaza
-            3097, // Guardevoir
-            1029, // Gengar
-            9752, // Katapuldra
-            2723, // Despotar
-            6,    // Bisasam
-            9334, // Riffex
-            2734, // Lugia
-            7937, // Bauz
-            7486, // Durengard
-            6694, // Skelabra
-            270,  // Pikachu
-            1458, // Evoli
-            4450, // Luxtra
-            7959, // Silvarro
-            6276, // Zoroark
-            8190, // Wolwerock
-            9048, // Krarmor
-            3625, // Libelldra
-            6980, // Trikephalo
-            2789, // Gewaldro
-            2822, // Lohgock
-            9587  // Snomnom
+        private val NAME_IDS_OF_TOP_30_POKEMON_2020 = listOf(
+            658, // Quajutsu
+            448, // Lucario
+            778, // Mimigma
+            6,   // Glurak
+            197, // Nachtara
+            700, // Feelinara
+            445, // Knakrack
+            384, // Rayquaza
+            282, // Guardevoir
+            94,  // Gengar
+            887, // Katapuldra
+            248, // Despotar
+            1,   // Bisasam
+            849, // Riffex
+            249, // Lugia
+            722, // Bauz
+            681, // Durengard
+            609, // Skelabra
+            25,  // Pikachu
+            133, // Evoli
+            405, // Luxtra
+            724, // Silvarro
+            571, // Zoroark
+            745, // Wolwerock
+            823, // Krarmor
+            330, // Libelldra
+            635, // Trikephalo
+            254, // Gewaldro
+            257, // Lohgock
+            872, // Snomnom
         )
     }
 
@@ -91,8 +93,8 @@ class RemoteRepository @Inject constructor(
             }
             val responseData = response.dataAssertNoErrors
             val result = (
-                responseData.specy_names.asSequence().map { name -> name.name }
-                + responseData.form_names.asSequence().map { name -> name.name }
+                responseData.specyNames.asSequence().map { name -> name.name }
+                + responseData.formNames.asSequence().map { name -> name.name }
             ).toList()
             Result.Success(result)
         } catch (e: Exception) {
@@ -118,11 +120,11 @@ class RemoteRepository @Inject constructor(
                 return Result.Error(RepositoryError.ApolloError(apolloError))
             }
             val responseData = response.dataAssertNoErrors
-            val pokemonBySpecyName = responseData.pokemon_by_specy_name.map { pokemon ->
-                Pokemon.fromApolloPokemon(pokemon.pokemon_fragment)
+            val pokemonBySpecyName = responseData.pokemonBySpecyName.map { pokemon ->
+                Pokemon.fromApolloPokemon(pokemon.pokemonFragment)
             }
-            val pokemonByFormName = responseData.pokemon_by_form_name.map { pokemon ->
-                Pokemon.fromApolloPokemon(pokemon.pokemon_fragment)
+            val pokemonByFormName = responseData.pokemonByFormName.map { pokemon ->
+                Pokemon.fromApolloPokemon(pokemon.pokemonFragment)
             }
             val pokemon = (pokemonByFormName.asSequence() + pokemonBySpecyName.asSequence())
                 .distinctBy(Pokemon::id)
@@ -132,6 +134,36 @@ class RemoteRepository @Inject constructor(
         } catch (e: Exception) {
             if (e is CancellationException) {
                 throw e
+            }
+            Timber.e(e)
+            Result.Error(RepositoryError.DataMappingException)
+        }
+    }
+
+    suspend fun getPopularPokemon(): Result<List<PokemonMinimal>, RepositoryError> {
+        return try {
+            val response = apolloClient
+                .query(PokemonListByIdsQuery(NAME_IDS_OF_TOP_30_POKEMON_2020))
+                .execute()
+            val exception = response.exception
+            if (exception != null) {
+                Timber.e(exception)
+                val apolloError = ApolloError.fromException(exception)
+                return Result.Error(RepositoryError.ApolloError(apolloError))
+            }
+            val responseData = response.dataAssertNoErrors
+            val pokemonByIds = responseData.pokemon.map { pokemon -> pokemon.pokemonMinimalFragment }
+            val pokemon = pokemonByIds
+                .map(PokemonMinimal::fromApolloPokemon)
+                .sortedWith(
+                    compareBy { pokemon ->
+                        NAME_IDS_OF_TOP_30_POKEMON_2020.indexOf(pokemon.id)
+                    }
+                )
+            return Result.Success(pokemon)
+        } catch (e: Exception) {
+            if (e is CancellationException) {
+                throw  e
             }
             Timber.e(e)
             Result.Error(RepositoryError.DataMappingException)
@@ -151,14 +183,14 @@ class RemoteRepository @Inject constructor(
             }
             val responseData = response.dataAssertNoErrors
             val pokemonDetails = PokemonDetails.fromApolloPokemonDetails(
-                responseData.pokemon.first().pokemon_details_fragment,
-                responseData.type.map { typeRelation -> typeRelation.pokemon_type_relation_fragment },
-                responseData.range_hp.pokemon_stats_range_fragment,
-                responseData.range_attack.pokemon_stats_range_fragment,
-                responseData.range_defense.pokemon_stats_range_fragment,
-                responseData.range_sp_attack.pokemon_stats_range_fragment,
-                responseData.range_sp_defense.pokemon_stats_range_fragment,
-                responseData.range_speed.pokemon_stats_range_fragment
+                responseData.pokemon.first().pokemonDetailsFragment,
+                responseData.type.map { typeRelation -> typeRelation.pokemonTypeRelationFragment },
+                responseData.range_hp.pokemonStatsRangeFragment,
+                responseData.range_attack.pokemonStatsRangeFragment,
+                responseData.range_defense.pokemonStatsRangeFragment,
+                responseData.range_sp_attack.pokemonStatsRangeFragment,
+                responseData.range_sp_defense.pokemonStatsRangeFragment,
+                responseData.range_speed.pokemonStatsRangeFragment
             )
             Result.Success(pokemonDetails)
         } catch (e: Exception) {
