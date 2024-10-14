@@ -1,12 +1,12 @@
 package com.example.pokedex.models
 
-import com.example.pokedex.fragment.PokemonDetailsFragment as ApolloPokemon
-import com.example.pokedex.fragment.PokemonTypeRelationFragment as ApolloTypeRelation
-import com.example.pokedex.fragment.PokemonStatsRangeFragment as ApolloStatRange
 import com.example.pokedex.utils.NonEmpty
 import com.example.pokedex.utils.squeeze
 import com.example.pokedex.utils.validateNonEmpty
 import org.apache.commons.math3.fraction.Fraction
+import com.example.pokedex.fragment.PokemonDetailsFragment as ApolloPokemon
+import com.example.pokedex.fragment.PokemonStatsRangeFragment as ApolloStatRange
+import com.example.pokedex.fragment.PokemonTypeRelationFragment as ApolloTypeRelation
 
 data class PokemonDetails(
     // General

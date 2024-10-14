@@ -5,22 +5,19 @@ import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton
 import androidx.annotation.IntDef
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import coil.imageLoader
-import coil.request.Disposable
 import coil.request.ImageRequest
 import com.example.pokedex.R
-import com.example.pokedex.adapters.models.AdapterItemSearch
-import com.example.pokedex.adapters.utils.OnItemClickListener
-import com.example.pokedex.adapters.utils.ViewHolderBinder
 import com.example.pokedex.databinding.AdapterItemFavouriteBinding
 import com.example.pokedex.models.Pokemon
+import com.example.pokedex.utils.OnItemClickListener
 import com.example.pokedex.utils.ResourceUtil.getAttrResFromTypeId
 import com.example.pokedex.utils.ResourceUtil.getDrawableResourceFromTypeId
+import com.example.pokedex.utils.ViewHolderBinder
 import com.example.pokedex.utils.context
 import com.example.pokedex.utils.formatPokedexNumber
 import com.google.android.material.color.MaterialColors
@@ -61,8 +58,6 @@ class FavouriteAdapter: BaseAdapter<Pokemon>(diffCallback) {
     private inner class PokemonViewHolder(
         val binding: AdapterItemFavouriteBinding
     ) : RecyclerView.ViewHolder(binding.root), ViewHolderBinder<Pokemon> {
-        private var requestDisposable: Disposable? = null
-
         private val onClickListener = View.OnClickListener {
             val item = getItem(absoluteAdapterPosition) ?: return@OnClickListener
             onItemClickListener?.onClick(itemView, item)
@@ -90,9 +85,6 @@ class FavouriteAdapter: BaseAdapter<Pokemon>(diffCallback) {
                 binding.ivSecondaryType.visibility = View.VISIBLE
                 binding.sPrimaryType.visibility = View.VISIBLE
             }
-
-            requestDisposable?.dispose()
-
             val imageLoader = context.imageLoader
             val request = ImageRequest.Builder(context)
                 .data(item.spriteUrl)
@@ -100,12 +92,11 @@ class FavouriteAdapter: BaseAdapter<Pokemon>(diffCallback) {
                 .bitmapConfig(Bitmap.Config.ARGB_8888)
                 .error(R.drawable.pokemon_sprite_not_found)
                 .build()
-            requestDisposable =  imageLoader.enqueue(request)
+            imageLoader.enqueue(request)
         }
 
         override fun detach() {
             super.detach()
-            requestDisposable?.dispose()
             binding.linearLayout.setOnClickListener(null)
         }
 

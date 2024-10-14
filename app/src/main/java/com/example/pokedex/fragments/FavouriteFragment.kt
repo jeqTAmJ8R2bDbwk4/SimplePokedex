@@ -21,18 +21,16 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
+import com.example.pokedex.NavGraphDirections
 import com.example.pokedex.R
 import com.example.pokedex.adapters.FavouriteAdapter
 import com.example.pokedex.databinding.FragmentFavouriteBinding
-import com.example.pokedex.adapters.utils.FavouriteItemTouchHelperCallback
 import com.example.pokedex.models.Pokemon
 import com.example.pokedex.models.PokemonDetailsTransition
+import com.example.pokedex.utils.FavouriteItemTouchHelperCallback
 import com.example.pokedex.utils.MotionUtil
 import com.example.pokedex.utils.collectWithLifecycle
 import com.example.pokedex.utils.fragmentInsets
-import com.example.pokedex.utils.openLicenses
-import com.example.pokedex.utils.openSettings
-import com.example.pokedex.utils.setRootMenuListener
 import com.example.pokedex.viewmodels.FavouritesViewModel
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.transition.MaterialFadeThrough
@@ -96,7 +94,23 @@ class FavouriteFragment: Fragment() {
     }
 
     private fun setupAppBar() {
-        requireActivity().setRootMenuListener(binding.toolbar)
+        binding.toolbar.setOnMenuItemClickListener { menuItem ->
+            val navController = findNavController()
+            return@setOnMenuItemClickListener when (menuItem.itemId) {
+                R.id.settings -> {
+                    if (navController.currentDestination?.id != R.id.favourite_fragment) {
+                        return@setOnMenuItemClickListener false
+                    }
+                    findNavController().navigate(NavGraphDirections.actionGlobalSettingsFragment())
+                    true
+                }
+                else -> {
+                    Timber.e("Menu Item %s unknown.", menuItem.title)
+                    assert(false)
+                    false
+                }
+            }
+        }
         binding.appBarLayout.setStatusBarForegroundColor(
             MaterialColors.getColor(binding.appBarLayout, R.attr.colorSurface)
         )
@@ -139,7 +153,7 @@ class FavouriteFragment: Fragment() {
             }
 
             val transitionName = adapter.getTransitionName(requireContext(), pokemon.id)
-            val action = FavouriteFragmentDirections.favouriteFragmentToDetailsFragment(
+            val action = FavouriteFragmentDirections.toPokemonDetailsFragment(
                 PokemonDetailsTransition(transitionName, pokemon)
             )
             val extras = FragmentNavigatorExtras(

@@ -1,6 +1,5 @@
 package com.example.pokedex.models
 
-import android.content.Context
 import android.os.Parcelable
 import com.example.pokedex.utils.NonEmpty
 import com.example.pokedex.utils.validateNonEmpty

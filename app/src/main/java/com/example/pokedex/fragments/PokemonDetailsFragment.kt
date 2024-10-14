@@ -2,11 +2,8 @@ package com.example.pokedex.fragments
 
 import android.animation.AnimatorInflater
 import android.animation.ObjectAnimator
-import android.database.sqlite.SQLiteBindOrColumnIndexOutOfRangeException
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +11,6 @@ import android.view.animation.AlphaAnimation
 import android.view.animation.Interpolator
 import android.widget.CompoundButton
 import android.widget.FrameLayout
-import androidx.activity.OnBackPressedCallback
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.constraintlayout.motion.widget.MotionScene
@@ -27,10 +23,8 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -46,39 +40,32 @@ import com.example.pokedex.adapters.EvolutionAdapter
 import com.example.pokedex.adapters.TypeAdapter
 import com.example.pokedex.databinding.FragmentPokemonDetailsBinding
 import com.example.pokedex.databinding.RecyclerViewBinding
-import com.example.pokedex.models.Pokemon
-import com.example.pokedex.models.State
-import com.example.pokedex.adapters.utils.LinearLayoutSpacingDecorator
-import com.example.pokedex.applications.App
 import com.example.pokedex.models.PokemonDetails
 import com.example.pokedex.models.PokemonDetailsTransition
+import com.example.pokedex.models.State
+import com.example.pokedex.utils.LinearLayoutSpacingDecorator
 import com.example.pokedex.utils.MotionUtil
 import com.example.pokedex.utils.ResourceUtil
 import com.example.pokedex.utils.ResourceUtil.getAttrResFromTypeId
 import com.example.pokedex.utils.ResourceUtil.getDrawableResourceFromTypeId
 import com.example.pokedex.utils.collectWithLifecycle
+import com.example.pokedex.utils.errorToMessageResource
 import com.example.pokedex.utils.fragmentInsets
 import com.example.pokedex.utils.resolveAttribute
 import com.example.pokedex.utils.setLeftDrawable
 import com.example.pokedex.viewmodels.PokemonDetailsViewModel
-import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.appbar.AppBarLayout.LayoutParams.ScrollFlags
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.divider.MaterialDividerItemDecoration
 import com.google.android.material.tabs.TabLayoutMediator
-import com.google.android.material.transition.Hold
 import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import org.apache.commons.math3.fraction.Fraction
 import timber.log.Timber
-import java.util.concurrent.TimeUnit
-import kotlin.time.Duration.Companion.milliseconds
 
 
 @AndroidEntryPoint
@@ -224,7 +211,7 @@ class PokemonDetailsFragment : Fragment() {
             }
 
             val transitionName = adapterEvolution.getTransitionName(requireContext(), evolutionChainEntry.id)
-            val action = PokemonDetailsFragmentDirections.pokemonDefailsFragmentToPokemonDetailsFragment(
+            val action = PokemonDetailsFragmentDirections.toPokemonDetailsFragment(
                 PokemonDetailsTransition(transitionName, evolutionChainEntry.content)
             )
             Timber.d("TransitionName: %s", transitionName)
@@ -324,6 +311,11 @@ class PokemonDetailsFragment : Fragment() {
     }
 
     private fun setupInsets() {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.iErrorMessage.llMessage) { linearLayout, insets ->
+            val combinedInsets = insets.fragmentInsets()
+            linearLayout.setPadding(windowSpacingHorizontal + combinedInsets.left,  0, windowSpacingHorizontal + combinedInsets.right, 0)
+            return@setOnApplyWindowInsetsListener WindowInsetsCompat.CONSUMED
+        }
         ViewCompat.setOnApplyWindowInsetsListener(binding.appBarLayout) { _, insets ->
             val systemBarInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             val combinedInsets = insets.fragmentInsets()
@@ -397,6 +389,9 @@ class PokemonDetailsFragment : Fragment() {
                 }
             }
         }
+        viewModel.error.filterNotNull().collectWithLifecycle(viewLifecycleOwner, Dispatchers.Main) { error ->
+            binding.iErrorMessage.tvMessageBody.setText(errorToMessageResource(error))
+        }
         viewModel.displayedChild.collectWithLifecycle(viewLifecycleOwner, Dispatchers.Main, binding.viewFlipper::setDisplayedChild)
         viewModel.abilities.collectWithLifecycle(viewLifecycleOwner, Dispatchers.Main, adapterAbility::submitData)
         viewModel.weeknessQuater.collectWithLifecycle(viewLifecycleOwner, Dispatchers.Main, adapterWeeknessQuater::submitData)
@@ -464,6 +459,7 @@ class PokemonDetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         postponeEnterTransition()
 
+        setupMessages()
         setupTransitionName()
         setupAppBar()
         setupRecyclerViews()

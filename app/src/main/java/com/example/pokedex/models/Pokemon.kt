@@ -3,9 +3,9 @@ package com.example.pokedex.models
 import android.os.Parcelable
 import com.example.pokedex.utils.NonEmpty
 import com.example.pokedex.utils.validateNonEmpty
-import com.example.pokedex.room.views.CompletePokemon as RoomPokemon
-import com.example.pokedex.fragment.PokemonFragment as ApolloPokemon
 import kotlinx.parcelize.Parcelize
+import com.example.pokedex.fragment.PokemonFragment as ApolloPokemon
+import com.example.pokedex.room.views.CompletePokemon as RoomPokemon
 
 
 @Parcelize

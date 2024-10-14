@@ -1,4 +1,4 @@
-query PokemonListPage($limit: Int, $offset: Int) {
+query PokemonListPage($limit: Int!, $offset: Int!) {
   count: pokemon_v2_pokemon_aggregate(where: {is_default: {_eq: true}}) {
     aggregate {
       count

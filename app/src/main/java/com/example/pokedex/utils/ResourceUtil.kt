@@ -1,11 +1,8 @@
 package com.example.pokedex.utils
 
-import android.content.Context
 import androidx.annotation.AttrRes
-import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import com.example.pokedex.R
-import com.google.android.material.color.MaterialColors
 
 object ResourceUtil {
     // Drawable source: https://github.com/duiker101/pokemon-type-svg-icons/tree/master

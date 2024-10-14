@@ -4,9 +4,7 @@ import android.animation.AnimatorInflater
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.ShapeDrawable
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.IntDef
 import androidx.annotation.StringRes
@@ -15,13 +13,13 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.pokedex.R
-import com.example.pokedex.adapters.utils.ViewHolderBinder
+import com.example.pokedex.adapters.models.AdapterItemType
 import com.example.pokedex.databinding.AdapterItemTypeBinding
 import com.example.pokedex.databinding.AdapterItemTypeMultiplierBinding
 import com.example.pokedex.databinding.AdapterItemTypePlaceholderBinding
-import com.example.pokedex.adapters.models.AdapterItemType
 import com.example.pokedex.utils.ResourceUtil.getAttrResFromTypeId
 import com.example.pokedex.utils.ResourceUtil.getDrawableResourceFromTypeId
+import com.example.pokedex.utils.ViewHolderBinder
 import com.google.android.material.color.MaterialColors
 
 private val diffCallback = object : DiffUtil.ItemCallback<AdapterItemType>() {
@@ -65,7 +63,8 @@ class TypeAdapter: BaseAdapter<AdapterItemType>(diffCallback) {
         }
     }
 
-    class TypeViewHolder(private val binding: AdapterItemTypeBinding): ViewHolder(binding.root), ViewHolderBinder<AdapterItemType.Type> {
+    class TypeViewHolder(private val binding: AdapterItemTypeBinding): ViewHolder(binding.root),
+        ViewHolderBinder<AdapterItemType.Type> {
         override fun bind(item: AdapterItemType.Type, position: Int) {
             val context = binding.root.context
             val drawableResource = getDrawableResourceFromTypeId(item.id)
@@ -78,7 +77,8 @@ class TypeAdapter: BaseAdapter<AdapterItemType>(diffCallback) {
             binding.ivType.background = backgroundDrawable
         }
     }
-    class PlaceholderViewHolder(val binding: AdapterItemTypePlaceholderBinding): ViewHolder(binding.root), ViewHolderBinder<AdapterItemType.Placeholder> {
+    class PlaceholderViewHolder(val binding: AdapterItemTypePlaceholderBinding): ViewHolder(binding.root),
+        ViewHolderBinder<AdapterItemType.Placeholder> {
         private val animator = AnimatorInflater
             .loadAnimator(binding.root.context, R.animator.pulsing_animator)
                 as ObjectAnimator
@@ -94,7 +94,8 @@ class TypeAdapter: BaseAdapter<AdapterItemType>(diffCallback) {
             animator.setTarget(null)
         }
     }
-    class MultiplierViewHolder(private val binding: AdapterItemTypeMultiplierBinding): ViewHolder(binding.root), ViewHolderBinder<AdapterItemType.Multiplier> {
+    class MultiplierViewHolder(private val binding: AdapterItemTypeMultiplierBinding): ViewHolder(binding.root),
+        ViewHolderBinder<AdapterItemType.Multiplier> {
         override fun bind(item: AdapterItemType.Multiplier, position: Int) {
             @StringRes val textResource = when(item) {
                 is AdapterItemType.Half -> {

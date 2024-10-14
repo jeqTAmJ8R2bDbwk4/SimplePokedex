@@ -1,28 +1,17 @@
 package com.example.pokedex.repositories
 
 
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
 import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.api.Optional
 import com.example.pokedex.PokemonDetailsQuery
 import com.example.pokedex.PokemonListByIdsQuery
 import com.example.pokedex.PokemonNameSearchQuery
 import com.example.pokedex.PokemonSearchQuery
-import com.example.pokedex.models.Ability
-import com.example.pokedex.models.AbilityDescription
 import com.example.pokedex.models.Pokemon
-import com.example.pokedex.models.Description
-import com.example.pokedex.models.GameVersion
 import com.example.pokedex.models.PokemonDetails
 import com.example.pokedex.models.PokemonMinimal
-import com.example.pokedex.models.Type
 import com.example.pokedex.models.errors.ApolloError
 import com.example.pokedex.models.errors.RepositoryError
-import com.example.pokedex.paging.PokemonListPagingSource
-import com.example.pokedex.utils.squeeze
 import kotlinx.coroutines.CancellationException
-import org.apache.commons.math3.fraction.Fraction
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -67,23 +56,13 @@ class RemoteRepository @Inject constructor(
         )
     }
 
-    fun getAllPokemon(): Pager<Int, Pokemon> {
-        return Pager(
-            config = PagingConfig(
-                pageSize = 20,
-                enablePlaceholders = true
-            ),
-            pagingSourceFactory = { PokemonListPagingSource(apolloClient) }
-        )
-    }
-
     suspend fun getSuggestion(query: String): Result<List<String>, RepositoryError> {
         return try {
             require(!query.contains("%"))
             require(query == query.trim())
 
             val response = apolloClient
-                .query(PokemonNameSearchQuery(Optional.present(query+"%")))
+                .query(PokemonNameSearchQuery(query+"%"))
                 .execute()
             val exception = response.exception
             if (exception != null) {
@@ -102,6 +81,7 @@ class RemoteRepository @Inject constructor(
                 throw e
             }
             Timber.e(e)
+            assert(false)
             Result.Error(RepositoryError.DataMappingException)
         }
     }
@@ -111,7 +91,7 @@ class RemoteRepository @Inject constructor(
             require(!query.contains("%"))
             require(query.trim() == query)
             val response = apolloClient
-                .query(PokemonSearchQuery(Optional.present("%"+query+"%")))
+                .query(PokemonSearchQuery("%"+query+"%"))
                 .execute()
             val exception = response.exception
             if (exception != null) {
@@ -136,6 +116,7 @@ class RemoteRepository @Inject constructor(
                 throw e
             }
             Timber.e(e)
+            assert(false)
             Result.Error(RepositoryError.DataMappingException)
         }
     }
@@ -166,6 +147,7 @@ class RemoteRepository @Inject constructor(
                 throw  e
             }
             Timber.e(e)
+            assert(false)
             Result.Error(RepositoryError.DataMappingException)
         }
     }
@@ -173,7 +155,7 @@ class RemoteRepository @Inject constructor(
     suspend fun getPokemonDetails(id: Int): Result<PokemonDetails, RepositoryError> {
         return try {
             val response = apolloClient
-                .query(PokemonDetailsQuery(Optional.present(id)))
+                .query(PokemonDetailsQuery(id))
                 .execute()
             val exception = response.exception
             if (exception != null) {
@@ -198,6 +180,7 @@ class RemoteRepository @Inject constructor(
                 throw e
             }
             Timber.e(e)
+            assert(false)
             Result.Error(RepositoryError.DataMappingException)
         }
     }

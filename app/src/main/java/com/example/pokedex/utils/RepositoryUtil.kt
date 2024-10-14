@@ -1,6 +1,5 @@
 package com.example.pokedex.utils
 
-import androidx.annotation.IntDef
 import androidx.paging.PagingSource
 import java.util.Locale
 import kotlin.math.max

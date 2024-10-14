@@ -4,8 +4,6 @@ import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.network.okHttpClient
 import com.example.pokedex.BuildConfig
 import com.example.pokedex.utils.DelayInterceptor
-import com.example.pokedex.utils.HttpResponseInterceptor
-import com.example.pokedex.utils.HttpStatusCode
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,15 +14,13 @@ import timber.log.Timber
 import javax.inject.Singleton
 
 
-
 @Module
 @InstallIn(SingletonComponent::class)
 object ApolloModule {
-    private const val SIMULATED_DELAY = 2000L
+    private const val SIMULATED_DELAY = 1000L
 
     private val loggingInterceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
     private val delayInterceptor = DelayInterceptor(SIMULATED_DELAY)
-    private val notFoundInterceptor = HttpResponseInterceptor(HttpStatusCode.NotFound)
 
 
     @Singleton

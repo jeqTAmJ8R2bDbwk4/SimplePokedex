@@ -92,5 +92,5 @@ data class CompletePokemon(
     val secondaryTypeName: String?,
 
     @ColumnInfo(name = "secondary_type_localized_name")
-    val secondaryTypeLocalizedName: String?,
+    val secondaryTypeLocalizedName: String?
 )

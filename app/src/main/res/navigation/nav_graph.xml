@@ -5,6 +5,15 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/home_graph">
 
+    <fragment
+        android:id="@+id/settings_fragment"
+        tools:layout="@layout/fragment_parent_settings"
+        android:name="com.example.pokedex.fragments.ParentSettingsFragment"
+        android:label="SettingsFragment"/>
+    <action
+        android:id="@+id/action_global_settingsFragment"
+        app:destination="@id/settings_fragment" />
+
     <include app:graph="@navigation/favourite_graph"/>
     <include app:graph="@navigation/home_graph"/>
     <include app:graph="@navigation/search_graph"/>

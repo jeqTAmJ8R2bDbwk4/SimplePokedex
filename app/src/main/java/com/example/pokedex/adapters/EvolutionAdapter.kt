@@ -11,16 +11,14 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import coil.imageLoader
-import coil.request.Disposable
 import coil.request.ImageRequest
 import com.example.pokedex.R
-import com.example.pokedex.adapters.utils.ViewHolderBinder
+import com.example.pokedex.adapters.models.AdapterItemEvolutionChainEdge
 import com.example.pokedex.databinding.AdapterItemEvolutionBinding
 import com.example.pokedex.databinding.AdapterItemEvolutionPlaceholderBinding
-import com.example.pokedex.adapters.models.AdapterItemEvolutionChainEdge
-import com.example.pokedex.adapters.utils.OnItemClickListener
 import com.example.pokedex.models.EvolutionChainEntry
-import com.example.pokedex.models.Pokemon
+import com.example.pokedex.utils.OnItemClickListener
+import com.example.pokedex.utils.ViewHolderBinder
 import java.util.UUID
 
 
@@ -69,10 +67,8 @@ class EvolutionAdapter: BaseAdapter<AdapterItemEvolutionChainEdge>(diffCallback)
 
     inner class EvolutionViewHolder(
         private val binding: AdapterItemEvolutionBinding
-    ): ViewHolder(binding.root), ViewHolderBinder<AdapterItemEvolutionChainEdge.EvolutionChainEdge> {
-        var requestBaseDisposable: Disposable? = null
-        var requestEvolutionDisposable: Disposable? = null
-
+    ): ViewHolder(binding.root),
+        ViewHolderBinder<AdapterItemEvolutionChainEdge.EvolutionChainEdge> {
         private val onBaseClickListener = View.OnClickListener {
             val position = bindingAdapterPosition
             if (position == RecyclerView.NO_POSITION) return@OnClickListener
@@ -110,11 +106,8 @@ class EvolutionAdapter: BaseAdapter<AdapterItemEvolutionChainEdge>(diffCallback)
                 .build()
             binding.llBase.transitionName = getTransitionName(context, item.base.id)
             binding.llEvolution.transitionName = getTransitionName(context, item.evolution.id)
-            requestBaseDisposable?.dispose()
-            requestEvolutionDisposable?.dispose()
-
-            requestBaseDisposable = imageLoader.enqueue(requestBase)
-            requestEvolutionDisposable = imageLoader.enqueue(requestEvolution)
+            imageLoader.enqueue(requestBase)
+            imageLoader.enqueue(requestEvolution)
 
             binding.llBase.setOnClickListener(onBaseClickListener)
             binding.llEvolution.setOnClickListener(onEvolutionClickListener)
@@ -128,9 +121,6 @@ class EvolutionAdapter: BaseAdapter<AdapterItemEvolutionChainEdge>(diffCallback)
 
         override fun detach() {
             super.detach()
-            requestBaseDisposable?.dispose()
-            requestEvolutionDisposable?.dispose()
-
             binding.llBase.setOnClickListener(null)
             binding.llEvolution.setOnClickListener(null)
         }

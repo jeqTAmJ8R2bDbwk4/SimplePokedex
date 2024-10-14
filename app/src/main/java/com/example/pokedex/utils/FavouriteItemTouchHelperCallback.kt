@@ -1,4 +1,4 @@
-package com.example.pokedex.adapters.utils
+package com.example.pokedex.utils
 
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -35,15 +35,18 @@ class FavouriteItemTouchHelperCallback: ItemTouchHelper.SimpleCallback(
         val targetPosition = target.bindingAdapterPosition
         if (sourcePosition == RecyclerView.NO_POSITION) {
             Timber.e("Source position is NO_POSITION.")
+            assert(false)
             return false
         }
         if (targetPosition == RecyclerView.NO_POSITION) {
             Timber.e("Target position is NO_POSITION.")
+            assert(false)
             return false
         }
 
         if (sourcePosition == targetPosition) {
             Timber.e("Source and target position are the same.")
+            assert(false)
             return false
         }
 
@@ -55,6 +58,7 @@ class FavouriteItemTouchHelperCallback: ItemTouchHelper.SimpleCallback(
         val position = viewHolder.absoluteAdapterPosition
         if (position == RecyclerView.NO_POSITION) {
             Timber.e("Position is NO_POSITION.")
+            assert(false)
             return
         }
 

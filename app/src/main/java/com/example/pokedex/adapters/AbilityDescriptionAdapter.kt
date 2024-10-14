@@ -5,9 +5,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.pokedex.R
-import com.example.pokedex.adapters.utils.ViewHolderBinder
 import com.example.pokedex.databinding.AdapterItemAbilityDescriptionBinding
 import com.example.pokedex.models.AbilityDescription
+import com.example.pokedex.utils.ViewHolderBinder
 import com.example.pokedex.utils.context
 
 

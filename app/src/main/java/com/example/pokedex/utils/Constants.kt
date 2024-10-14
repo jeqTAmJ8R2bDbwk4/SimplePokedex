@@ -1,7 +1,5 @@
 package com.example.pokedex.utils
 
-import androidx.annotation.IntDef
-import androidx.annotation.StringDef
 import androidx.core.graphics.Insets
 import org.apache.commons.math3.fraction.Fraction
 
@@ -18,6 +16,3 @@ const val ENGLISH_LANGUAGE_ID = 9
 
 const val ENGLISH_LANGUAGE_CODE = "en"
 const val GERMAN_LENGUAGE_CODE = "de"
-
-const val ALL_LIST_ID = 0
-const val FAVOURITE_LIST_ID = 1

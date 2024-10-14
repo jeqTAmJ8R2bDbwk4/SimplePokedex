@@ -1,8 +1,7 @@
-package com.example.pokedex.adapters.utils
+package com.example.pokedex.utils
 
 import android.graphics.Rect
 import android.view.View
-import androidx.core.view.size
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
@@ -19,6 +18,7 @@ class LinearLayoutSpacingDecorator(private val spacePx: Int): ItemDecoration() {
         val layoutManager = parent.layoutManager as? LinearLayoutManager
         if (layoutManager == null) {
             Timber.e("LayoutManager is not of type LinearLayoutManager" )
+            assert(false)
             return
         }
 

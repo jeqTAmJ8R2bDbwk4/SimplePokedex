@@ -4,7 +4,6 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.AsyncListDiffer.ListListener
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.example.pokedex.adapters.utils.ViewHolderBinder
 import org.checkerframework.common.value.qual.IntRange
 
 abstract class BaseAdapter<E>(diffCallBack: DiffUtil.ItemCallback<E>): RecyclerView.Adapter<RecyclerView.ViewHolder>() {

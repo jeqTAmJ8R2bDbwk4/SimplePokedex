@@ -13,9 +13,9 @@ import com.google.android.material.motion.MotionUtils
 /* Source: https://m3.material.io/styles/motion/easing-and-duration/applying-easing-and-duration */
 sealed class MotionUtil(
     @get:AttrRes val durationRes: Int,
-    val defaultDuration: Int,
+    private val defaultDuration: Int,
     @get:AttrRes val interpolatorRes: Int,
-    val defaultInterpolator: TimeInterpolator
+    private val defaultInterpolator: TimeInterpolator
 ) {
     fun duration(context: Context) = MotionUtils.resolveThemeDuration(
         context,

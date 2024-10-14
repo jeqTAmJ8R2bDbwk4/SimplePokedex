@@ -3,7 +3,6 @@ package com.example.pokedex.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pokedex.models.Pokemon
-import com.example.pokedex.repositories.LocalRepository
 import com.example.pokedex.repositories.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

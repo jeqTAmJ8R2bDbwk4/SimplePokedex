@@ -1,7 +1,5 @@
 package com.example.pokedex.utils
 
-import androidx.annotation.IntRange
-import com.example.pokedex.models.Type
 import java.time.DateTimeException
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter

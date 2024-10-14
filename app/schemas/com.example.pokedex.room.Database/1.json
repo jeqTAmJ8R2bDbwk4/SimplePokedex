@@ -2,15 +2,15 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "80df49494ce8ee76955568aadc9fbf45",
+    "identityHash": "48a4406318fd8cc76252ee98a92c8411",
     "entities": [
       {
         "tableName": "history_entry",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`timestamp_ms` INTEGER NOT NULL, `query` TEXT NOT NULL, PRIMARY KEY(`query`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`last_modified_epoch_ms` INTEGER NOT NULL, `query` TEXT NOT NULL, PRIMARY KEY(`query`))",
         "fields": [
           {
-            "fieldPath": "timestampMs",
-            "columnName": "timestamp_ms",
+            "fieldPath": "lastModifiedEpochMs",
+            "columnName": "last_modified_epoch_ms",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -29,79 +29,6 @@
         },
         "indices": [],
         "foreignKeys": []
-      },
-      {
-        "tableName": "list_entry",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`pokemon_id` INTEGER NOT NULL, `position` INTEGER NOT NULL, `list_id` INTEGER NOT NULL, PRIMARY KEY(`pokemon_id`, `list_id`), FOREIGN KEY(`pokemon_id`) REFERENCES `pokemon`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
-        "fields": [
-          {
-            "fieldPath": "pokemonId",
-            "columnName": "pokemon_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "position",
-            "columnName": "position",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "listId",
-            "columnName": "list_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": false,
-          "columnNames": [
-            "pokemon_id",
-            "list_id"
-          ]
-        },
-        "indices": [
-          {
-            "name": "index_list_entry_pokemon_id",
-            "unique": false,
-            "columnNames": [
-              "pokemon_id"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_list_entry_pokemon_id` ON `${TABLE_NAME}` (`pokemon_id`)"
-          },
-          {
-            "name": "index_list_entry_position",
-            "unique": false,
-            "columnNames": [
-              "position"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_list_entry_position` ON `${TABLE_NAME}` (`position`)"
-          },
-          {
-            "name": "index_list_entry_list_id",
-            "unique": false,
-            "columnNames": [
-              "list_id"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_list_entry_list_id` ON `${TABLE_NAME}` (`list_id`)"
-          }
-        ],
-        "foreignKeys": [
-          {
-            "table": "pokemon",
-            "onDelete": "CASCADE",
-            "onUpdate": "NO ACTION",
-            "columns": [
-              "pokemon_id"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
-          }
-        ]
       },
       {
         "tableName": "pokemon",
@@ -302,6 +229,135 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "favourite_entry",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`pokemon_id` INTEGER NOT NULL, `position` INTEGER NOT NULL, PRIMARY KEY(`pokemon_id`), FOREIGN KEY(`pokemon_id`) REFERENCES `pokemon`(`id`) ON UPDATE NO ACTION ON DELETE RESTRICT )",
+        "fields": [
+          {
+            "fieldPath": "pokemonId",
+            "columnName": "pokemon_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "position",
+            "columnName": "position",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "pokemon_id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_favourite_entry_pokemon_id",
+            "unique": false,
+            "columnNames": [
+              "pokemon_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_favourite_entry_pokemon_id` ON `${TABLE_NAME}` (`pokemon_id`)"
+          },
+          {
+            "name": "index_favourite_entry_position",
+            "unique": false,
+            "columnNames": [
+              "position"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_favourite_entry_position` ON `${TABLE_NAME}` (`position`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "pokemon",
+            "onDelete": "RESTRICT",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "pokemon_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "paging_entry",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`pokemon_id` INTEGER NOT NULL, `offset` INTEGER NOT NULL, `last_modified_epoch_ms` INTEGER NOT NULL, PRIMARY KEY(`pokemon_id`), FOREIGN KEY(`pokemon_id`) REFERENCES `pokemon`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "pokemonId",
+            "columnName": "pokemon_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "offset",
+            "columnName": "offset",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastModifiedEpochMs",
+            "columnName": "last_modified_epoch_ms",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "pokemon_id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_paging_entry_offset",
+            "unique": true,
+            "columnNames": [
+              "offset"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_paging_entry_offset` ON `${TABLE_NAME}` (`offset`)"
+          },
+          {
+            "name": "index_paging_entry_pokemon_id",
+            "unique": false,
+            "columnNames": [
+              "pokemon_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_paging_entry_pokemon_id` ON `${TABLE_NAME}` (`pokemon_id`)"
+          },
+          {
+            "name": "index_paging_entry_last_modified_epoch_ms",
+            "unique": false,
+            "columnNames": [
+              "last_modified_epoch_ms"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_paging_entry_last_modified_epoch_ms` ON `${TABLE_NAME}` (`last_modified_epoch_ms`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "pokemon",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "pokemon_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
       }
     ],
     "views": [
@@ -312,7 +368,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '80df49494ce8ee76955568aadc9fbf45')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '48a4406318fd8cc76252ee98a92c8411')"
     ]
   }
 }

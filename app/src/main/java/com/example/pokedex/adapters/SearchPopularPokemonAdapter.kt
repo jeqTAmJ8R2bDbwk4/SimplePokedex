@@ -7,28 +7,19 @@ import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton
 import androidx.annotation.IntDef
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.imageLoader
-import coil.request.Disposable
 import coil.request.ImageRequest
 import com.example.pokedex.R
 import com.example.pokedex.adapters.models.AdapterItemPokemon
 import com.example.pokedex.adapters.models.AdapterItemPokemonMinimal
-import com.example.pokedex.adapters.utils.OnItemClickListener
-import com.example.pokedex.adapters.utils.ViewHolderBinder
 import com.example.pokedex.databinding.AdapterItemPopularPokemonBinding
 import com.example.pokedex.databinding.AdapterItemPopularPokemonPlaceholderBinding
-import com.example.pokedex.models.Pokemon
 import com.example.pokedex.models.PokemonMinimal
-import com.example.pokedex.utils.ResourceUtil
-import com.example.pokedex.utils.ResourceUtil.getAttrResFromTypeId
-import com.example.pokedex.utils.ResourceUtil.getDrawableResourceFromTypeId
-import com.example.pokedex.utils.formatPokedexNumber
-import com.example.pokedex.utils.notifyPositionChanged
-import com.google.android.material.color.MaterialColors
+import com.example.pokedex.utils.OnItemClickListener
+import com.example.pokedex.utils.ViewHolderBinder
 import timber.log.Timber
 import java.util.UUID
 
@@ -86,7 +77,6 @@ class SearchPopularPokemonAdapter(
         private val binding: AdapterItemPopularPokemonBinding
     ) : RecyclerView.ViewHolder(binding.root), ViewHolderBinder<PokemonMinimal> {
         private var isAttached = false
-        private var requestDisposable: Disposable? = null
 
         private val onClickListener = object : View.OnClickListener {
             override fun onClick(v: View) {
@@ -108,7 +98,6 @@ class SearchPopularPokemonAdapter(
             binding.linearLayout.transitionName = getTransitionName(context, item.id)
             binding.tvName.text = item.getName()
 
-            requestDisposable?.dispose()
             val imageLoader = context.imageLoader
             val request = ImageRequest.Builder(context)
                 .data(item.spriteUrl)
@@ -116,7 +105,7 @@ class SearchPopularPokemonAdapter(
                 .bitmapConfig(Bitmap.Config.ARGB_8888)
                 .error(R.drawable.pokemon_sprite_not_found)
                 .build()
-            requestDisposable = imageLoader.enqueue(request)
+            imageLoader.enqueue(request)
         }
 
         override fun attach() {

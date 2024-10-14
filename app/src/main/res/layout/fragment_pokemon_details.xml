@@ -51,10 +51,11 @@
                     style="@style/TextAppearance.Material3.HeadlineLarge"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toStartOf="@id/cb_favourite"
-
                     android:layout_marginHorizontal="@dimen/window_spacing_horizontal"
+                    app:layout_constraintVertical_bias="0"
                     android:textColor="?attr/colorOnSurface"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/cb_favourite"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@id/cb_favourite"
                     tools:text="Bisasam" />
@@ -64,6 +65,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintStart_toEndOf="@id/tv_name"
                     android:layout_marginEnd="@dimen/window_spacing_horizontal"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:button="@drawable/favourite_selector"
@@ -79,19 +82,20 @@
                 android:layout_height="?attr/actionBarSize"
                 android:tint="?attr/colorControlNormal"
                 app:layout_collapseMode="pin"
-                app:navigationIcon="@drawable/arrow_back_24dp" />
+                app:navigationIcon="@drawable/navigation_icon" />
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
     <com.google.android.material.progressindicator.LinearProgressIndicator
-        android:layout_marginTop="10dp"
         android:id="@+id/progress_indicator"
         android:fitsSystemWindows="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:indeterminate="true"
         android:visibility="gone"
-        app:layout_anchor="@id/view_flipper" />
+        tools:visibility="visible"
+        app:layout_anchorGravity="bottom"
+        app:layout_anchor="@id/app_bar_layout" />
 
     <ViewFlipper
         android:id="@+id/view_flipper"

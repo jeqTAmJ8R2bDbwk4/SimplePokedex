@@ -2,15 +2,16 @@ package com.example.pokedex.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.pokedex.models.AbilityDescription
 import com.example.pokedex.adapters.models.AdapterItemAbility
 import com.example.pokedex.adapters.models.AdapterItemEvolutionChainEdge
-import com.example.pokedex.models.EvolutionChainEntry
+import com.example.pokedex.adapters.models.AdapterItemType
+import com.example.pokedex.models.AbilityDescription
 import com.example.pokedex.models.Description
+import com.example.pokedex.models.EvolutionChainEntry
 import com.example.pokedex.models.Pokemon
 import com.example.pokedex.models.PokemonDetails
 import com.example.pokedex.models.State
-import com.example.pokedex.adapters.models.AdapterItemType
+import com.example.pokedex.models.errors.RepositoryError
 import com.example.pokedex.repositories.Repository
 import com.example.pokedex.repositories.Result
 import com.example.pokedex.utils.FRACTION_FOUR
@@ -97,6 +98,9 @@ class PokemonDetailsViewModel @Inject constructor(
         return multiplier.unsqueeze() + typeIds.map(AdapterItemType::Type)
     }
 
+    private val _error = MutableStateFlow<RepositoryError?>(null)
+    val error = _error.asStateFlow()
+
     fun chainToEdges(entries: List<Pokemon>): List<AdapterItemEvolutionChainEdge> {
         val adjacency = entries.groupBy { entry -> entry.specyEvolvedFromSpecyId  }
 
@@ -153,11 +157,14 @@ class PokemonDetailsViewModel @Inject constructor(
             _weeknessQuadruple.value = weeknessPlaceholders
             _evolutions.value = evolutionPlaceholders
 
-            when(val result = repository.getPokemonDetails(pokemonId)) {
+            val result = repository.getPokemonDetails(pokemonId)
+            when(result) {
                 is Result.Error -> {
+                    _error.value = result.error as RepositoryError  // Not sure why this does not get casted automatically.
                     _state.value = State.ERROR
                 }
                 is Result.Success -> {
+                    _error.value = null
                     _state.value = State.SUCCESS
                     _result.value = result.data
                     _abilities.value = result.data.abilities.map(AdapterItemAbility::Ability)

@@ -50,7 +50,6 @@
         <item name="colorTypeSteel">@color/app_theme_light_type_steel</item>
         <item name="colorTypeFairy">@color/app_theme_light_type_fairy</item>
         <item name="colorTypeDark">@color/app_theme_light_type_dark</item>
-
     </style>
 
     <style name="AppTheme.CollapsingToolbar.ExtraLarge" parent="Widget.Material3.CollapsingToolbar.Large">
@@ -59,6 +58,7 @@
 
     <style name="AppTheme.Licenses" parent="Theme.Material3.Light">
         <item name="android:colorBackground">@color/md_theme_light_background</item>
-        <item name="android:statusBarColor">#F3EDF7</item>
+        <!-- Else defaults to primary color. -->
+        <item name="android:statusBarColor">@color/md_theme_light_surface</item>
     </style>
 </resources>

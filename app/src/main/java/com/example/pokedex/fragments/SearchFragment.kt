@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
 import android.view.animation.Interpolator
-import androidx.activity.setViewTreeOnBackPressedDispatcherOwner
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -21,6 +20,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
+import com.example.pokedex.NavGraphDirections
 import com.example.pokedex.R
 import com.example.pokedex.adapters.SearchAdapter
 import com.example.pokedex.adapters.SearchResultAdapter
@@ -32,9 +32,6 @@ import com.example.pokedex.utils.MotionUtil
 import com.example.pokedex.utils.collectWithLifecycle
 import com.example.pokedex.utils.errorToMessageResource
 import com.example.pokedex.utils.fragmentInsets
-import com.example.pokedex.utils.openLicenses
-import com.example.pokedex.utils.openSettings
-import com.example.pokedex.utils.setRootMenuListener
 import com.example.pokedex.viewmodels.SearchViewModel
 import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
@@ -160,7 +157,7 @@ class SearchFragment: Fragment() {
             }
 
             val transitionName = searchResultAdapter.getTransitionName(requireContext(), pokemon.id)
-            val action = SearchFragmentDirections.searchFragmentToPokemonDetailsFragment(
+            val action = SearchFragmentDirections.toPokemonDetailsFragment(
                 PokemonDetailsTransition(transitionName, pokemon)
             )
             val extras = FragmentNavigatorExtras(
@@ -267,7 +264,23 @@ class SearchFragment: Fragment() {
         }
 
 
-        requireActivity().setRootMenuListener(binding.searchBar)
+        binding.searchBar.setOnMenuItemClickListener { menuItem ->
+            val navController = findNavController()
+            return@setOnMenuItemClickListener when (menuItem.itemId) {
+                R.id.settings -> {
+                    if (navController.currentDestination?.id != R.id.search_fragment) {
+                        return@setOnMenuItemClickListener false
+                    }
+                    findNavController().navigate(NavGraphDirections.actionGlobalSettingsFragment())
+                    true
+                }
+                else -> {
+                    Timber.e("Menu Item %s unknown.", menuItem.title)
+                    assert(false)
+                    false
+                }
+            }
+        }
         binding.searchBar.setNavigationOnClickListener {
             viewModel.searchPokemon(binding.searchView.text.toString())
             binding.searchBar.setText(binding.searchView.text)

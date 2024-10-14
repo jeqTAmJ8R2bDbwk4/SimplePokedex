@@ -67,6 +67,9 @@ enum class HttpStatusCode(val code: Int) {
     NotExtended(510),
     NetworkAuthenticationRequired(511),
 
+    // Unofficial HTTP response status code
+    CloudflareWebServerDown(521),
+
     Unknown(0);
 
     companion object {

@@ -3,8 +3,8 @@ package com.example.pokedex.models
 import android.os.Parcelable
 import com.example.pokedex.utils.NonEmpty
 import com.example.pokedex.utils.validateNonEmpty
-import com.example.pokedex.fragment.PokemonMinimalFragment as ApolloPokemon
 import kotlinx.parcelize.Parcelize
+import com.example.pokedex.fragment.PokemonMinimalFragment as ApolloPokemon
 
 
 @Parcelize

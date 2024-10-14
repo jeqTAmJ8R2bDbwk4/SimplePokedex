@@ -1,4 +1,4 @@
-package com.example.pokedex.adapters.utils
+package com.example.pokedex.utils
 
 interface ViewHolderBinder<E> {
     open fun bind(item: E, position: Int) {}

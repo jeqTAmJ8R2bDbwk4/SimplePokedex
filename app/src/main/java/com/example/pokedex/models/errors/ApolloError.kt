@@ -1,6 +1,15 @@
 package com.example.pokedex.models.errors
 
-import com.apollographql.apollo.exception.*
+import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo.exception.ApolloHttpException
+import com.apollographql.apollo.exception.ApolloNetworkException
+import com.apollographql.apollo.exception.ApolloWebSocketClosedException
+import com.apollographql.apollo.exception.JsonDataException
+import com.apollographql.apollo.exception.JsonEncodingException
+import com.apollographql.apollo.exception.NoDataException
+import com.apollographql.apollo.exception.RouterError
+import com.apollographql.apollo.exception.SubscriptionConnectionException
+import com.apollographql.apollo.exception.SubscriptionOperationException
 import com.example.pokedex.utils.HttpStatusCode
 
 /** A fetch error occurred while interacting with the server.

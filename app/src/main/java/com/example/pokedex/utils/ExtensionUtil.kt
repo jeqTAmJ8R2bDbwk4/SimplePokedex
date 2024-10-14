@@ -1,16 +1,25 @@
 package com.example.pokedex.utils
 
 import android.app.Activity
+import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.res.Configuration
+import android.content.res.Resources
+import android.net.ConnectivityManager
+import android.net.ConnectivityManager.RESTRICT_BACKGROUND_STATUS_DISABLED
+import android.net.ConnectivityManager.RESTRICT_BACKGROUND_STATUS_ENABLED
+import android.net.ConnectivityManager.RESTRICT_BACKGROUND_STATUS_WHITELISTED
 import android.net.Uri
 import android.provider.Settings
 import android.util.TypedValue
 import android.widget.TextView
 import androidx.annotation.AttrRes
 import androidx.annotation.DrawableRes
-import androidx.appcompat.widget.Toolbar
+import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.app.AppCompatDelegate.NightMode
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.graphics.Insets
@@ -24,28 +33,30 @@ import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.window.core.layout.WindowSizeClass
 import androidx.window.layout.WindowMetricsCalculator
+import coil.ImageLoader
+import coil.annotation.ExperimentalCoilApi
+import coil.memory.MemoryCache
+import com.example.pokedex.R
 import com.example.pokedex.models.ConsecutiveRange
-import com.google.android.material.motion.MotionUtils
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.Locale
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.memberProperties
-import com.example.pokedex.R
-import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
-import timber.log.Timber
 
 
 fun TextView.setLeftDrawable(@DrawableRes id: Int = 0) {
     this.setCompoundDrawablesWithIntrinsicBounds(id, 0, 0, 0)
 }
 
-fun Activity.openSettings() {
+fun Activity.openSystemSettings() {
     val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-        data = Uri.fromParts("package", this@openSettings.packageName, null)
+        data = Uri.fromParts("package", this@openSystemSettings.packageName, null)
     }
     startActivity(intent)
 }
@@ -53,25 +64,6 @@ fun Activity.openSettings() {
 fun Activity.openLicenses() {
     OssLicensesMenuActivity.setActivityTitle(getString(R.string.menu_name_licenses))
     startActivity(Intent(this, OssLicensesMenuActivity::class.java))
-}
-
-fun Activity.setRootMenuListener(toolbar: Toolbar) {
-    toolbar.setOnMenuItemClickListener { menuItem ->
-        return@setOnMenuItemClickListener when (menuItem.itemId) {
-            R.id.settings -> {
-                openSettings()
-                true
-            }
-            R.id.licenses -> {
-                openLicenses()
-                true
-            }
-            else -> {
-                Timber.e("Menu Item %s unknown.", menuItem.title)
-                false
-            }
-        }
-    }
 }
 
 fun <T> List<T>.squeeze(): T {
@@ -181,4 +173,129 @@ fun MotionLayout.updateConstraintSet(stateId: Int, update: ConstraintSet.() -> U
     setConstraintSet(constraintSet)
 }
 
+// Following guide: https://developer.android.com/develop/connectivity/network-ops/data-saver
+fun Context.isDataSaving(): Boolean {
+    val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    if (connectivityManager.isActiveNetworkMetered) {
+        return true
+    }
+    val restrictBackgroundStatus = connectivityManager.restrictBackgroundStatus
+    return when(restrictBackgroundStatus) {
+        RESTRICT_BACKGROUND_STATUS_DISABLED -> false
+        RESTRICT_BACKGROUND_STATUS_WHITELISTED -> false
+        RESTRICT_BACKGROUND_STATUS_ENABLED -> true
+        else -> {
+            Timber.e("Unknown restrictBackgroundStatus $restrictBackgroundStatus.")
+            assert(false)
+            false
+        }
+    }
+}
 
+@OptIn(ExperimentalCoilApi::class)
+fun ImageLoader.isCacheHit(key: String): Boolean {
+    if (memoryCache?.get(MemoryCache.Key(key)) != null) {
+        Timber.d("MemoryCache-Hit: $key")
+        return true
+    }
+    val snapshot = diskCache?.openSnapshot(key) ?: return false
+    try {
+        val exists = snapshot.data.toFile().exists()
+        if (exists) {
+            Timber.d("DiskCache-Hit: $key")
+        }
+    } catch (e: Exception) {
+        Timber.e(e)
+        assert(false)
+    } finally {
+        snapshot.close()
+    }
+    return false
+}
+
+@OptIn(ExperimentalCoilApi::class)
+fun ImageLoader.clearCache() {
+    memoryCache?.clear()
+    diskCache?.clear()
+}
+
+fun Context.getSharedSettingsPreferences(): SharedPreferences {
+    val sharedPreferenceNameSettings = getString(R.string.shared_preference_name_settings)
+    return getSharedPreferences(sharedPreferenceNameSettings, Application.MODE_PRIVATE)
+}
+
+@Throws(ClassCastException::class)
+fun Context.getThemePreferenceValue(): String {
+    val preferenceThemeKey = getString(R.string.preference_theme_key)
+    val preferenceThemeEntryValueAuto = getString(R.string.preference_theme_entry_value_auto)
+    return getSharedSettingsPreferences()
+        .getString(preferenceThemeKey, preferenceThemeEntryValueAuto)!!
+}
+
+@Throws(IllegalArgumentException::class)
+fun Context.setThemePreferenceValue(value: String) {
+    val preferenceThemeKey = getString(R.string.preference_theme_key)
+    val preferenceThemeEntryValues = resources.getStringArray(R.array.preference_theme_entry_values)
+    require(preferenceThemeEntryValues.contains(value)) {
+        "$value is not a valid preference theme entry value: $preferenceThemeEntryValues."
+    }
+    getSharedSettingsPreferences().edit().putString(preferenceThemeKey, value).apply()
+}
+
+@Throws(ClassCastException::class)
+fun Context.getDataSavingPreferenceValue(): Boolean {
+    val preferenceDataSavingDefault = resources.getBoolean(R.bool.preference_data_saving_default)
+    val preferenceDataSavingKey = getString(R.string.preference_data_saving_key)
+    return getSharedSettingsPreferences()
+        .getBoolean(preferenceDataSavingKey, preferenceDataSavingDefault)
+}
+
+fun Context.setDataSavingPreferenceValue(value: Boolean) {
+    val preferenceDataSavingKey = getString(R.string.preference_data_saving_key)
+    getSharedSettingsPreferences().edit().putBoolean(preferenceDataSavingKey, value).apply()
+}
+
+@Throws(IllegalArgumentException::class)
+@NightMode fun Context.getNightMode(preferenceThemeEntryValue: String): Int {
+    val preferenceThemeEntryValueAuto = getString(R.string.preference_theme_entry_value_auto)
+    val preferenceThemeEntryValueLight = getString(R.string.preference_theme_entry_value_light)
+    val preferenceThemeEntryValueDark = getString(R.string.preference_theme_entry_value_dark)
+
+    return when(preferenceThemeEntryValue) {
+        preferenceThemeEntryValueAuto -> {
+            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+        }
+        preferenceThemeEntryValueLight -> {
+            AppCompatDelegate.MODE_NIGHT_NO
+        }
+        preferenceThemeEntryValueDark -> {
+            AppCompatDelegate.MODE_NIGHT_YES
+        }
+        else -> {
+            throw IllegalArgumentException(
+                "Unexpeccted preferenceThemeEntryValue: $preferenceThemeEntryValue"
+            )
+        }
+    }
+}
+
+fun Context.applyTheme(preferenceThemeEntryValue: String): Boolean {
+    val nightMode = try {
+        getNightMode(preferenceThemeEntryValue)
+    } catch (e: IllegalArgumentException) {
+        Timber.e(e)
+        assert(false)
+        return false
+    }
+    AppCompatDelegate.setDefaultNightMode(nightMode)
+    return true
+}
+
+fun Resources.isStringRes(@StringRes res: Int): Boolean {
+    return try {
+        getResourceTypeName(res) == "string"
+    } catch (e: Resources.NotFoundException) {
+        Timber.e(e)
+        false
+    }.also(::assert)
+}

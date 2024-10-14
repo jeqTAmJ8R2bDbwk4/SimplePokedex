@@ -1,15 +1,13 @@
 <resources>
     <string name="transition_name" translatable="false">%1$d : %2$s</string>
 
+    <string name="snackbar_message_cache_cleared">Der Cache wurde geleert.</string>
+    <string name="snackbar_message_history_cleared">Der Suchverlauf wurde gelöscht.</string>
+
     <string name="app_name">Pokédex</string>
     <string name="search_hint">Suche</string>
     <string name="scroll_up_description">Nach oben scrollen</string>
     <string name="stats">Statistiken</string>
-
-    <string name="network_connection_snackbar_message">
-        Liste konnte nicht geladen werden. Bitte prüfen Sie Ihre WLAN-Verbindung.
-    </string>
-    <string name="network_connection_snackbar_action_text">Wiederholen</string>
     <string name="description">Beschreibung</string>
     <string name="abilities">Fähigkeiten</string>
     <string name="hp">KP</string>
@@ -57,7 +55,8 @@
     <string name="unknown_ability_description">Für diese Fähigkeit gibt es keine deutsche Beschreibung.</string>
     <string name="unknown_pokemon_version_group">Versionsgruppe unbekannt</string>
 
-    <string name="favourite_title">Favouriten</string>
+    <string name="settings_title">Einstellungen</string>
+    <string name="favourite_title">Favoriten</string>
     <string name="empty_favourites_title">Noch keine Favoriten!</string>
     <string name="empty_favourites_body">Du hast noch keine Pokémon zu deinen Favoriten hinzugefügt. Tippe einfach auf das Herzsymbol, um deine Lieblings-Pokémon hier zu speichern!</string>
 
@@ -78,15 +77,82 @@
     <string name="error_message_data">Die Antwort des Servers ist fehlerhaft. Bitte versuche es später noch einmal.</string>
 
     <!-- Client-Side Errors (4xx) -->
-    <string name="error_message_http_400_bad_request">Beim Laden der Daten ist ein Fehler aufgetreten. Bitte überprüfe deine Eingabe order versuche es später nocch einmal.</string>
+    <string name="error_message_http_400_bad_request">Beim Laden der Daten ist ein Fehler aufgetreten. Bitte überprüfe deine Eingabe order versuche es später noch einmal.</string>
     <string name="error_message_http_403_forbidden">Der Zugriff ist nicht möglich. Die Anfrage konnte nicht verarbeitet werden. Bitte versuche es später noch einmal.</string>
     <string name="error_message_http_404_not_found">Die angeforderten Daten konnten nicht gefunden werden.</string>
     <string name="error_message_http_408_request_timeout">Das Laden der Daten hat zu lange gedauert. Bitte versuche es später noch einmal.</string>
     <string name="error_message_http_429_too_many_requests">Es wurden zu viele Anfragen gesendet. Bitte warte kurz und versuche es später noch einmal.</string>
+    <string name="error_message_http_521_cloudflare_web_server_down">Der Server ist derzeit nicht erreichbar. Bitte versuche es später noch einmal.</string>
 
     <!-- Server-Side Errors (5xx) -->
     <string name="error_message_http_500_internal_server_error">Es gab einen unerwarteten Serverfehler. Bitte warte kurz und versuche es später noch einmal.</string>
     <string name="error_message_http_503_service_unavailable">Der Server ist temporär nicht verfügbar. Bitte versuche es später noch einmal.</string>
+
+    <!-- Short Error Messages for Snackbar -->
+    <string name="error_message_short_data_mapping">Serverantwort unverständlich. Bitte später erneut versuchen.</string>
+    <string name="error_message_short_generic">Unerwarteter Fehler. Bitte erneut versuchen.</string>
+    <string name="error_message_short_network">Netzwerkfehler. Verbindung prüfen.</string>
+    <string name="error_message_short_server">Serverfehler. Bitte später erneut versuchen.</string>
+    <string name="error_message_short_data">Fehlerhafte Serverantwort. Bitte später erneut versuchen.</string>
+
+    <!-- Client-Side Errors (4xx) -->
+    <string name="error_message_short_http_400_bad_request">Fehler beim Laden. Eingabe prüfen.</string>
+    <string name="error_message_short_http_403_forbidden">Kein Zugriff möglich. Bitte später erneut versuchen.</string>
+    <string name="error_message_short_http_404_not_found">Daten nicht gefunden.</string>
+    <string name="error_message_short_http_408_request_timeout">Zeitüberschreitung. Bitte erneut versuchen.</string>
+    <string name="error_message_short_http_429_too_many_requests">Zu viele Anfragen. Bitte warten.</string>
+    <string name="error_message_short_http_521_cloudflare_web_server_down">Server nicht erreichbar. Bitte später versuchen.</string>
+
+    <!-- Server-Side Errors (5xx) -->
+    <string name="error_message_short_http_500_internal_server_error">Serverfehler. Bitte warten und erneut versuchen.</string>
+    <string name="error_message_short_http_503_service_unavailable">Server nicht verfügbar. Bitte später versuchen.</string>
+
+
     <string name="erneut_laden">Erneut laden</string>
     <string name="popular_pokemon_title">Beliebte Pokémon</string>
+
+    <!-- Preference -->
+    <string name="preference_data_saving_key" translatable="false">preference_data_saving</string>
+    <string name="preference_data_saving_title">Daten Sparen</string>
+    <string name="preference_data_saving_summary">Reduziert deinen Datenverbrauch, indem Bilder über einen externen Dienst (wsrv.nl) komprimiert geladen werden.</string>
+
+    <string name="preference_theme_key" translatable="false">preference_theme_key</string>
+    <string name="preference_theme_title">Theme</string>
+    <string name="preference_theme_dialog_title">Wähle ein Theme</string>
+    <string name="preference_theme_entry_auto">Systemstandard</string>
+    <string name="preference_theme_entry_light">Hell</string>
+    <string name="preference_theme_entry_dark">Dunkel</string>
+    <string-array name="preference_theme_entries">
+        <item>@string/preference_theme_entry_auto</item>
+        <item>@string/preference_theme_entry_light</item>
+        <item>@string/preference_theme_entry_dark</item>
+    </string-array>
+    <string name="preference_theme_entry_value_auto" translatable="true">preference_theme_auto</string>
+    <string name="preference_theme_entry_value_light" translatable="true">preference_theme_light</string>
+    <string name="preference_theme_entry_value_dark" translatable="true">preference_theme_dark</string>
+    <string-array name="preference_theme_entry_values" translatable="false">
+        <item>@string/preference_theme_entry_value_auto</item>
+        <item>@string/preference_theme_entry_value_light</item>
+        <item>@string/preference_theme_entry_value_dark</item>
+    </string-array>
+    <string name="preference_feedback_key" translatable="false">preference_issue</string>
+    <string name="preference_feedback_title">Feedback geben</string>
+    <string name="preference_feedback_summary">Verbessungsvorschläge geben oder Fehler melden.</string>
+    <string name="preference_feedback_url" translatable="false">https://github.com/jeqTAmJ8R2bDbwk4/SimplePokedex</string>
+    <string name="preference_version_key" translatable="false">preference_version</string>
+    <string name="preference_version_title">Version</string>
+    <string name="preference_cache_key" translatable="false">preference_cache</string>
+    <string name="preference_cache_title">Cache leeren</string>
+    <string name="preference_cache_summary">Geben Speicherplatz frei, indem du zwischengespeicherte Daten löschst.</string>
+    <string name="preference_history_key" translatable="false">preference_history</string>
+    <string name="preference_history_title">Suchverlauf löschen</string>
+    <string name="preference_history_summary">Lösche deinen bisherigen Suchverlauf.</string>
+    <string name="preference_system_settings_key" translatable="false">preference_system_settings</string>
+    <string name="preference_system_settings_title">System-Einstellung öffnen</string>
+    <string name="preference_system_settings_summary">Öffne die System-Einstellungen für diese App.</string>
+    <string name="preference_licenses_key" translatable="false">preference_licenses</string>
+    <string name="preference_licenses_title">Open-Source-Lizenzen</string>
+    <string name="preference_licenses_summary">Open-Source-Bibliotheken und Lizenzen.</string>
+    
+    <string name="shared_preference_name_settings" translatable="false">shared_preferences</string>
 </resources>

@@ -10,7 +10,7 @@ data class HistoryEntry(val query: String, val dateTimeUTC: LocalDateTime) {
         fun fromRoomHistoryEntry(historyEntry: RoomHistoryEntry) = HistoryEntry(
             query = historyEntry.query,
             dateTimeUTC = LocalDateTime.ofInstant(
-                Instant.ofEpochMilli(historyEntry.timestampMs),
+                Instant.ofEpochMilli(historyEntry.lastModifiedEpochMs),
                 ZoneOffset.UTC
             )
         )

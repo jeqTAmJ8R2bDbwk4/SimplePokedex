@@ -11,7 +11,7 @@
         android:label="SearchFragment"
         tools:layout="@layout/fragment_favourite">
         <action
-            android:id="@+id/search_fragment_to_pokemon_details_fragment"
+            android:id="@+id/to_pokemon_details_fragment"
             app:destination="@+id/pokemon_details_fragment" />
     </fragment>
 
@@ -24,7 +24,7 @@
             android:name="transition"
             app:argType="com.example.pokedex.models.PokemonDetailsTransition" />
         <action
-            android:id="@+id/pokemon_defails_fragment_to_pokemon_details_fragment"
+            android:id="@+id/to_pokemon_details_fragment"
             app:destination="@+id/pokemon_details_fragment"
             />
     </fragment>
