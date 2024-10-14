@@ -3,12 +3,11 @@ package com.example.pokedex.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.pokedex.R
-import com.example.pokedex.adapters.utils.ViewHolderBinder
 import com.example.pokedex.databinding.AdapterItemAbilityDescriptionBinding
 import com.example.pokedex.models.Description
+import com.example.pokedex.utils.ViewHolderBinder
 import com.example.pokedex.utils.context
 
 
@@ -26,7 +25,7 @@ private val diffCallBack = object : DiffUtil.ItemCallback<Description>() {
 class DescriptionAdapter: BaseAdapter<Description>(diffCallBack) {
     class AbilityDescriptionViewHolder(
         val binding: AdapterItemAbilityDescriptionBinding
-    ): RecyclerView.ViewHolder(binding.root), ViewHolderBinder<Description> {
+    ): ViewHolder(binding.root), ViewHolderBinder<Description> {
         override fun bind(item: Description, position: Int) {
             super.bind(item, position)
             binding.tvDescription.text = item.description
@@ -36,7 +35,7 @@ class DescriptionAdapter: BaseAdapter<Description>(diffCallBack) {
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = AdapterItemAbilityDescriptionBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
@@ -45,7 +44,7 @@ class DescriptionAdapter: BaseAdapter<Description>(diffCallBack) {
         return AbilityDescriptionViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position) ?: return
         when {
             holder is AbilityDescriptionViewHolder -> holder.bind(item, position)

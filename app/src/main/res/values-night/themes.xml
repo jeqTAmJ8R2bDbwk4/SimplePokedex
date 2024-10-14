@@ -49,10 +49,13 @@
         <item name="colorTypeSteel">@color/app_theme_dark_type_steel</item>
         <item name="colorTypeFairy">@color/app_theme_dark_type_fairy</item>
         <item name="colorTypeDark">@color/app_theme_dark_type_dark</item>
+
+        <item name="colorRemove">@color/app_theme_dark_remove</item>
     </style>
 
     <style name="AppTheme.Licenses" parent="Theme.Material3.Dark">
         <item name="android:colorBackground">@color/md_theme_dark_background</item>
-        <item name="android:statusBarColor">#26242A</item>
+        <!-- Else defaults to primary color. -->
+        <item name="android:statusBarColor">@color/md_theme_dark_surface</item>
     </style>
 </resources>

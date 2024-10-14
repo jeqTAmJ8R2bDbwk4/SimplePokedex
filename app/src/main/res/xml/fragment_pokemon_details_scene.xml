@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <Transition
         android:id="@+id/transition"
@@ -27,32 +26,32 @@
                 app:applyMotionScene="false"
                 app:visibilityMode="ignore" />
         </Constraint>
-        <Constraint android:id="@id/tv_weekness_title">
+        <Constraint android:id="@id/tv_weakness_title">
             <PropertySet
                 app:applyMotionScene="false"
                 app:visibilityMode="ignore" />
         </Constraint>
-        <Constraint android:id="@id/rv_weekness_double">
+        <Constraint android:id="@id/rv_weakness_double">
             <PropertySet
                 app:applyMotionScene="false"
                 app:visibilityMode="ignore" />
         </Constraint>
-        <Constraint android:id="@id/rv_weekness_quadruple">
+        <Constraint android:id="@id/rv_weakness_quadruple">
             <PropertySet
                 app:applyMotionScene="false"
                 app:visibilityMode="ignore" />
         </Constraint>
-        <Constraint android:id="@id/tv_resistence_title">
+        <Constraint android:id="@id/tv_resistance_title">
             <PropertySet
                 app:applyMotionScene="false"
                 app:visibilityMode="ignore" />
         </Constraint>
-        <Constraint android:id="@id/rv_resistence_half">
+        <Constraint android:id="@id/rv_resistance_half">
             <PropertySet
                 app:applyMotionScene="false"
                 app:visibilityMode="ignore" />
         </Constraint>
-        <Constraint android:id="@id/rv_resistence_quater">
+        <Constraint android:id="@id/rv_resistance_quater">
             <PropertySet
                 app:applyMotionScene="false"
                 app:visibilityMode="ignore" />

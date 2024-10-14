@@ -4,24 +4,21 @@ import android.animation.AnimatorInflater
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.ShapeDrawable
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.IntDef
 import androidx.annotation.StringRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.pokedex.R
-import com.example.pokedex.adapters.utils.ViewHolderBinder
+import com.example.pokedex.adapters.models.AdapterItemType
 import com.example.pokedex.databinding.AdapterItemTypeBinding
 import com.example.pokedex.databinding.AdapterItemTypeMultiplierBinding
 import com.example.pokedex.databinding.AdapterItemTypePlaceholderBinding
-import com.example.pokedex.adapters.models.AdapterItemType
 import com.example.pokedex.utils.ResourceUtil.getAttrResFromTypeId
 import com.example.pokedex.utils.ResourceUtil.getDrawableResourceFromTypeId
+import com.example.pokedex.utils.ViewHolderBinder
 import com.google.android.material.color.MaterialColors
 
 private val diffCallback = object : DiffUtil.ItemCallback<AdapterItemType>() {
@@ -51,8 +48,6 @@ class TypeAdapter: BaseAdapter<AdapterItemType>(diffCallback) {
 
         @IntDef(TYPE_VIEW_TYPE, PLACEHOLDER_VIEW_TYPE, MULTIPLIER_VIEW_TYPE)
         annotation class ViewType
-
-        private val animationStartTime = System.currentTimeMillis()
     }
 
     @Throws(NullPointerException::class)
@@ -65,20 +60,22 @@ class TypeAdapter: BaseAdapter<AdapterItemType>(diffCallback) {
         }
     }
 
-    class TypeViewHolder(private val binding: AdapterItemTypeBinding): ViewHolder(binding.root), ViewHolderBinder<AdapterItemType.Type> {
+    class TypeViewHolder(private val binding: AdapterItemTypeBinding): ViewHolder(binding.root),
+        ViewHolderBinder<AdapterItemType.Type> {
         override fun bind(item: AdapterItemType.Type, position: Int) {
             val context = binding.root.context
             val drawableResource = getDrawableResourceFromTypeId(item.id)
             binding.ivType.setImageResource(drawableResource)
 
-            /* Changing the backgroound using tint does not work. */
+            /* Changing the background using tint does not work. */
             val backgroundDrawable = AppCompatResources.getDrawable(context, R.drawable.type_background)?.mutate() as GradientDrawable
             val color = MaterialColors.getColorOrNull(context, getAttrResFromTypeId(item.id))!!
             backgroundDrawable.setColor(color)
             binding.ivType.background = backgroundDrawable
         }
     }
-    class PlaceholderViewHolder(val binding: AdapterItemTypePlaceholderBinding): ViewHolder(binding.root), ViewHolderBinder<AdapterItemType.Placeholder> {
+    class PlaceholderViewHolder(val binding: AdapterItemTypePlaceholderBinding): ViewHolder(binding.root),
+        ViewHolderBinder<AdapterItemType.Placeholder> {
         private val animator = AnimatorInflater
             .loadAnimator(binding.root.context, R.animator.pulsing_animator)
                 as ObjectAnimator
@@ -94,23 +91,24 @@ class TypeAdapter: BaseAdapter<AdapterItemType>(diffCallback) {
             animator.setTarget(null)
         }
     }
-    class MultiplierViewHolder(private val binding: AdapterItemTypeMultiplierBinding): ViewHolder(binding.root), ViewHolderBinder<AdapterItemType.Multiplier> {
+    class MultiplierViewHolder(private val binding: AdapterItemTypeMultiplierBinding): ViewHolder(binding.root),
+        ViewHolderBinder<AdapterItemType.Multiplier> {
         override fun bind(item: AdapterItemType.Multiplier, position: Int) {
             @StringRes val textResource = when(item) {
                 is AdapterItemType.Half -> {
-                    R.string.weekness_multiplier_half
+                    R.string.weakness_multiplier_half
                 }
                 is AdapterItemType.Quadruple -> {
-                    R.string.weekness_multiplier_quadruple
+                    R.string.weakness_multiplier_quadruple
                 }
                 is AdapterItemType.Double -> {
-                    R.string.weekness_multiplier_double
+                    R.string.weakness_multiplier_double
                 }
                 is AdapterItemType.Quater -> {
-                    R.string.weekness_multiplier_quater
+                    R.string.weakness_multiplier_quater
                 }
                 is AdapterItemType.Immune -> {
-                    R.string.weekness_multiplier_immune
+                    R.string.weakness_multiplier_immune
                 }
             }
             binding.tvMultiplier.setText(textResource)
@@ -118,7 +116,7 @@ class TypeAdapter: BaseAdapter<AdapterItemType>(diffCallback) {
     }
 
     @Throws(IllegalArgumentException::class)
-    override fun onCreateViewHolder(parent: ViewGroup, @ViewType viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, @ViewType viewType: Int): ViewHolder {
         return when(viewType) {
             TYPE_VIEW_TYPE -> {
                 val binding = AdapterItemTypeBinding.inflate(
@@ -150,7 +148,7 @@ class TypeAdapter: BaseAdapter<AdapterItemType>(diffCallback) {
     }
 
     @SuppressLint("SupportAnnotationUsage")
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position) ?: return
         when {
             item is AdapterItemType.Type && holder is TypeViewHolder -> {

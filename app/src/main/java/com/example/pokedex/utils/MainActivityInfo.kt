@@ -9,7 +9,6 @@ import javax.inject.Singleton
 @Singleton
 class MainActivityInfo @Inject constructor() {
     private val _bottomNavigationBarHeightPx = MutableStateFlow<Insets>(Insets.of(0, 0, 0, 0))
-    val bottomNavigationBarInsets = _bottomNavigationBarHeightPx.asStateFlow()
 
     fun setBottomNavigationBarHeightPx(heightPx: Int) {
         _bottomNavigationBarHeightPx.value = Insets.of(0, 0, 0, heightPx)

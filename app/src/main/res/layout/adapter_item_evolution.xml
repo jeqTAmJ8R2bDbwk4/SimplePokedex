@@ -26,18 +26,21 @@
 
         <com.google.android.material.textview.MaterialTextView
             style="?attr/textAppearanceBodyLarge"
+            android:textColor="?attr/colorOnSurface"
             tools:text="Bisasam"
+            android:gravity="center_horizontal"
             android:ellipsize="end"
             android:maxLines="1"
             android:layout_gravity="center_horizontal"
             android:id="@+id/tv_base"
-            android:layout_width="wrap_content"
+            android:layout_width="84dp"
             android:layout_height="wrap_content" />
     </LinearLayout>
 
     <ImageView
+        android:contentDescription="@null"
         app:layout_alignSelf="center"
-        android:src="@drawable/arrow_right_alt_32dp"
+        android:src="@drawable/trending_flat_32dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:tint="?attr/colorOnSurface" />
@@ -56,13 +59,15 @@
             android:layout_width="84dp"
             android:layout_height="84dp"/>
         <com.google.android.material.textview.MaterialTextView
+            android:textColor="?attr/colorOnSurface"
             style="?attr/textAppearanceBodyLarge"
+            android:gravity="center_horizontal"
             tools:text="Bisasam"
             android:maxLines="1"
             android:ellipsize="end"
             android:layout_gravity="center_horizontal"
             android:id="@+id/tv_evolution"
-            android:layout_width="wrap_content"
+            android:layout_width="84dp"
             android:layout_height="wrap_content"/>
     </LinearLayout>
 </com.google.android.flexbox.FlexboxLayout>

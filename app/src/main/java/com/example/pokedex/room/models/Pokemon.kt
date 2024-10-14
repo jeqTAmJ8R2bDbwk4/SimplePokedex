@@ -44,6 +44,8 @@ data class Pokemon(
     val spriteUrl: String,
     @ColumnInfo(name = "official_sprite_url")
     val officialSpriteUrl: String,
+    @ColumnInfo(name = "official_shiny_sprite_url")
+    val officialShinySpriteUrl: String,
     @ColumnInfo(name = "form_name")
     val formName: String,
     @ColumnInfo(name = "form_localized_name")
@@ -57,8 +59,9 @@ data class Pokemon(
             secondaryTypeId = pokemon.secondaryType?.id,
             spriteUrl = pokemon.spriteUrl,
             officialSpriteUrl = pokemon.officialSpriteUrl,
+            officialShinySpriteUrl = pokemon.officialShinySpriteUrl,
             formName = pokemon.formName,
-            formLocalizedName = pokemon.formLocalizedName
+            formLocalizedName = pokemon.formLocalizedName,
         )
     }
 }

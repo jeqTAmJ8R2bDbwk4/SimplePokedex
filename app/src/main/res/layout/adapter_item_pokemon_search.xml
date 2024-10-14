@@ -10,6 +10,7 @@
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_name"
         style="?attr/textAppearanceBodyLarge"
+        android:textColor="?attr/colorOnSurface"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"

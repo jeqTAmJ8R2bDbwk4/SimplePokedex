@@ -3,19 +3,21 @@ package com.example.pokedex.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import com.example.pokedex.models.Pokemon
-import com.example.pokedex.adapters.models.AdapterItemSearch
+import androidx.paging.map
 import com.example.pokedex.adapters.models.AdapterItemType
+import com.example.pokedex.models.Pokemon
 import com.example.pokedex.models.State
-import com.example.pokedex.models.errors.Error
 import com.example.pokedex.models.errors.RepositoryError
 import com.example.pokedex.repositories.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -24,7 +26,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val repository: Repository,
+    private val repository: Repository
 ) : ViewModel() {
     companion object {
         private const val RECYCLER_VIEW = 0
@@ -34,15 +36,6 @@ class HomeViewModel @Inject constructor(
     val favourites = repository
         .getFavouritePokemonFlow()
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
-
-    private val _weeknessFourth = MutableStateFlow((0 until 6).map(AdapterItemType::Placeholder))
-    val weeknessFourth = _weeknessFourth.asStateFlow()
-    private val _weeknessHalf = MutableStateFlow((0 until 6).map(AdapterItemType::Placeholder))
-    val weeknessHelf = _weeknessHalf.asStateFlow()
-    private val _weeknessDouble = MutableStateFlow((0 until  6).map(AdapterItemType::Placeholder))
-    val weeknessDouble = _weeknessDouble.asStateFlow()
-    private val _weeknessQuadruple = MutableStateFlow((0 until 6).map(AdapterItemType::Placeholder))
-    val weeknessQuadruple = _weeknessQuadruple.asStateFlow()
 
     private val _isFABVisible = MutableStateFlow(false)
     val isFABVisible: StateFlow<Boolean> = _isFABVisible
@@ -61,10 +54,13 @@ class HomeViewModel @Inject constructor(
     private val _error = MutableStateFlow<RepositoryError?>(null)
     val error = _error.asStateFlow()
 
-    private val _searchResults = MutableStateFlow(emptyList<AdapterItemSearch>())
-    val searchResults = _searchResults.asStateFlow()
+    private val _snackbarError = MutableSharedFlow<RepositoryError?>()
+    val snackbarError = _snackbarError.asSharedFlow()
 
-    val pagingFlow = repository.getAllPokemon().flow.cachedIn(viewModelScope)
+    val pagingFlow = repository.getPagedPokemon()
+        .flow.flowOn(Dispatchers.IO)
+        .map { pokemon -> pokemon.map(Pokemon::fromRoomPokemon) }
+        .cachedIn(viewModelScope)
 
     fun setIsFavourite(pokemon: Pokemon, isFavourite: Boolean) {
         var favourites = this.favourites.value.asSequence().filter { it.id != pokemon.id }
@@ -76,17 +72,17 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun setFABVisibility(show: Boolean) {
-        viewModelScope.launch(Dispatchers.IO) {
-            _isFABVisible.emit(show)
-        }
-    }
-
-    fun setState(state: State) {
+    fun setRefreshState(state: State) {
         _state.value = state
     }
 
-    fun setError(error: RepositoryError?) {
+    fun showSnackbarError(error: RepositoryError?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _snackbarError.emit(error)
+        }
+    }
+
+    fun setRefreshError(error: RepositoryError?) {
         _error.value = error
     }
 }

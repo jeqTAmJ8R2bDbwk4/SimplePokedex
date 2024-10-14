@@ -43,6 +43,7 @@
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/national_pokedex_number"
             style="?attr/textAppearanceBodyMedium"
+            android:textColor="?attr/colorOnSurfaceVariant"
             android:lines="1"
             android:layout_width="match_parent"
             android:ellipsize="end"
@@ -54,7 +55,7 @@
         app:shapeAppearanceOverlay="@style/circleImageView"
         app:contentPadding="6dp"
         android:layout_gravity="center"
-        tools:src="@drawable/grass"
+        tools:src="@drawable/pokemon_type_grass"
         tools:background="?attr/colorTypeGrass"
         android:scaleType="fitCenter"
         android:id="@+id/iv_primary_type"
@@ -73,7 +74,7 @@
         android:contentDescription="@string/content_description_type"
         tools:background="?attr/colorTypePoison"
         android:layout_gravity="center"
-        tools:src="@drawable/poison"
+        tools:src="@drawable/pokemon_type_poison"
         android:scaleType="fitCenter"
 
         android:id="@+id/iv_secondary_type"

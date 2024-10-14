@@ -1,31 +1,25 @@
 package com.example.pokedex.adapters
 
-import android.animation.AnimatorInflater
-import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
-import androidx.annotation.IntDef
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import coil.imageLoader
-import coil.request.Disposable
 import coil.request.ImageRequest
 import com.example.pokedex.R
-import com.example.pokedex.adapters.utils.OnItemCheckedChangeListener
-import com.example.pokedex.adapters.utils.OnItemClickListener
-import com.example.pokedex.adapters.utils.ViewHolderBinder
 import com.example.pokedex.databinding.AdapterItemPokemonBinding
-import com.example.pokedex.databinding.AdapterItemPokemonPlaceholderBinding
 import com.example.pokedex.models.Pokemon
-import com.example.pokedex.utils.ResourceUtil
+import com.example.pokedex.utils.OnItemCheckedChangeListener
+import com.example.pokedex.utils.OnItemClickListener
 import com.example.pokedex.utils.ResourceUtil.getAttrResFromTypeId
 import com.example.pokedex.utils.ResourceUtil.getDrawableResourceFromTypeId
+import com.example.pokedex.utils.ViewHolderBinder
 import com.example.pokedex.utils.formatPokedexNumber
 import com.example.pokedex.utils.notifyPositionChanged
 import com.google.android.material.color.MaterialColors
@@ -43,28 +37,19 @@ private val diffCallback = object : DiffUtil.ItemCallback<Pokemon>() {
     }
 }
 
-class PokemonAdapter: PagingDataAdapter<Pokemon, RecyclerView.ViewHolder>(diffCallback) {
+class PokemonAdapter: PagingDataAdapter<Pokemon, ViewHolder>(diffCallback) {
     private sealed interface Payload {
         data object FavouriteUpdate: Payload
     }
 
-    companion object {
-        const val POKEMON_VIEW_TYPE = 0
-        const val PLACEHOLDER_VIEW_TYPE = 1
-
-        private val animationStartTime = System.currentTimeMillis()
-
-        @Retention(AnnotationRetention.SOURCE)
-        @IntDef(POKEMON_VIEW_TYPE, PLACEHOLDER_VIEW_TYPE)
-        annotation class ViewType
-    }
-
-    private fun getPositionByPokemonId(pokemonId: Int): Int? {
+    private fun getPositionByPokemonIdOrNull(pokemonId: Int): Int? {
         val position = snapshot().indexOfFirst { pokemon ->
             if (pokemon == null) return@indexOfFirst false
             pokemon.id == pokemonId
         }
-        if (position == -1) return null
+        if (position == -1) {
+            return null
+        }
         return position
     }
 
@@ -87,9 +72,8 @@ class PokemonAdapter: PagingDataAdapter<Pokemon, RecyclerView.ViewHolder>(diffCa
 
     private inner class PokemonViewHolder(
         private val binding: AdapterItemPokemonBinding
-    ) : RecyclerView.ViewHolder(binding.root), ViewHolderBinder<Pokemon> {
+    ) : ViewHolder(binding.root), ViewHolderBinder<Pokemon> {
         private var isAttached = false
-        private var requestDisposable: Disposable? = null
 
         private val onCheckedChangeListener = object : CompoundButton.OnCheckedChangeListener {
             override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
@@ -127,7 +111,7 @@ class PokemonAdapter: PagingDataAdapter<Pokemon, RecyclerView.ViewHolder>(diffCa
                 binding.sPrimaryType.visibility = View.GONE
             } else {
                 val secondaryColor = MaterialColors.getColorOrNull(context, getAttrResFromTypeId(item.secondaryType.id))!!
-                val secondaryDrawable = ResourceUtil.getDrawableResourceFromTypeId(item.secondaryType.id)
+                val secondaryDrawable = getDrawableResourceFromTypeId(item.secondaryType.id)
 
                 binding.ivSecondaryType.setBackgroundColor(secondaryColor)
                 binding.ivSecondaryType.setImageResource(secondaryDrawable)
@@ -138,15 +122,14 @@ class PokemonAdapter: PagingDataAdapter<Pokemon, RecyclerView.ViewHolder>(diffCa
             val isChecked = favouriteSet.contains(item.id)
             setIsChecked(isChecked)
 
-            requestDisposable?.dispose()
             val imageLoader = context.imageLoader
             val request = ImageRequest.Builder(context)
                 .data(item.spriteUrl)
                 .target(binding.ivPokemon)
                 .bitmapConfig(Bitmap.Config.ARGB_8888)
-                .error(R.drawable.pokemon_sprite_not_found)
+                .error(R.drawable.pokemon_sprite_not_found_56dp)
                 .build()
-            requestDisposable = imageLoader.enqueue(request)
+            imageLoader.enqueue(request)
         }
 
         fun setIsChecked(isChecked: Boolean) {
@@ -170,64 +153,26 @@ class PokemonAdapter: PagingDataAdapter<Pokemon, RecyclerView.ViewHolder>(diffCa
             binding.linearLayout.setOnClickListener(null)
         }
     }
-    private inner class PlaceholderViewHolder(
-        val binding: AdapterItemPokemonPlaceholderBinding
-    ): RecyclerView.ViewHolder(binding.root), ViewHolderBinder<Unit> {
-        private val animator = AnimatorInflater
-            .loadAnimator(binding.root.context, R.animator.pulsing_animator)
-            as ObjectAnimator
 
-        override fun attach() {
-            animator.setTarget(binding.linearLayout)
-            animator.currentPlayTime = System.currentTimeMillis()
-            animator.start()
-        }
-
-        override fun detach() {
-            animator.cancel()
-            animator.setTarget(null)
-        }
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, @ViewType viewType: Int): RecyclerView.ViewHolder {
-        return when(viewType) {
-            POKEMON_VIEW_TYPE -> {
-                val binding = AdapterItemPokemonBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
-                )
-                PokemonViewHolder(binding)
-            }
-            PLACEHOLDER_VIEW_TYPE -> {
-                val binding = AdapterItemPokemonPlaceholderBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
-                )
-                PlaceholderViewHolder(binding)
-            }
-            else -> throw IllegalArgumentException()
-        }
-    }
-
-    @ViewType
-    override fun getItemViewType(position: Int): Int {
-        getItem(position) ?: return PLACEHOLDER_VIEW_TYPE
-        return POKEMON_VIEW_TYPE
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val binding = AdapterItemPokemonBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        return PokemonViewHolder(binding)
     }
 
     override fun onBindViewHolder(
-        holder: RecyclerView.ViewHolder,
+        holder: ViewHolder,
         position: Int,
         payloads: MutableList<Any>
     ) {
-        if (holder !is PokemonViewHolder) {
-            onBindViewHolder(holder, position)
+        val item = getItem(position)
+        if (holder !is PokemonViewHolder || item !is Pokemon) {
+            Timber.e("Item %s is not a Pokemon instance or holder %s is not a PokemonViewHolder instance.", item, holder::class.qualifiedName)
             return
         }
-        val item = getItem(position)
-        if (item !is Pokemon) return
 
         if (!payloads.contains(Payload.FavouriteUpdate)) {
             onBindViewHolder(holder, position)
@@ -239,18 +184,21 @@ class PokemonAdapter: PagingDataAdapter<Pokemon, RecyclerView.ViewHolder>(diffCa
     }
 
     @Throws(NullPointerException::class, IllegalArgumentException::class)
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
-        when {
-            item is Pokemon && holder is PokemonViewHolder -> holder.bind(item, position)
+        if (holder !is PokemonViewHolder || item !is Pokemon) {
+            Timber.e("Item %s is not a Pokemon instance or holder %s is not a PokemonViewHolder instance.", item, holder::class.qualifiedName)
+            assert(false)
+            return
         }
+        holder.bind(item, position)
     }
 
     fun setFavouriteSet(favouriteSet: Set<Int>) {
         val changedFavourites = (this.favouriteSet - favouriteSet) + favouriteSet
         this.favouriteSet = favouriteSet
         notifyPositionChanged(
-            changedFavourites.mapNotNull(::getPositionByPokemonId),
+            changedFavourites.mapNotNull(::getPositionByPokemonIdOrNull),
             Payload.FavouriteUpdate
         )
     }
@@ -260,7 +208,6 @@ class PokemonAdapter: PagingDataAdapter<Pokemon, RecyclerView.ViewHolder>(diffCa
         if (holder !is ViewHolderBinder<*>) {
             return
         }
-        Timber.d("Attached %s",  holder::class.simpleName)
         holder.attach()
     }
 
@@ -269,7 +216,6 @@ class PokemonAdapter: PagingDataAdapter<Pokemon, RecyclerView.ViewHolder>(diffCa
         if (holder !is ViewHolderBinder<*>) {
             return
         }
-        Timber.d("Detached %s", holder::class.simpleName)
         holder.detach()
     }
 }

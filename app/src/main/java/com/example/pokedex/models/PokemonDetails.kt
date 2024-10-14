@@ -1,12 +1,14 @@
 package com.example.pokedex.models
 
-import com.example.pokedex.fragment.PokemonDetailsFragment as ApolloPokemon
-import com.example.pokedex.fragment.PokemonTypeRelationFragment as ApolloTypeRelation
-import com.example.pokedex.fragment.PokemonStatsRangeFragment as ApolloStatRange
+import android.net.Uri
 import com.example.pokedex.utils.NonEmpty
 import com.example.pokedex.utils.squeeze
 import com.example.pokedex.utils.validateNonEmpty
 import org.apache.commons.math3.fraction.Fraction
+import timber.log.Timber
+import com.example.pokedex.fragment.PokemonDetailsFragment as ApolloPokemon
+import com.example.pokedex.fragment.PokemonStatsRangeFragment as ApolloStatRange
+import com.example.pokedex.fragment.PokemonTypeRelationFragment as ApolloTypeRelation
 
 data class PokemonDetails(
     // General
@@ -32,7 +34,8 @@ data class PokemonDetails(
     val baseSpecialAttack: Int,
     val baseDefense: Int,
     val abilities: List<Ability>,
-    val typeWeekness: Map<Fraction, List<Int>>,
+    val typeWeakness: Map<Fraction, List<Int>>,
+    val cry: Uri?,
 
     // Form
     val formName: String,
@@ -71,6 +74,8 @@ data class PokemonDetails(
             specialDefenseRange: ApolloStatRange,
             speedRange: ApolloStatRange
         ): PokemonDetails {
+            Timber.d("%s", pokemon.cries)
+
             val specy = pokemon.specy!!.pokemonSpecyDetailsFragment
             val types = pokemon.types.map { type ->
                 type.pokemonTypesFragment.type!!.pokemonTypeFragment
@@ -91,14 +96,12 @@ data class PokemonDetails(
             val primaryType = types.first()
             val secondaryType = types.getOrNull(1)
 
-            val typeWeekness = typeRelations.asSequence()
+            val typeWeakness = typeRelations.asSequence()
                 .flatMap { type ->
                     type.efficacies.map { efficacy ->
                         Triple(
-                            type.let { type -> type.id },
-                            efficacy.target!!.let { type ->
-                                type.id
-                            },
+                            type.id,
+                            efficacy.target!!.id,
                             Fraction(efficacy.damageFactor, 100)
                         )
                     }
@@ -137,6 +140,7 @@ data class PokemonDetails(
                 baseSpecialAttack = baseSpecialAttack.baseStat,
                 baseSpecialDefense = baseSpecialDefense.baseStat,
                 baseSpeed = baseSpeed.baseStat,
+                cry = ((pokemon.cries.firstOrNull()?.cries as Map<*, *>?)?.get("latest") as String?)?.let(Uri::parse),
 
                 primaryType = Type(
                     id = primaryType.id,
@@ -217,7 +221,7 @@ data class PokemonDetails(
                     .pokedex_numbers
                     .squeeze()
                     .pokedex_number,
-                typeWeekness = typeWeekness
+                typeWeakness = typeWeakness
             )
         }
     }

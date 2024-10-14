@@ -1,4 +1,4 @@
-query PokemonSearch($query: String = "Al%") {
+query PokemonSearch($query: String!) {
   pokemonByFormName: pokemon_v2_pokemon(
     order_by: {pokemon_species_id: asc},
     where: {

@@ -19,4 +19,7 @@ fragment PokemonDetailsFragment on pokemon_v2_pokemon {
     abilities: pokemon_v2_pokemonabilities {
         ...PokemonAbilityFragment
     }
+    cries: pokemon_v2_pokemoncries(order_by: {id: desc}, limit: 1) {
+        cries
+    }
 }

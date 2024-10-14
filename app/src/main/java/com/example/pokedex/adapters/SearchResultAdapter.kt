@@ -12,18 +12,16 @@ import androidx.annotation.IntDef
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.imageLoader
-import coil.request.Disposable
 import coil.request.ImageRequest
 import com.example.pokedex.R
 import com.example.pokedex.adapters.models.AdapterItemPokemon
-import com.example.pokedex.adapters.utils.OnItemCheckedChangeListener
-import com.example.pokedex.adapters.utils.OnItemClickListener
-import com.example.pokedex.adapters.utils.ViewHolderBinder
 import com.example.pokedex.databinding.AdapterItemPokemonBinding
 import com.example.pokedex.databinding.AdapterItemPokemonPlaceholderBinding
 import com.example.pokedex.models.Pokemon
+import com.example.pokedex.utils.OnItemCheckedChangeListener
+import com.example.pokedex.utils.OnItemClickListener
 import com.example.pokedex.utils.ResourceUtil
-import com.example.pokedex.utils.context
+import com.example.pokedex.utils.ViewHolderBinder
 import com.example.pokedex.utils.formatPokedexNumber
 import com.example.pokedex.utils.notifyPositionChanged
 import com.google.android.material.color.MaterialColors
@@ -52,8 +50,6 @@ class SearchResultAdapter: BaseAdapter<AdapterItemPokemon>(diffCallback) {
     companion object {
         const val POKEMON_VIEW_TYPE = 0
         const val PLACEHOLDER_VIEW_TYPE = 1
-
-        private val animationStartTime = System.currentTimeMillis()
 
         @Retention(AnnotationRetention.SOURCE)
         @IntDef(POKEMON_VIEW_TYPE, PLACEHOLDER_VIEW_TYPE)
@@ -93,7 +89,6 @@ class SearchResultAdapter: BaseAdapter<AdapterItemPokemon>(diffCallback) {
         private val binding: AdapterItemPokemonBinding
     ) : RecyclerView.ViewHolder(binding.root), ViewHolderBinder<AdapterItemPokemon.Pokemon> {
         private var isAttached = false
-        private var requestDisposable: Disposable? = null
 
         private val onCheckedChangeListener = object : CompoundButton.OnCheckedChangeListener {
             override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
@@ -149,15 +144,14 @@ class SearchResultAdapter: BaseAdapter<AdapterItemPokemon>(diffCallback) {
             val isChecked = favouriteSet.contains(item.content.id)
             setIsChecked(isChecked)
 
-            requestDisposable?.dispose()
             val imageLoader = context.imageLoader
             val request = ImageRequest.Builder(context)
                 .data(item.content.spriteUrl)
                 .target(binding.ivPokemon)
-                .error(R.drawable.pokemon_sprite_not_found)
+                .error(R.drawable.pokemon_sprite_not_found_56dp)
                 .bitmapConfig(Bitmap.Config.ARGB_8888)
                 .build()
-            requestDisposable = imageLoader.enqueue(request)
+            imageLoader.enqueue(request)
         }
 
         fun setIsChecked(isChecked: Boolean) {

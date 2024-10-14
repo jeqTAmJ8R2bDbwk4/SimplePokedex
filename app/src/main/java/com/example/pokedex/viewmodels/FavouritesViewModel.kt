@@ -3,7 +3,6 @@ package com.example.pokedex.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pokedex.models.Pokemon
-import com.example.pokedex.repositories.LocalRepository
 import com.example.pokedex.repositories.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -43,16 +42,8 @@ class FavouritesViewModel @Inject constructor(private val repository: Repository
         }
     }
 
-    fun removeFavourite(pokemon: Pokemon) {
-        var favourites = _favourites.value ?: return
-        favourites = favourites.filter { it.id != pokemon.id }
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.updateFavourites(favourites)
-        }
-    }
-
     fun moveFavourite(srcPos: Int, dstPos: Int) {
-        var favourites = _favourites.value?.toMutableList() ?: return
+        val favourites = _favourites.value?.toMutableList() ?: return
         Timber.d("Before swap: %s", favourites.map(Pokemon::id).joinToString(", "))
         Collections.swap(favourites, srcPos, dstPos)
         Timber.d("After swap: %s", favourites.map(Pokemon::id).joinToString(", "))
@@ -68,5 +59,17 @@ class FavouritesViewModel @Inject constructor(private val repository: Repository
         viewModelScope.launch(Dispatchers.IO) {
             repository.updateFavourites(favourites)
         }
+    }
+
+    fun setIsFavourite(pokemon: Pokemon) {
+        var favourites = this._favourites.value?.asSequence()?.filter { it.id != pokemon.id } ?: return
+        favourites += pokemon
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.updateFavourites(favourites.toList())
+        }
+    }
+
+    fun getFavouriteByPosition(position: Int): Pokemon? {
+        return _favourites.value?.getOrNull(position)
     }
 }

@@ -1,4 +1,4 @@
-query PokemonNameSearch($query: String) {
+query PokemonNameSearch($query: String!) {
     specyNames: pokemon_v2_pokemonspeciesname(where: {language_id: {_eq: 6}, name: {_ilike: $query}}) {
         name
     }

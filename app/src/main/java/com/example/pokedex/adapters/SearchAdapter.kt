@@ -6,19 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.IntDef
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.pokedex.R
-import com.example.pokedex.adapters.utils.ViewHolderBinder
-import com.example.pokedex.databinding.AdapterItemHistoryBinding
-import com.example.pokedex.databinding.AdapterItemSuggestionBinding
 import com.example.pokedex.adapters.models.AdapterItemSearch
-import com.example.pokedex.adapters.utils.LinearLayoutSpacingDecorator
-import com.example.pokedex.adapters.utils.OnItemClickListener
+import com.example.pokedex.databinding.AdapterItemHistoryBinding
 import com.example.pokedex.databinding.AdapterItemPopularPokemonRecyclerViewBinding
 import com.example.pokedex.databinding.AdapterItemPopularPokemonTitleBinding
-import com.example.pokedex.models.Pokemon
+import com.example.pokedex.databinding.AdapterItemSuggestionBinding
 import com.example.pokedex.models.PokemonMinimal
+import com.example.pokedex.utils.LinearLayoutSpacingDecorator
+import com.example.pokedex.utils.OnItemClickListener
+import com.example.pokedex.utils.ViewHolderBinder
 import com.example.pokedex.utils.context
 import timber.log.Timber
 import java.util.UUID
@@ -80,9 +78,9 @@ class SearchAdapter: BaseAdapter<AdapterItemSearch>(diffCallback) {
         super.submitData(data)
     }
 
-    fun getPopularPokemonTransitionName(context: Context, transitionId: Int): String {
+    /* fun getPopularPokemonTransitionName(context: Context, transitionId: Int): String {
         return context.getString(R.string.transition_name, transitionId, popularPokemonAdapterTransitionUUID)
-    }
+    } */
 
     override fun getItemViewType(position: Int): @ViewType Int {
         val item = getItem(position)!!
@@ -143,7 +141,7 @@ class SearchAdapter: BaseAdapter<AdapterItemSearch>(diffCallback) {
 
     /* TODO: Need to find a solution to keep the scroll state after navigation. */
     private inner class SuggestionPopularPokemonViewHolder(
-        private val binding: AdapterItemPopularPokemonRecyclerViewBinding
+        binding: AdapterItemPopularPokemonRecyclerViewBinding
     ): ViewHolder(binding.root), ViewHolderBinder<AdapterItemSearch.Popular> {
         private val adapter = SearchPopularPokemonAdapter(popularPokemonAdapterTransitionUUID)
 
@@ -173,11 +171,11 @@ class SearchAdapter: BaseAdapter<AdapterItemSearch>(diffCallback) {
         }
     }
     private inner class SuggestionPopularPokemonTitleViewHolder(
-        private val binding: AdapterItemPopularPokemonTitleBinding
+        binding: AdapterItemPopularPokemonTitleBinding
     ): ViewHolder(binding.root)
 
     @Throws(IllegalArgumentException::class)
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: @ViewType Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: @ViewType Int): ViewHolder {
         return when (viewType) {
             VIEW_TYPE_HISTORY -> {
                 val binding = AdapterItemHistoryBinding.inflate(
@@ -216,7 +214,7 @@ class SearchAdapter: BaseAdapter<AdapterItemSearch>(diffCallback) {
     }
 
     @Throws(IllegalArgumentException::class)
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
         when {
             item is AdapterItemSearch.HistoryEntry && holder is HistoryViewHolder -> {

@@ -3,7 +3,6 @@
     android:id="@+id/linear_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     app:justifyContent="space_evenly"
     android:gravity="center_horizontal"
@@ -33,7 +32,7 @@
     <ImageView
         app:layout_alignSelf="center"
         android:layout_gravity="center_vertical"
-        android:src="@drawable/arrow_right_alt_32dp"
+        android:src="@drawable/trending_flat_32dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:tint="?attr/colorSurfaceContainerHighest" />

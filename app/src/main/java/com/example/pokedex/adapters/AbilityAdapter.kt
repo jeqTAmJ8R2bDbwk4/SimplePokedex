@@ -10,12 +10,12 @@ import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.pokedex.R
-import com.example.pokedex.adapters.utils.OnItemClickListener
-import com.example.pokedex.adapters.utils.ViewHolderBinder
+import com.example.pokedex.adapters.models.AdapterItemAbility
 import com.example.pokedex.databinding.AdapterItemAbilityBinding
 import com.example.pokedex.databinding.AdapterItemAbilityPlaceholderBinding
 import com.example.pokedex.models.Ability
-import com.example.pokedex.adapters.models.AdapterItemAbility
+import com.example.pokedex.utils.OnItemClickListener
+import com.example.pokedex.utils.ViewHolderBinder
 import com.example.pokedex.utils.context
 import com.google.android.material.color.MaterialColors
 import timber.log.Timber
@@ -65,11 +65,11 @@ class AbilityAdapter: BaseAdapter<AdapterItemAbility>(diffCallBack) {
             binding.tvGameName.text = description?.let {
                 context.getString(
                     R.string.game_name,
-                    description.versionGroup.map{version -> version.getName()}.joinToString("/")
+                    description.versionGroup.joinToString("/") { version -> version.getName() }
                 )
             } ?: context.getString(R.string.unknown_pokemon_version_group)
             if (item.content.isHidden) {
-                binding.tvTitle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.hide_source, 0)
+                binding.tvTitle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.hide_source_24dp, 0)
                 val colorOnSurfaceStateList = MaterialColors.getColorStateListOrNull(context, R.attr.colorOnSurface)!!
                 TextViewCompat.setCompoundDrawableTintList(binding.tvTitle, colorOnSurfaceStateList)
             } else {

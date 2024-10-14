@@ -2,20 +2,20 @@ package com.example.pokedex.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.pokedex.models.AbilityDescription
 import com.example.pokedex.adapters.models.AdapterItemAbility
 import com.example.pokedex.adapters.models.AdapterItemEvolutionChainEdge
-import com.example.pokedex.models.EvolutionChainEntry
+import com.example.pokedex.adapters.models.AdapterItemType
 import com.example.pokedex.models.Description
+import com.example.pokedex.models.EvolutionChainEntry
 import com.example.pokedex.models.Pokemon
 import com.example.pokedex.models.PokemonDetails
 import com.example.pokedex.models.State
-import com.example.pokedex.adapters.models.AdapterItemType
+import com.example.pokedex.models.errors.RepositoryError
 import com.example.pokedex.repositories.Repository
 import com.example.pokedex.repositories.Result
 import com.example.pokedex.utils.FRACTION_FOUR
 import com.example.pokedex.utils.FRACTION_ONE_HALF
-import com.example.pokedex.utils.FRACTION_ONE_QUATER
+import com.example.pokedex.utils.FRACTION_ONE_QUARTER
 import com.example.pokedex.utils.FRACTION_TWO
 import com.example.pokedex.utils.FRACTION_ZERO
 import com.example.pokedex.utils.unsqueeze
@@ -36,7 +36,7 @@ class PokemonDetailsViewModel @Inject constructor(
     val repository: Repository
 ): ViewModel() {
     companion object {
-        private val weeknessPlaceholders = (0 until 4).map(AdapterItemType::Placeholder)
+        private val weaknessPlaceholders = (0 until 4).map(AdapterItemType::Placeholder)
         private val abilityPlaceholders = (0 until 1).map(AdapterItemAbility::PlaceHolder)
         private val evolutionPlaceholders = (0 until 2).map(AdapterItemEvolutionChainEdge::Placeholder)
 
@@ -59,7 +59,7 @@ class PokemonDetailsViewModel @Inject constructor(
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, NESTED_SCROLL_VIEW)
 
-    val favourites = repository.getFavouritePokemonFlow().stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+    private val favourites = repository.getFavouritePokemonFlow().stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
     val favouriteIdSet = favourites.map { favourites -> favourites.map(Pokemon::id).toSet() }.stateIn(viewModelScope, SharingStarted.Eagerly, emptySet())
 
     fun setIsFavourite(pokemon: Pokemon, isFavourite: Boolean) {
@@ -70,20 +70,18 @@ class PokemonDetailsViewModel @Inject constructor(
         }
     }
 
-    private val _weeknessQuater = MutableStateFlow<List<AdapterItemType>>(weeknessPlaceholders)
-    val weeknessQuater = _weeknessQuater.asStateFlow()
-    private val _weeknessHalf = MutableStateFlow<List<AdapterItemType>>(weeknessPlaceholders)
-    val weeknessHalf = _weeknessHalf.asStateFlow()
-    private val _weeknessDouble = MutableStateFlow<List<AdapterItemType>>(weeknessPlaceholders)
-    val weeknessDouble = _weeknessDouble.asStateFlow()
-    private val _weeknessQuadruple = MutableStateFlow<List<AdapterItemType>>(weeknessPlaceholders)
-    val weeknessQuadruple = _weeknessQuadruple.asStateFlow()
-    private val _weeknessImmune = MutableStateFlow<List<AdapterItemType>>(weeknessPlaceholders)
-    val weeknessImmune = _weeknessImmune.asStateFlow()
+    private val _weaknessQuarter = MutableStateFlow<List<AdapterItemType>>(weaknessPlaceholders)
+    val weaknessQuarter = _weaknessQuarter.asStateFlow()
+    private val _weaknessHalf = MutableStateFlow<List<AdapterItemType>>(weaknessPlaceholders)
+    val weaknessHalf = _weaknessHalf.asStateFlow()
+    private val _weaknessDouble = MutableStateFlow<List<AdapterItemType>>(weaknessPlaceholders)
+    val weaknessDouble = _weaknessDouble.asStateFlow()
+    private val _weaknessQuadruple = MutableStateFlow<List<AdapterItemType>>(weaknessPlaceholders)
+    val weaknessQuadruple = _weaknessQuadruple.asStateFlow()
+    private val _weaknessImmune = MutableStateFlow<List<AdapterItemType>>(weaknessPlaceholders)
+    val weaknessImmune = _weaknessImmune.asStateFlow()
     private val _descriptions = MutableStateFlow(listOf<Description>())
-    val descritions = _descriptions.asStateFlow()
-    private val _abilityDescriptions = MutableStateFlow(listOf<AbilityDescription>())
-    val abilityDescriptions = _abilityDescriptions.asStateFlow()
+    val descriptions = _descriptions.asStateFlow()
     private val _evolutions = MutableStateFlow<List<AdapterItemEvolutionChainEdge>>(evolutionPlaceholders)
     val evolutions = _evolutions.asStateFlow()
 
@@ -96,6 +94,9 @@ class PokemonDetailsViewModel @Inject constructor(
         }
         return multiplier.unsqueeze() + typeIds.map(AdapterItemType::Type)
     }
+
+    private val _error = MutableStateFlow<RepositoryError?>(null)
+    val error = _error.asStateFlow()
 
     fun chainToEdges(entries: List<Pokemon>): List<AdapterItemEvolutionChainEdge> {
         val adjacency = entries.groupBy { entry -> entry.specyEvolvedFromSpecyId  }
@@ -133,10 +134,7 @@ class PokemonDetailsViewModel @Inject constructor(
     }
 
     fun reload() {
-        val pokemonId = pokemonId.value
-        if (pokemonId == null) {
-            return
-        }
+        val pokemonId = pokemonId.value ?: return
         loadHelper(pokemonId)
     }
 
@@ -147,33 +145,36 @@ class PokemonDetailsViewModel @Inject constructor(
     private fun loadHelper(pokemonId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             _state.value = State.LOADING
-            _weeknessQuater.value = weeknessPlaceholders
-            _weeknessHalf.value = weeknessPlaceholders
-            _weeknessDouble.value = weeknessPlaceholders
-            _weeknessQuadruple.value = weeknessPlaceholders
+            _weaknessQuarter.value = weaknessPlaceholders
+            _weaknessHalf.value = weaknessPlaceholders
+            _weaknessDouble.value = weaknessPlaceholders
+            _weaknessQuadruple.value = weaknessPlaceholders
             _evolutions.value = evolutionPlaceholders
 
-            when(val result = repository.getPokemonDetails(pokemonId)) {
+            val result = repository.getPokemonDetails(pokemonId)
+            when(result) {
                 is Result.Error -> {
+                    _error.value = result.error as RepositoryError  // Not sure why this does not get casted automatically.
                     _state.value = State.ERROR
                 }
                 is Result.Success -> {
+                    _error.value = null
                     _state.value = State.SUCCESS
                     _result.value = result.data
                     _abilities.value = result.data.abilities.map(AdapterItemAbility::Ability)
-                    _weeknessQuater.value = result.data.typeWeekness
-                        .getOrDefault(FRACTION_ONE_QUATER, emptyList())
+                    _weaknessQuarter.value = result.data.typeWeakness
+                        .getOrDefault(FRACTION_ONE_QUARTER, emptyList())
                         .let{toTypeItems(AdapterItemType.Quater, it)}
-                    _weeknessHalf.value = result.data.typeWeekness
+                    _weaknessHalf.value = result.data.typeWeakness
                         .getOrDefault(FRACTION_ONE_HALF, emptyList())
                         .let{toTypeItems(AdapterItemType.Half, it)}
-                    _weeknessDouble.value = result.data.typeWeekness
+                    _weaknessDouble.value = result.data.typeWeakness
                         .getOrDefault(FRACTION_TWO, emptyList())
                         .let{toTypeItems(AdapterItemType.Double, it)}
-                    _weeknessQuadruple.value = result.data.typeWeekness
+                    _weaknessQuadruple.value = result.data.typeWeakness
                         .getOrDefault(FRACTION_FOUR, emptyList())
                         .let{toTypeItems(AdapterItemType.Quadruple, it)}
-                    _weeknessImmune.value = result.data.typeWeekness
+                    _weaknessImmune.value = result.data.typeWeakness
                         .getOrDefault(FRACTION_ZERO, emptyList())
                         .let{toTypeItems(AdapterItemType.Immune, it)}
                     _descriptions.value = result.data.specyDescriptions

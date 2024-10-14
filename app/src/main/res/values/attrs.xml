@@ -21,5 +21,7 @@
         <attr name="colorTypeDark" format="color"/>
         <attr name="colorTypeSteel" format="color"/>
         <attr name="colorTypeFairy" format="color"/>
+
+        <attr name="colorRemove" format="color"/>
     </declare-styleable>
 </resources>

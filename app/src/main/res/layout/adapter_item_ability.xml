@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
         <com.google.android.material.textview.MaterialTextView
+            android:textColor="?attr/colorOnSurface"
             android:id="@+id/tv_title"
             android:lines="1"
             android:ellipsize="end"
@@ -23,7 +24,7 @@
         />
         <com.google.android.material.textview.MaterialTextView
             style="?attr/textAppearanceBodySmall"
-
+            android:textColor="?attr/colorOnSurfaceVariant"
             android:id="@+id/tv_game_name"
             android:lines="1"
             android:ellipsize="end"
@@ -32,6 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
         <com.google.android.material.textview.MaterialTextView
+            android:textColor="?attr/colorOnSurface"
             android:id="@+id/tv_description"
             style="?attr/textAppearanceBodyMedium"
             android:ellipsize="end"

@@ -10,13 +10,14 @@
         android:id="@+id/tv_description"
         style="?attr/textAppearanceBodyMedium"
         android:layout_width="match_parent"
+        android:textColor="?attr/colorOnSurface"
         android:layout_height="match_parent"
         android:paddingHorizontal="@dimen/window_spacing_horizontal"
         android:paddingTop="12dp"
         tools:text="Pikachu speichert Elektrizität in seinen Wangen. Wenn es überrascht oder verärgert ist, kann es diese Elektrizität als Blitzentladung abgeben. Es nutzt diese Fähigkeit, um sich gegen Feinde zu verteidigen oder um elektrische Geräte aufzuladen." />
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_game_name"
-
+        android:textColor="?attr/colorOnSurfaceVariant"
         style="?attr/textAppearanceBodySmall"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

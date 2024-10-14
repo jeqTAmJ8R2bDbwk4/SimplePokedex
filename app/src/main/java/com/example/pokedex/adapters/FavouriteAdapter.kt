@@ -5,22 +5,19 @@ import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton
 import androidx.annotation.IntDef
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import coil.imageLoader
-import coil.request.Disposable
 import coil.request.ImageRequest
 import com.example.pokedex.R
-import com.example.pokedex.adapters.models.AdapterItemSearch
-import com.example.pokedex.adapters.utils.OnItemClickListener
-import com.example.pokedex.adapters.utils.ViewHolderBinder
 import com.example.pokedex.databinding.AdapterItemFavouriteBinding
 import com.example.pokedex.models.Pokemon
+import com.example.pokedex.utils.MotionUtil
+import com.example.pokedex.utils.OnItemClickListener
 import com.example.pokedex.utils.ResourceUtil.getAttrResFromTypeId
 import com.example.pokedex.utils.ResourceUtil.getDrawableResourceFromTypeId
+import com.example.pokedex.utils.ViewHolderBinder
 import com.example.pokedex.utils.context
 import com.example.pokedex.utils.formatPokedexNumber
 import com.google.android.material.color.MaterialColors
@@ -58,10 +55,12 @@ class FavouriteAdapter: BaseAdapter<Pokemon>(diffCallback) {
         this.onItemClickListener = onItemClickListener
     }
 
-    private inner class PokemonViewHolder(
+    inner class PokemonViewHolder(
         val binding: AdapterItemFavouriteBinding
-    ) : RecyclerView.ViewHolder(binding.root), ViewHolderBinder<Pokemon> {
-        private var requestDisposable: Disposable? = null
+    ) : ViewHolder(binding.root), ViewHolderBinder<Pokemon> {
+        private val listTwoLinesHeightPx = context.resources.getDimensionPixelSize(R.dimen.list_two_lines_height).toFloat()
+        private val removePaddingPx = context.resources.getDimensionPixelSize(R.dimen.remove_padding).toFloat()
+        private val swipeInterpolator = MotionUtil.BeginAndEndOnScreen.Standard.interpolator(context)
 
         private val onClickListener = View.OnClickListener {
             val item = getItem(absoluteAdapterPosition) ?: return@OnClickListener
@@ -72,7 +71,7 @@ class FavouriteAdapter: BaseAdapter<Pokemon>(diffCallback) {
             val primaryColor = MaterialColors.getColorOrNull(context, getAttrResFromTypeId(item.primaryType.id))!!
             val primaryDrawable = getDrawableResourceFromTypeId(item.primaryType.id)
 
-            binding.linearLayout.transitionName = getTransitionName(context, item.id)
+            binding.llBackground.transitionName = getTransitionName(context, item.id)
             binding.tvName.text = item.getName()
             binding.nationalPokedexNumber.text = item.specyNationalPokedexNumber.formatPokedexNumber()
             binding.ivPrimaryType.setBackgroundColor(primaryColor)
@@ -90,28 +89,71 @@ class FavouriteAdapter: BaseAdapter<Pokemon>(diffCallback) {
                 binding.ivSecondaryType.visibility = View.VISIBLE
                 binding.sPrimaryType.visibility = View.VISIBLE
             }
-
-            requestDisposable?.dispose()
-
             val imageLoader = context.imageLoader
             val request = ImageRequest.Builder(context)
                 .data(item.spriteUrl)
                 .target(binding.ivPokemon)
                 .bitmapConfig(Bitmap.Config.ARGB_8888)
-                .error(R.drawable.pokemon_sprite_not_found)
+                .error(R.drawable.pokemon_sprite_not_found_56dp)
                 .build()
-            requestDisposable =  imageLoader.enqueue(request)
+            imageLoader.enqueue(request)
         }
 
         override fun detach() {
             super.detach()
-            requestDisposable?.dispose()
-            binding.linearLayout.setOnClickListener(null)
+            binding.llForeground.setOnClickListener(null)
         }
 
         override fun attach() {
             super.attach()
-            binding.linearLayout.setOnClickListener(onClickListener)
+
+            // Reset swipe state
+            binding.llForeground.setOnClickListener(onClickListener)
+            binding.ivRemove.alpha = 0F
+            binding.ivRemove.scaleX = 0F
+            binding.ivRemove.scaleY = 0F
+            binding.llForeground.translationX = 0F
+            binding.ivRemove.translationX = 0F
+        }
+
+        private fun interpolateSwipe(
+            alphaInterpolation: Float,
+            scaleInterpolation: Float,
+            translationInterpolation: Float,
+            translationPx: Float
+        ) {
+            assert(alphaInterpolation in 0F..1F)
+            assert(translationInterpolation in 0F..1F)
+            assert(scaleInterpolation in 0F..1F)
+            // assert(translationPx < 0F)
+
+            binding.ivRemove.alpha = alphaInterpolation
+            binding.ivRemove.scaleX = alphaInterpolation
+            binding.ivRemove.scaleY = alphaInterpolation
+            binding.llForeground.translationX = translationPx
+            binding.ivRemove.translationX = translationInterpolation*(translationPx + listTwoLinesHeightPx)
+        }
+
+        fun swipe(translationPx: Float, attachingThreshold: Float, swipeThreshold: Float) {
+            assert(-translationPx >= 0F)
+            assert(swipeThreshold in 0F..1F)
+            assert(attachingThreshold in 0F..1F)
+            assert(attachingThreshold <= swipeThreshold)
+
+            val width = binding.root.width
+            val attachingTranslationPx = -width * attachingThreshold
+            val swipeTranslationPx = -width * swipeThreshold
+
+            val alphaInterpolation = ((-translationPx - removePaddingPx) / (listTwoLinesHeightPx - removePaddingPx)).coerceIn(0F, 1F)
+            val scaleInterpolaton = alphaInterpolation
+            val translationInterpolation = ((attachingTranslationPx - translationPx) / (attachingTranslationPx - swipeTranslationPx)).coerceIn(0F, 1F)
+
+            interpolateSwipe(
+                swipeInterpolator.getInterpolation(alphaInterpolation),
+                swipeInterpolator.getInterpolation(scaleInterpolaton),
+                swipeInterpolator.getInterpolation(translationInterpolation),
+                translationPx
+            )
         }
     }
 
@@ -119,11 +161,7 @@ class FavouriteAdapter: BaseAdapter<Pokemon>(diffCallback) {
         return POKEMON_VIEW_TYPE
     }
 
-    override fun submitData(data: List<Pokemon>) {
-        super.submitData(data)
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, @ViewType viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, @ViewType viewType: Int): ViewHolder {
         return when(viewType) {
             POKEMON_VIEW_TYPE -> {
                 val binding = AdapterItemFavouriteBinding.inflate(
@@ -137,7 +175,7 @@ class FavouriteAdapter: BaseAdapter<Pokemon>(diffCallback) {
         }
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
         when {
             item is Pokemon && holder is PokemonViewHolder -> holder.bind(item, position)

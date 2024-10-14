@@ -67,11 +67,14 @@ enum class HttpStatusCode(val code: Int) {
     NotExtended(510),
     NetworkAuthenticationRequired(511),
 
+    // Unofficial HTTP response status code
+    CloudflareWebServerDown(521),
+
     Unknown(0);
 
     companion object {
         fun fromCode(code: Int): HttpStatusCode {
-            return values().find { it.code == code } ?: Unknown
+            return entries.find { it.code == code } ?: Unknown
         }
     }
 }

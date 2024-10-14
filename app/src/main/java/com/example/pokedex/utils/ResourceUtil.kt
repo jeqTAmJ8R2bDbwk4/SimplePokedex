@@ -1,39 +1,36 @@
 package com.example.pokedex.utils
 
-import android.content.Context
 import androidx.annotation.AttrRes
-import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import com.example.pokedex.R
-import com.google.android.material.color.MaterialColors
 
 object ResourceUtil {
     // Drawable source: https://github.com/duiker101/pokemon-type-svg-icons/tree/master
     @DrawableRes
     fun getDrawableResourceFromTypeId(typeId: Int): Int {
         return when(typeId) {
-            1 -> R.drawable.normal
-            10 -> R.drawable.fire
-            11 -> R.drawable.water
-            13 -> R.drawable.electric
-            12 -> R.drawable.grass
-            15 -> R.drawable.ice
-            2 -> R.drawable.fighting
-            4 -> R.drawable.poison
-            5 -> R.drawable.ground
-            3 -> R.drawable.flying
-            14 -> R.drawable.psychic
-            7 -> R.drawable.bug
-            6 -> R.drawable.rock
-            8 -> R.drawable.ghost
-            16 -> R.drawable.dragon
-            17 -> R.drawable.dark
-            9 -> R.drawable.steel
-            18 -> R.drawable.fairy
-            19 -> R.drawable.question_mark_16dp
-            10001 -> R.drawable.question_mark_16dp
-            10002 -> R.drawable.question_mark_16dp
-            else -> R.drawable.question_mark_16dp
+            1 -> R.drawable.pokemon_type_normal
+            10 -> R.drawable.pokemon_type_fire
+            11 -> R.drawable.pokemon_type_water
+            13 -> R.drawable.pokemon_type_electric
+            12 -> R.drawable.pokemon_type_grass
+            15 -> R.drawable.pokemon_type_ice
+            2 -> R.drawable.pokemon_type_fighting
+            4 -> R.drawable.pokemon_type_poison
+            5 -> R.drawable.pokemon_type_ground
+            3 -> R.drawable.pokemon_type_flying
+            14 -> R.drawable.pokemon_type_psychic
+            7 -> R.drawable.pokemon_type_bug
+            6 -> R.drawable.pokemon_type_rock
+            8 -> R.drawable.pokemon_type_ghost
+            16 -> R.drawable.pokemon_type_dragon
+            17 -> R.drawable.pokemon_type_dark
+            9 -> R.drawable.pokemon_type_steel
+            18 -> R.drawable.pokemon_type_fairy
+            19 -> R.drawable.pokemon_type_unknown
+            10001 -> R.drawable.pokemon_type_unknown
+            10002 -> R.drawable.pokemon_type_unknown
+            else -> R.drawable.pokemon_type_unknown
         }
     }
 

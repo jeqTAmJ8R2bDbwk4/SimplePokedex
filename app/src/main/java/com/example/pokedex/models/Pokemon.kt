@@ -3,9 +3,9 @@ package com.example.pokedex.models
 import android.os.Parcelable
 import com.example.pokedex.utils.NonEmpty
 import com.example.pokedex.utils.validateNonEmpty
-import com.example.pokedex.room.views.CompletePokemon as RoomPokemon
-import com.example.pokedex.fragment.PokemonFragment as ApolloPokemon
 import kotlinx.parcelize.Parcelize
+import com.example.pokedex.fragment.PokemonFragment as ApolloPokemon
+import com.example.pokedex.room.views.CompletePokemon as RoomPokemon
 
 
 @Parcelize
@@ -14,6 +14,7 @@ data class Pokemon(
     val id: Int,
     val spriteUrl: String,
     val officialSpriteUrl: String,
+    val officialShinySpriteUrl: String,
 
     // Form
     val formName: String,
@@ -40,6 +41,7 @@ data class Pokemon(
             id = completePokemon.pokemonId,
             spriteUrl = completePokemon.pokemonSpriteUrl,
             officialSpriteUrl = completePokemon.pokemonOfficialSpriteUrl,
+            officialShinySpriteUrl = completePokemon.pokemonOfficialShinySpriteUrl,
             specyId = completePokemon.specyId,
             specyName = completePokemon.specyName,
             specyLocalizedName = completePokemon.specyLocalizedName,
@@ -76,6 +78,7 @@ data class Pokemon(
                 id = pokemon.id,
                 spriteUrl = sprite?.sprites?.toString().orEmpty(),
                 officialSpriteUrl = officialSprite?.sprites?.toString().orEmpty(),
+                officialShinySpriteUrl = officialSprite?.shiny_sprites?.toString().orEmpty(),
                 specyId = specy.id,
                 specyName = specy.name,
                 specyLocalizedName = specy.names.firstOrNull()?.name.orEmpty(),

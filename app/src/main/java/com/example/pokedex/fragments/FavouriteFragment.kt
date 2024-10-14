@@ -21,20 +21,19 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
+import com.example.pokedex.NavGraphDirections
 import com.example.pokedex.R
 import com.example.pokedex.adapters.FavouriteAdapter
 import com.example.pokedex.databinding.FragmentFavouriteBinding
-import com.example.pokedex.adapters.utils.FavouriteItemTouchHelperCallback
 import com.example.pokedex.models.Pokemon
 import com.example.pokedex.models.PokemonDetailsTransition
+import com.example.pokedex.utils.FavouriteItemTouchHelperCallback
 import com.example.pokedex.utils.MotionUtil
 import com.example.pokedex.utils.collectWithLifecycle
 import com.example.pokedex.utils.fragmentInsets
-import com.example.pokedex.utils.openLicenses
-import com.example.pokedex.utils.openSettings
-import com.example.pokedex.utils.setRootMenuListener
 import com.example.pokedex.viewmodels.FavouritesViewModel
 import com.google.android.material.color.MaterialColors
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -50,24 +49,19 @@ class FavouriteFragment: Fragment() {
     private var fabPaddingPx = 0
     private var windowSpacingHorizontal = 0
 
-    private val listListener = object : ListListener<Pokemon> {
-        override fun onCurrentListChanged(
-            previousList: MutableList<Pokemon>,
-            currentList: MutableList<Pokemon>
-        ) {
-            callback.setOnItemMoveListener { srcPos, dstPos ->
-                callback.setOnItemMoveListener(null)
-                viewModel.moveFavourite(srcPos, dstPos)
-            }
-            viewModel.setIsEmpty(currentList.isEmpty())
+    private val listListener = ListListener<Pokemon> { _, currentList ->
+        callback.setOnItemMoveListener { srcPos, dstPos ->
+            callback.setOnItemMoveListener(null)
+            viewModel.moveFavourite(srcPos, dstPos)
         }
+        viewModel.setIsEmpty(currentList.isEmpty())
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentFavouriteBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -89,14 +83,30 @@ class FavouriteFragment: Fragment() {
     }
 
     private fun setupFab() {
-        binding.fab.setImageResource(R.drawable.vertical_align_top)
+        binding.fab.setImageResource(R.drawable.vertical_align_top_24dp)
         binding.fab.setOnClickListener {
             binding.recyclerView.smoothScrollToPosition(0)
         }
     }
 
     private fun setupAppBar() {
-        requireActivity().setRootMenuListener(binding.toolbar)
+        binding.toolbar.setOnMenuItemClickListener { menuItem ->
+            val navController = findNavController()
+            return@setOnMenuItemClickListener when (menuItem.itemId) {
+                R.id.settings -> {
+                    if (navController.currentDestination?.id != R.id.favourite_fragment) {
+                        return@setOnMenuItemClickListener false
+                    }
+                    findNavController().navigate(NavGraphDirections.actionGlobalSettingsFragment())
+                    true
+                }
+                else -> {
+                    Timber.e("Menu Item %s unknown.", menuItem.title)
+                    assert(false)
+                    false
+                }
+            }
+        }
         binding.appBarLayout.setStatusBarForegroundColor(
             MaterialColors.getColor(binding.appBarLayout, R.attr.colorSurface)
         )
@@ -139,7 +149,7 @@ class FavouriteFragment: Fragment() {
             }
 
             val transitionName = adapter.getTransitionName(requireContext(), pokemon.id)
-            val action = FavouriteFragmentDirections.favouriteFragmentToDetailsFragment(
+            val action = FavouriteFragmentDirections.toPokemonDetailsFragment(
                 PokemonDetailsTransition(transitionName, pokemon)
             )
             val extras = FragmentNavigatorExtras(
@@ -154,7 +164,18 @@ class FavouriteFragment: Fragment() {
             callback.setOnItemMoveListener(null)
             viewModel.moveFavourite(srcPos, dstPos)
         }
-        callback.setOnItemSwipeListener(viewModel::swipeFavourite)
+        callback.setOnItemSwipeListener { position ->
+            val favourite = viewModel.getFavouriteByPosition(position) ?: return@setOnItemSwipeListener
+
+            viewModel.swipeFavourite(position)
+            val snackbar = Snackbar.make(binding.root, getString(R.string.favourites_remove, favourite.getName()), Snackbar.LENGTH_SHORT)
+            ViewCompat.setOnApplyWindowInsetsListener(snackbar.view) { _, insets -> insets }  // Layout already handles insets
+            snackbar.setAction(R.string.action_undo) {
+                viewModel.setIsFavourite(favourite)
+            }
+            snackbar.show()
+
+        }
         val itemTouchHelper = ItemTouchHelper(callback)
         itemTouchHelper.attachToRecyclerView(binding.recyclerView)
     }

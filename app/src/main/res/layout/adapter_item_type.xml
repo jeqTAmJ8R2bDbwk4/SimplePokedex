@@ -11,4 +11,4 @@
     android:contentDescription="@string/content_description_type"
     app:background="@drawable/type_background"
 
-    tools:src="@drawable/grass" />
+    tools:src="@drawable/pokemon_type_grass" />

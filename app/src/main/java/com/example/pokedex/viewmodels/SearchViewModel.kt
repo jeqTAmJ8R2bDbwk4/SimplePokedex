@@ -1,7 +1,5 @@
 package com.example.pokedex.viewmodels
 
-import android.app.appsearch.SearchSuggestionResult
-import androidx.annotation.IntDef
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pokedex.adapters.models.AdapterItemPokemon
@@ -16,8 +14,6 @@ import com.example.pokedex.repositories.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -46,7 +42,7 @@ class SearchViewModel @Inject constructor(val repository: Repository): ViewModel
     }
 
     private sealed interface Helper {
-        data class History(val history: List<HistoryEntry>): Helper
+        data object History: Helper
         data class Suggestion(val names: List<String>): Helper
     }
 
@@ -63,13 +59,14 @@ class SearchViewModel @Inject constructor(val repository: Repository): ViewModel
         .stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
     private val popularPokemon = MutableStateFlow<List<AdapterItemPokemonMinimal>>(popularPokemonPlaceholder)
+    private val history = repository.getHistoryFlow().stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
     private val helper = MutableStateFlow<Helper?>(null)
-    val nameResults = combine(helper, popularPokemon) { helper, popularPokemon ->
+    val nameResults = combine(helper, popularPokemon, history) { helper, popularPokemon, history ->
         when (helper) {
             null -> emptyList()
             is Helper.History -> {
                 buildList<AdapterItemSearch> {
-                    addAll(helper.history.map(AdapterItemSearch::HistoryEntry))
+                    addAll(history.map(AdapterItemSearch::HistoryEntry))
                     if (popularPokemon.isEmpty()) {
                         return@buildList
                     }
@@ -105,7 +102,7 @@ class SearchViewModel @Inject constructor(val repository: Repository): ViewModel
         viewModelScope.launch(Dispatchers.IO) {
             nameQuery.debounce(500L).collect { query ->
                 if (query.isEmpty()) {
-                    helper.value = repository.getHistory().let(Helper::History)
+                    helper.value = Helper.History
                     return@collect
                 }
                 val results = repository.getSuggestion(query)

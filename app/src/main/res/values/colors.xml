@@ -105,4 +105,6 @@
     <color name="app_theme_dark_type_fairy">#9B499B</color>
     <color name="app_theme_dark_type_dark">#403233</color>
 
+    <color name="app_theme_light_remove">#D86341</color>
+    <color name="app_theme_dark_remove">#FF7D5A</color>
 </resources>

@@ -41,7 +41,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:listitem="@layout/adapter_item_pokemon" />
+            tools:listitem="@layout/adapter_item_favourite" />
         <include
             android:id="@+id/i_message"
             android:layout_height="wrap_content"

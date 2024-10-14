@@ -10,6 +10,7 @@ import androidx.room.DatabaseView
         P.secondary_type_id AS pokemon_secondary_type_id,
         P.sprite_url AS pokemon_sprite_url,
         P.official_sprite_url AS pokemon_official_sprite_url,
+        P.official_shiny_sprite_url AS pokemon_official_shiny_sprite_url,
         P.specy_id AS pokemon_specy_id,
         P.form_name AS pokemon_form_name,
         P.form_localized_name AS pokemon_form_localized_name,
@@ -50,6 +51,10 @@ data class CompletePokemon(
 
     @ColumnInfo(name = "pokemon_official_sprite_url")
     val pokemonOfficialSpriteUrl: String,
+
+    @ColumnInfo(name = "pokemon_official_shiny_sprite_url")
+    val pokemonOfficialShinySpriteUrl: String,
+
 
     @ColumnInfo(name = "pokemon_form_name")
     val formName: String,
@@ -92,5 +97,5 @@ data class CompletePokemon(
     val secondaryTypeName: String?,
 
     @ColumnInfo(name = "secondary_type_localized_name")
-    val secondaryTypeLocalizedName: String?,
+    val secondaryTypeLocalizedName: String?
 )

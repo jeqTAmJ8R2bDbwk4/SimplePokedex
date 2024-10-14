@@ -8,6 +8,7 @@
     android:transitionGroup="true">
 
     <com.google.android.material.appbar.AppBarLayout
+        tools:visibility="gone"
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -28,22 +29,52 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <ImageView
-                    android:id="@+id/iv_pokemon"
+                <ViewSwitcher
+                    android:id="@+id/vs_pokemon"
                     android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <ImageView
+                        android:id="@+id/iv_pokemon"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="@string/content_description_pokemon_sprite"
+                        android:fitsSystemWindows="true"
+                        android:foreground="@drawable/pokemon_details_gradient"
 
-                    android:layout_height="match_parent"
-                    android:contentDescription="@string/content_description_pokemon_sprite"
-                    android:fitsSystemWindows="true"
-                    android:foreground="@drawable/pokemon_details_gradient"
+                        android:scaleType="fitCenter"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
 
-                    android:scaleType="fitCenter"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:src="@drawable/bulbasaur" />
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <ImageView
+                            android:id="@+id/iv_shiny_pokemon"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:contentDescription="@string/content_description_pokemon_sprite"
+                            android:fitsSystemWindows="true"
+                            android:foreground="@drawable/pokemon_details_gradient"
 
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:src="@drawable/bulbasaur" />
+                            android:scaleType="fitCenter"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:src="@drawable/bulbasaur" />
+                        <ImageView
+                            android:layout_margin="16dp"
+                            android:id="@+id/iv_shiny"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_gravity="top|end"
+                            android:src="@drawable/star_shine_filled_24dp" />
+                    </FrameLayout>
+                </ViewSwitcher>
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_name"
@@ -51,19 +82,22 @@
                     style="@style/TextAppearance.Material3.HeadlineLarge"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toStartOf="@id/cb_favourite"
-
                     android:layout_marginHorizontal="@dimen/window_spacing_horizontal"
+                    app:layout_constraintVertical_bias="0"
                     android:textColor="?attr/colorOnSurface"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/cb_favourite"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@id/cb_favourite"
                     tools:text="Bisasam" />
 
                 <CheckBox
+                    android:layout_marginBottom="16dp"
                     android:id="@+id/cb_favourite"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    app:layout_constraintStart_toEndOf="@id/tv_name"
                     android:layout_marginEnd="@dimen/window_spacing_horizontal"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:button="@drawable/favourite_selector"
@@ -79,19 +113,20 @@
                 android:layout_height="?attr/actionBarSize"
                 android:tint="?attr/colorControlNormal"
                 app:layout_collapseMode="pin"
-                app:navigationIcon="@drawable/arrow_back_24dp" />
+                app:navigationIcon="@drawable/navigation_icon_24dp" />
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
     <com.google.android.material.progressindicator.LinearProgressIndicator
-        android:layout_marginTop="10dp"
         android:id="@+id/progress_indicator"
         android:fitsSystemWindows="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:indeterminate="true"
         android:visibility="gone"
-        app:layout_anchor="@id/view_flipper" />
+        tools:visibility="visible"
+        app:layout_anchorGravity="bottom"
+        app:layout_anchor="@id/app_bar_layout" />
 
     <ViewFlipper
         android:id="@+id/view_flipper"
@@ -119,15 +154,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/window_spacing_horizontal"
-                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="8dp"
-                    app:layout_constraintBottom_toBottomOf="@id/iv_pokemon"
+                    app:layout_constraintBottom_toBottomOf="@id/b_play_sound"
                     app:layout_constraintEnd_toStartOf="@id/cv_secondary_type"
                     app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintHorizontal_chainStyle="packed"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/b_play_sound"
                     tools:cardBackgroundColor="?attr/colorTypeGrass">
 
                     <com.google.android.material.textview.MaterialTextView
@@ -141,7 +174,7 @@
                         android:drawablePadding="8dp"
                         android:layout_marginHorizontal="8dp"
                         app:drawableTint="@android:color/white"
-                        tools:drawableStart="@drawable/grass"
+                        tools:drawableStart="@drawable/pokemon_type_grass"
                         android:paddingHorizontal="8dp"
                         tools:text="Pflanze" />
                 </com.google.android.material.card.MaterialCardView>
@@ -152,15 +185,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
                     tools:cardBackgroundColor="?attr/colorTypePoison"
-                    app:layout_constraintBottom_toBottomOf="@id/iv_pokemon"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintBottom_toBottomOf="@id/b_play_sound"
                     app:layout_constraintEnd_toEndOf="@id/iv_pokemon"
                     app:layout_constraintHorizontal_chainStyle="packed"
 
                     app:layout_constraintStart_toEndOf="@id/cv_primary_type"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintEnd_toStartOf="@id/b_play_sound"
+                    app:layout_constraintTop_toTopOf="@id/b_play_sound">
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_secondary_type"
@@ -173,9 +206,20 @@
                         android:drawablePadding="8dp"
                         tools:text="Gift"
                         android:textColor="@android:color/white"
-                        tools:drawableStart="@drawable/poison"
+                        tools:drawableStart="@drawable/pokemon_type_poison"
                         app:drawableTint="@android:color/white" />
                 </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.button.MaterialButton
+                    app:layout_constraintHorizontal_chainStyle="spread"
+                    android:layout_marginEnd="@dimen/window_spacing_horizontal"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    style="?attr/materialIconButtonFilledTonalStyle"
+                    app:icon="@drawable/play_circle_24dp"
+                    android:id="@+id/b_play_sound"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"/>
 
                 <!-- DESCRIPTION -->
 
@@ -200,6 +244,8 @@
                 <com.google.android.material.textview.MaterialTextView
                     android:background="@drawable/text_view_placeholder_top"
                     tools:text="Pokemon Diamant"
+                    android:layout_marginTop="8dp"
+                    android:textColor="?attr/colorOnSurfaceVariant"
                     android:lines="1"
                     android:ellipsize="end"
                     app:layout_constraintTop_toBottomOf="@id/tv_description_title"
@@ -267,7 +313,7 @@
 
                 <com.google.android.material.textview.MaterialTextView
                     android:ellipsize="end"
-                    android:gravity="center"
+                    android:gravity="start"
                     android:id="@+id/tv_hp"
                     android:layout_marginHorizontal="@dimen/window_spacing_horizontal"
 
@@ -277,7 +323,7 @@
                     android:layout_height="wrap_content"
 
                     android:text="@string/hp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="8dp"
                     android:textColor="?attr/colorOnSurface"
                     app:layout_constraintTop_toBottomOf="@id/tv_stats" />
 
@@ -287,7 +333,7 @@
                     android:layout_height="@dimen/base_bar_height"
 
                     android:layout_marginStart="@dimen/window_spacing_horizontal"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="8dp"
 
                     android:background="@drawable/pill_shaped_stats"
 
@@ -311,7 +357,7 @@
 
                     android:layout_height="@dimen/base_bar_height"
 
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="@dimen/window_spacing_horizontal"
 
                     android:background="@drawable/pill_shaped_stats"
@@ -337,7 +383,7 @@
 
                 <com.google.android.material.textview.MaterialTextView
                     android:ellipsize="end"
-                    android:gravity="center"
+                    android:gravity="start"
                     android:id="@+id/tv_attack"
                     android:layout_marginHorizontal="@dimen/window_spacing_horizontal"
 
@@ -357,7 +403,7 @@
                     android:layout_height="@dimen/base_bar_height"
 
                     android:layout_marginStart="@dimen/window_spacing_horizontal"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="8dp"
 
                     android:background="@drawable/pill_shaped_stats"
 
@@ -381,7 +427,7 @@
 
                     android:layout_height="@dimen/base_bar_height"
 
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="@dimen/window_spacing_horizontal"
 
                     android:background="@drawable/pill_shaped_stats"
@@ -407,7 +453,7 @@
 
                 <com.google.android.material.textview.MaterialTextView
                     android:ellipsize="end"
-                    android:gravity="center"
+                    android:gravity="start"
                     android:id="@+id/tv_defense"
                     style="?attr/textAppearanceBodyLarge"
 
@@ -427,7 +473,7 @@
                     android:layout_height="@dimen/base_bar_height"
 
                     android:layout_marginStart="@dimen/window_spacing_horizontal"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="8dp"
 
                     android:background="@drawable/pill_shaped_stats"
 
@@ -451,7 +497,7 @@
 
                     android:layout_height="@dimen/base_bar_height"
 
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="@dimen/window_spacing_horizontal"
                     android:background="@drawable/pill_shaped_stats"
 
@@ -477,7 +523,7 @@
 
                 <com.google.android.material.textview.MaterialTextView
                     android:ellipsize="end"
-                    android:gravity="center"
+                    android:gravity="start"
                     android:id="@+id/tv_special_attack"
                     android:layout_marginHorizontal="@dimen/window_spacing_horizontal"
 
@@ -497,7 +543,7 @@
                     android:layout_height="@dimen/base_bar_height"
 
                     android:layout_marginStart="@dimen/window_spacing_horizontal"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="8dp"
 
                     android:background="@drawable/pill_shaped_stats"
 
@@ -521,7 +567,7 @@
 
                     android:layout_height="@dimen/base_bar_height"
 
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="@dimen/window_spacing_horizontal"
                     android:background="@drawable/pill_shaped_stats"
 
@@ -546,7 +592,7 @@
 
                 <com.google.android.material.textview.MaterialTextView
                     android:ellipsize="end"
-                    android:gravity="center"
+                    android:gravity="start"
                     android:id="@+id/tv_special_defense"
                     android:layout_marginHorizontal="@dimen/window_spacing_horizontal"
 
@@ -566,7 +612,7 @@
                     android:layout_height="@dimen/base_bar_height"
 
                     android:layout_marginStart="@dimen/window_spacing_horizontal"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="8dp"
 
                     android:background="@drawable/pill_shaped_stats"
 
@@ -590,7 +636,7 @@
 
                     android:layout_height="@dimen/base_bar_height"
 
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="@dimen/window_spacing_horizontal"
                     android:background="@drawable/pill_shaped_stats"
 
@@ -617,7 +663,7 @@
 
                 <com.google.android.material.textview.MaterialTextView
                     android:ellipsize="end"
-                    android:gravity="center"
+                    android:gravity="start"
                     android:id="@+id/tv_speed"
                     style="?attr/textAppearanceBodyLarge"
 
@@ -637,7 +683,7 @@
                     android:layout_height="@dimen/base_bar_height"
 
                     android:layout_marginStart="@dimen/window_spacing_horizontal"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="8dp"
 
                     android:background="@drawable/pill_shaped_stats"
 
@@ -661,7 +707,7 @@
 
                     android:layout_height="@dimen/base_bar_height"
 
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="@dimen/window_spacing_horizontal"
                     android:background="@drawable/pill_shaped_stats"
 
@@ -683,13 +729,27 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
-                <!-- Immunities/Resistences/Weaknesses -->
-
                 <com.google.android.material.textview.MaterialTextView
                     android:drawableStart="@drawable/shield_24dp"
                     android:drawablePadding="8dp"
-                    android:id="@+id/tv_immunities_title"
+                    android:id="@+id/tv_effectiveness_title"
                     style="?attr/textAppearanceHeadlineSmall"
+                    android:text="@string/type_effectivity_title"
+                    app:drawableTint="?attr/colorOnSurface"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginHorizontal="@dimen/window_spacing_horizontal"
+                    android:textColor="?attr/colorOnSurface"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/v_speed_end"/>
+
+                <!-- Immunities/Resistances/Weaknesses -->
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_immunities_title"
+                    style="?attr/textAppearanceBodyLarge"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/window_spacing_horizontal"
@@ -700,11 +760,10 @@
                     app:layout_constraintHorizontal_bias="0"
 
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/v_speed_end" />
+                    app:layout_constraintTop_toBottomOf="@id/tv_effectiveness_title" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:drawableStart="@drawable/shield_24dp"
-                    android:drawablePadding="8dp"
+                    android:layout_marginTop="8dp"
                     android:id="@+id/rv_immunities"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -718,16 +777,14 @@
                     android:paddingHorizontal="@dimen/window_spacing_horizontal" />
 
                 <com.google.android.material.textview.MaterialTextView
-                    android:drawableStart="@drawable/shield_24dp"
-                    android:drawablePadding="8dp"
-                    android:id="@+id/tv_resistence_title"
-                    style="?attr/textAppearanceHeadlineSmall"
+                    android:id="@+id/tv_resistance_title"
+                    style="?attr/textAppearanceBodyLarge"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/window_spacing_horizontal"
                     android:layout_marginTop="16dp"
                     android:ellipsize="end"
-                    android:text="@string/resistences"
+                    android:text="@string/resistances"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0"
 
@@ -735,7 +792,8 @@
                     app:layout_constraintTop_toBottomOf="@id/rv_immunities" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_resistence_quater"
+                    android:layout_marginTop="8dp"
+                    android:id="@+id/rv_resistance_quater"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clipToPadding="false"
@@ -743,18 +801,13 @@
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_resistence_title"
+                    app:layout_constraintTop_toBottomOf="@id/tv_resistance_title"
                     tools:listitem="@layout/adapter_item_type_placeholder"
                     android:paddingHorizontal="@dimen/window_spacing_horizontal" />
 
-                <Space
-                    app:layout_constraintTop_toBottomOf="@id/rv_resistence_quater"
-                    android:layout_height="8dp"
-                    android:layout_width="wrap_content"
-                    android:id="@+id/space_resistence"/>
-
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_resistence_half"
+                    android:layout_marginTop="8dp"
+                    android:id="@+id/rv_resistance_half"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clipToPadding="false"
@@ -762,30 +815,28 @@
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/space_resistence"
+                    app:layout_constraintTop_toBottomOf="@id/rv_resistance_quater"
                     tools:listitem="@layout/adapter_item_type_placeholder"
                     android:paddingHorizontal="@dimen/window_spacing_horizontal" />
 
                 <com.google.android.material.textview.MaterialTextView
-                    android:drawableStart="@drawable/shield_24dp"
-                    android:drawablePadding="8dp"
-                    android:id="@+id/tv_weekness_title"
-                    style="?attr/textAppearanceHeadlineSmall"
+                    android:id="@+id/tv_weakness_title"
+                    style="?attr/textAppearanceBodyLarge"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/window_spacing_horizontal"
                     android:layout_marginTop="16dp"
                     android:ellipsize="end"
-                    android:text="@string/weekness"
+                    android:text="@string/weakness"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0"
 
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/rv_resistence_half" />
+                    app:layout_constraintTop_toBottomOf="@id/rv_resistance_half" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:layout_marginTop="8dp"
-                    android:id="@+id/rv_weekness_double"
+                    android:id="@+id/rv_weakness_double"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clipToPadding="false"
@@ -793,18 +844,13 @@
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_weekness_title"
+                    app:layout_constraintTop_toBottomOf="@id/tv_weakness_title"
                     tools:listitem="@layout/adapter_item_type_placeholder"
                     android:paddingHorizontal="@dimen/window_spacing_horizontal" />
 
-                <Space
-                    app:layout_constraintTop_toBottomOf="@id/rv_weekness_double"
-                    android:id="@+id/space_weekness"
-                    android:layout_width="wrap_content"
-                    android:layout_height="8dp"/>
-
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_weekness_quadruple"
+                    android:layout_marginTop="8dp"
+                    android:id="@+id/rv_weakness_quadruple"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clipToPadding="false"
@@ -812,7 +858,7 @@
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/space_weekness"
+                    app:layout_constraintTop_toBottomOf="@id/rv_weakness_double"
                     tools:listitem="@layout/adapter_item_type_placeholder"
                     android:paddingHorizontal="@dimen/window_spacing_horizontal" />
 
@@ -831,7 +877,7 @@
                     app:layout_constraintHorizontal_bias="0"
 
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/rv_weekness_quadruple" />
+                    app:layout_constraintTop_toBottomOf="@id/rv_weakness_quadruple" />
 
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/vp_ability_text"

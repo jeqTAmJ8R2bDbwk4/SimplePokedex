@@ -13,9 +13,9 @@ import com.google.android.material.motion.MotionUtils
 /* Source: https://m3.material.io/styles/motion/easing-and-duration/applying-easing-and-duration */
 sealed class MotionUtil(
     @get:AttrRes val durationRes: Int,
-    val defaultDuration: Int,
+    private val defaultDuration: Int,
     @get:AttrRes val interpolatorRes: Int,
-    val defaultInterpolator: TimeInterpolator
+    private val defaultInterpolator: TimeInterpolator
 ) {
     fun duration(context: Context) = MotionUtils.resolveThemeDuration(
         context,
@@ -29,7 +29,7 @@ sealed class MotionUtil(
         defaultInterpolator
     )
 
-    sealed class BeginAndEndOnScreen private constructor() {
+    sealed class BeginAndEndOnScreen {
         class Standard() {
             companion object : MotionUtil(
                 R.attr.motionDurationMedium2,
@@ -48,7 +48,7 @@ sealed class MotionUtil(
         }
     }
 
-    sealed class EnterTheScreen private constructor() {
+    sealed class EnterTheScreen {
         class Standard private constructor() {
             companion object: MotionUtil(
                 R.attr.motionDurationMedium1,
@@ -67,7 +67,7 @@ sealed class MotionUtil(
         }
     }
 
-    sealed class ExitTheScreen private constructor() {
+    sealed class ExitTheScreen {
         class Standard() {
             companion object: MotionUtil(
                 R.attr.motionDurationShort4,
@@ -77,7 +77,7 @@ sealed class MotionUtil(
             )
         }
 
-        sealed class Emphasised private constructor() {
+        sealed class Emphasised {
             companion object: MotionUtil(
                 R.attr.motionDurationShort4,
                 200,

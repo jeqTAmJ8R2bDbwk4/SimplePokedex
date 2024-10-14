@@ -2,15 +2,15 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "80df49494ce8ee76955568aadc9fbf45",
+    "identityHash": "f0f3360f48b1aefbfdddf049af897636",
     "entities": [
       {
         "tableName": "history_entry",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`timestamp_ms` INTEGER NOT NULL, `query` TEXT NOT NULL, PRIMARY KEY(`query`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`last_modified_epoch_ms` INTEGER NOT NULL, `query` TEXT NOT NULL, PRIMARY KEY(`query`))",
         "fields": [
           {
-            "fieldPath": "timestampMs",
-            "columnName": "timestamp_ms",
+            "fieldPath": "lastModifiedEpochMs",
+            "columnName": "last_modified_epoch_ms",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -26,86 +26,11 @@
           "columnNames": [
             "query"
           ]
-        },
-        "indices": [],
-        "foreignKeys": []
-      },
-      {
-        "tableName": "list_entry",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`pokemon_id` INTEGER NOT NULL, `position` INTEGER NOT NULL, `list_id` INTEGER NOT NULL, PRIMARY KEY(`pokemon_id`, `list_id`), FOREIGN KEY(`pokemon_id`) REFERENCES `pokemon`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
-        "fields": [
-          {
-            "fieldPath": "pokemonId",
-            "columnName": "pokemon_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "position",
-            "columnName": "position",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "listId",
-            "columnName": "list_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": false,
-          "columnNames": [
-            "pokemon_id",
-            "list_id"
-          ]
-        },
-        "indices": [
-          {
-            "name": "index_list_entry_pokemon_id",
-            "unique": false,
-            "columnNames": [
-              "pokemon_id"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_list_entry_pokemon_id` ON `${TABLE_NAME}` (`pokemon_id`)"
-          },
-          {
-            "name": "index_list_entry_position",
-            "unique": false,
-            "columnNames": [
-              "position"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_list_entry_position` ON `${TABLE_NAME}` (`position`)"
-          },
-          {
-            "name": "index_list_entry_list_id",
-            "unique": false,
-            "columnNames": [
-              "list_id"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_list_entry_list_id` ON `${TABLE_NAME}` (`list_id`)"
-          }
-        ],
-        "foreignKeys": [
-          {
-            "table": "pokemon",
-            "onDelete": "CASCADE",
-            "onUpdate": "NO ACTION",
-            "columns": [
-              "pokemon_id"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
-          }
-        ]
+        }
       },
       {
         "tableName": "pokemon",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `specy_id` INTEGER NOT NULL, `primary_type_id` INTEGER NOT NULL, `secondary_type_id` INTEGER, `sprite_url` TEXT NOT NULL, `official_sprite_url` TEXT NOT NULL, `form_name` TEXT NOT NULL, `form_localized_name` TEXT NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`specy_id`) REFERENCES `specy`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`primary_type_id`) REFERENCES `type`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`secondary_type_id`) REFERENCES `type`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `specy_id` INTEGER NOT NULL, `primary_type_id` INTEGER NOT NULL, `secondary_type_id` INTEGER, `sprite_url` TEXT NOT NULL, `official_sprite_url` TEXT NOT NULL, `official_shiny_sprite_url` TEXT NOT NULL, `form_name` TEXT NOT NULL, `form_localized_name` TEXT NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`specy_id`) REFERENCES `specy`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`primary_type_id`) REFERENCES `type`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`secondary_type_id`) REFERENCES `type`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -128,8 +53,7 @@
           {
             "fieldPath": "secondaryTypeId",
             "columnName": "secondary_type_id",
-            "affinity": "INTEGER",
-            "notNull": false
+            "affinity": "INTEGER"
           },
           {
             "fieldPath": "spriteUrl",
@@ -140,6 +64,12 @@
           {
             "fieldPath": "officialSpriteUrl",
             "columnName": "official_sprite_url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "officialShinySpriteUrl",
+            "columnName": "official_shiny_sprite_url",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -255,9 +185,7 @@
           "columnNames": [
             "id"
           ]
-        },
-        "indices": [],
-        "foreignKeys": []
+        }
       },
       {
         "tableName": "specy",
@@ -290,8 +218,7 @@
           {
             "fieldPath": "evolvedFromSpecyId",
             "columnName": "evolved_from_specy_id",
-            "affinity": "INTEGER",
-            "notNull": false
+            "affinity": "INTEGER"
           }
         ],
         "primaryKey": {
@@ -299,20 +226,147 @@
           "columnNames": [
             "id"
           ]
+        }
+      },
+      {
+        "tableName": "favourite_entry",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`pokemon_id` INTEGER NOT NULL, `position` INTEGER NOT NULL, PRIMARY KEY(`pokemon_id`), FOREIGN KEY(`pokemon_id`) REFERENCES `pokemon`(`id`) ON UPDATE NO ACTION ON DELETE RESTRICT )",
+        "fields": [
+          {
+            "fieldPath": "pokemonId",
+            "columnName": "pokemon_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "position",
+            "columnName": "position",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "pokemon_id"
+          ]
         },
-        "indices": [],
-        "foreignKeys": []
+        "indices": [
+          {
+            "name": "index_favourite_entry_pokemon_id",
+            "unique": false,
+            "columnNames": [
+              "pokemon_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_favourite_entry_pokemon_id` ON `${TABLE_NAME}` (`pokemon_id`)"
+          },
+          {
+            "name": "index_favourite_entry_position",
+            "unique": false,
+            "columnNames": [
+              "position"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_favourite_entry_position` ON `${TABLE_NAME}` (`position`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "pokemon",
+            "onDelete": "RESTRICT",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "pokemon_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "paging_entry",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`pokemon_id` INTEGER NOT NULL, `offset` INTEGER NOT NULL, `last_modified_epoch_ms` INTEGER NOT NULL, PRIMARY KEY(`pokemon_id`), FOREIGN KEY(`pokemon_id`) REFERENCES `pokemon`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "pokemonId",
+            "columnName": "pokemon_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "offset",
+            "columnName": "offset",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastModifiedEpochMs",
+            "columnName": "last_modified_epoch_ms",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "pokemon_id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_paging_entry_offset",
+            "unique": true,
+            "columnNames": [
+              "offset"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_paging_entry_offset` ON `${TABLE_NAME}` (`offset`)"
+          },
+          {
+            "name": "index_paging_entry_pokemon_id",
+            "unique": false,
+            "columnNames": [
+              "pokemon_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_paging_entry_pokemon_id` ON `${TABLE_NAME}` (`pokemon_id`)"
+          },
+          {
+            "name": "index_paging_entry_last_modified_epoch_ms",
+            "unique": false,
+            "columnNames": [
+              "last_modified_epoch_ms"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_paging_entry_last_modified_epoch_ms` ON `${TABLE_NAME}` (`last_modified_epoch_ms`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "pokemon",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "pokemon_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
       }
     ],
     "views": [
       {
         "viewName": "complete_pokemon",
-        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT\n        P.id AS pokemon_id,\n        P.primary_type_id AS pokemon_primary_type_id,\n        P.secondary_type_id AS pokemon_secondary_type_id,\n        P.sprite_url AS pokemon_sprite_url,\n        P.official_sprite_url AS pokemon_official_sprite_url,\n        P.specy_id AS pokemon_specy_id,\n        P.form_name AS pokemon_form_name,\n        P.form_localized_name AS pokemon_form_localized_name,\n        S.id AS specy_id,\n        S.name AS specy_name,\n        S.localized_name AS specy_localized_name,\n        S.national_pokedex_number AS specy_national_pokedex_number,\n        S.evolved_from_specy_id AS specyEvolvedFromSpecyId,\n        PT.id AS primary_type_id,\n        PT.name AS primary_type_name,\n        PT.localized_name AS primary_type_localized_name,\n        ST.id AS secondary_type_id,\n        ST.name AS secondary_type_name,\n        ST.localized_name AS secondary_type_localized_name\n    FROM\n        pokemon P\n        JOIN type PT ON P.primary_type_id = PT.id\n        LEFT JOIN type ST ON P.secondary_type_id = ST.id\n        JOIN specy S ON P.specy_id = S.id"
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT\n        P.id AS pokemon_id,\n        P.primary_type_id AS pokemon_primary_type_id,\n        P.secondary_type_id AS pokemon_secondary_type_id,\n        P.sprite_url AS pokemon_sprite_url,\n        P.official_sprite_url AS pokemon_official_sprite_url,\n        P.official_shiny_sprite_url AS pokemon_official_shiny_sprite_url,\n        P.specy_id AS pokemon_specy_id,\n        P.form_name AS pokemon_form_name,\n        P.form_localized_name AS pokemon_form_localized_name,\n        S.id AS specy_id,\n        S.name AS specy_name,\n        S.localized_name AS specy_localized_name,\n        S.national_pokedex_number AS specy_national_pokedex_number,\n        S.evolved_from_specy_id AS specyEvolvedFromSpecyId,\n        PT.id AS primary_type_id,\n        PT.name AS primary_type_name,\n        PT.localized_name AS primary_type_localized_name,\n        ST.id AS secondary_type_id,\n        ST.name AS secondary_type_name,\n        ST.localized_name AS secondary_type_localized_name\n    FROM\n        pokemon P\n        JOIN type PT ON P.primary_type_id = PT.id\n        LEFT JOIN type ST ON P.secondary_type_id = ST.id\n        JOIN specy S ON P.specy_id = S.id"
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '80df49494ce8ee76955568aadc9fbf45')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f0f3360f48b1aefbfdddf049af897636')"
     ]
   }
 }

@@ -24,5 +24,14 @@ object RoomModule {
     }
 
     @Provides
-    fun provideDao(database: Database) = database.dao()
+    fun providePokemonDao(database: Database) = database.pokemonDao()
+
+    @Provides
+    fun provideFavouriteDao(database: Database) = database.favouriteDao()
+
+    @Provides
+    fun provideHistoryDao(database: Database) = database.historyDao()
+
+    @Provides
+    fun providePagingDao(database: Database) = database.pagingDao()
 }

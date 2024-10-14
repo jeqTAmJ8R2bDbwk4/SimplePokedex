@@ -1,8 +1,6 @@
 package com.example.pokedex.fragments
 
-import androidx.fragment.app.viewModels
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +12,10 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
@@ -23,35 +24,36 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
-import com.apollographql.apollo.exception.ApolloException
+import com.example.pokedex.NavGraphDirections
 import com.example.pokedex.R
 import com.example.pokedex.adapters.PokemonAdapter
-import com.example.pokedex.viewmodels.HomeViewModel
 import com.example.pokedex.databinding.FragmentHomeBinding
 import com.example.pokedex.models.Pokemon
 import com.example.pokedex.models.PokemonDetailsTransition
 import com.example.pokedex.models.State
-import com.example.pokedex.models.errors.ApolloError
 import com.example.pokedex.models.errors.RepositoryError
 import com.example.pokedex.utils.MainActivityInfo
+import com.example.pokedex.utils.MediaPlayerService
 import com.example.pokedex.utils.MotionUtil
 import com.example.pokedex.utils.collectWithLifecycle
 import com.example.pokedex.utils.errorToMessageResource
 import com.example.pokedex.utils.fragmentInsets
 import com.example.pokedex.utils.getAppName
-import com.example.pokedex.utils.openLicenses
-import com.example.pokedex.utils.openSettings
-import com.example.pokedex.utils.setRootMenuListener
+import com.example.pokedex.viewmodels.HomeViewModel
 import com.google.android.material.color.MaterialColors
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 
 @AndroidEntryPoint
@@ -65,38 +67,46 @@ class HomeFragment : Fragment() {
     private val viewModel: HomeViewModel by viewModels()
 
     private fun loadStateListener(loadState: CombinedLoadStates) {
-        Timber.d("Load state: %s", loadState)
         if (!viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
             Timber.e("Load state listener triggered, but view has not already started.")
             return
         }
 
         val loadStateRefresh = loadState.refresh
+        val loadStateAppend = loadState.append
         when(loadStateRefresh) {
             is LoadState.Error -> {
                 val exception = loadStateRefresh.error
-                Timber.e(exception)
-                val error = when (exception) {
-                    is ApolloException -> {
-                        val error = ApolloError.fromException(exception)
-                        RepositoryError.ApolloError(error)
-                    }
-                    else -> {
-                        RepositoryError.DataMappingException
-                    }
+                if (exception !is Exception) {
+                    Timber.e("Expected $exception to be of instance Exception.")
+                    assert(false)
+                } else {
+                    val error = RepositoryError.fromException(exception)
+                    viewModel.setRefreshError(error)
+                    viewModel.setRefreshState(State.ERROR)
                 }
-                viewModel.setError(error)
-                viewModel.setState(State.ERROR)
             }
             is LoadState.NotLoading -> {
-                viewModel.setError(null)
-                viewModel.setState(State.SUCCESS)
+                viewModel.setRefreshError(null)
+                viewModel.setRefreshState(State.SUCCESS)
             }
             is LoadState.Loading -> {
-                viewModel.setError(null)
-                viewModel.setState(State.LOADING)
+                viewModel.setRefreshError(null)
+                viewModel.setRefreshState(State.LOADING)
             }
         }
+        if (loadStateAppend !is LoadState.Error) {
+            return
+        }
+        val exception = loadStateAppend.error
+        if (exception !is Exception) {
+            Timber.e("Expected $exception to be of instance Exception.")
+            assert(false)
+        } else {
+            val error = RepositoryError.fromException(exception)
+            viewModel.showSnackbarError(error)
+        }
+
     }
 
     private val adapter by lazy {
@@ -200,7 +210,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupFab() {
-        binding.fab.setImageResource(R.drawable.vertical_align_top)
+        binding.fab.setImageResource(R.drawable.vertical_align_top_24dp)
         binding.fab.setOnClickListener {
             binding.recyclerView.smoothScrollToPosition(0)
         }
@@ -211,7 +221,23 @@ class HomeFragment : Fragment() {
             MaterialColors.getColor(binding.appBarLayout, R.attr.colorSurface)
         )
         binding.toolbar.title = requireContext().getAppName()
-        requireActivity().setRootMenuListener(binding.toolbar)
+        binding.toolbar.setOnMenuItemClickListener { menuItem ->
+            val navController = findNavController()
+            return@setOnMenuItemClickListener when (menuItem.itemId) {
+                R.id.settings -> {
+                    if (navController.currentDestination?.id != R.id.home_fragment) {
+                        return@setOnMenuItemClickListener false
+                    }
+                    findNavController().navigate(NavGraphDirections.actionGlobalSettingsFragment())
+                    true
+                }
+                else -> {
+                    Timber.e("Menu Item %s unknown.", menuItem.title)
+                    assert(false)
+                    false
+                }
+            }
+        }
     }
 
     private fun setupRecyclerView() {
@@ -223,7 +249,7 @@ class HomeFragment : Fragment() {
             }
 
             val transitionName = adapter.getTransitionName(requireContext(), pokemon.id)
-            val action = HomeFragmentDirections.homeFragmentToPokemonDetailsFragment(
+            val action = HomeFragmentDirections.toPokemonDetailsFragment(
                 PokemonDetailsTransition(transitionName, pokemon)
             )
             val extras = FragmentNavigatorExtras(
@@ -233,8 +259,16 @@ class HomeFragment : Fragment() {
         }
         adapter.setOnFavouriteListener { _, pokemon, isChecked ->
             viewModel.setIsFavourite(pokemon, isChecked)
+            val pokemonName = pokemon.getName()
+            val messageRes = if (isChecked) R.string.favourites_add else R.string.favourites_remove
+            val snackbar = Snackbar.make(binding.root, getString(messageRes, pokemonName), Snackbar.LENGTH_SHORT)
+            ViewCompat.setOnApplyWindowInsetsListener(snackbar.view) { _, insets -> insets }  // Layout already handles insets
+            snackbar.setAction(R.string.action_undo) {
+                viewModel.setIsFavourite(pokemon, !isChecked)
+            }
+            snackbar.show()
         }
-        binding.recyclerView.setHasFixedSize(true)
+        // binding.recyclerView.setHasFixedSize(true)
         binding.recyclerView.adapter = adapter
         binding.recyclerView.updatePadding(0, listVerticalPadding, 0, listVerticalPadding)
         binding.recyclerView.addOnScrollListener(onScrollListener)
@@ -245,11 +279,22 @@ class HomeFragment : Fragment() {
 
     }
 
+    @OptIn(FlowPreview::class)
     private fun setupViewModelListener() {
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
             viewModel.pagingFlow.collectLatest { pagingData ->
                 adapter.submitData(pagingData)
             }
+        }
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+            viewModel.snackbarError
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle)
+                .debounce(10.seconds)
+                .filterNotNull()
+                .map(::errorToMessageResource)
+                .collectLatest { messageId ->
+                    Snackbar.make(binding.root, messageId, Snackbar.LENGTH_LONG).show()
+                }
         }
         viewModel.error.filterNotNull().collectWithLifecycle(viewLifecycleOwner, Dispatchers.Main) { error ->
             binding.iErrorMessage.tvMessageBody.setText(errorToMessageResource(error))

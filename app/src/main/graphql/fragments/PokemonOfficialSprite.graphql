@@ -1,3 +1,4 @@
 fragment PokemonOfficialSpriteFragment on pokemon_v2_pokemonsprites {
-    sprites(path: "[\"other\"][\"official-artwork\"][\"front_default\"]")
+    sprites: sprites(path: "[\"other\"][\"official-artwork\"][\"front_default\"]")
+    shiny_sprites: sprites(path: "[\"other\"][\"official-artwork\"][\"front_shiny\"]")
 }
