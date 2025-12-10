@@ -43,9 +43,35 @@ This project was created to demonstrate my ability to:
 
 ## Screenshots
 
-| Home Fragment                                   | Search Fragment                                     | Search Fragment (Suggestions)                                  | Favourites Fragment                                         | Details Fragment                                      |
-|-------------------------------------------------|-----------------------------------------------------|----------------------------------------------------------------|-------------------------------------------------------------|-------------------------------------------------------|
-| ![Home Fragment](screenshots/home_fragment.png) | ![Search Fragment](screenshots/search_fragment.png) | ![Search Fragment](screenshots/search_fragment_suggestion.png) | ![Favourites Fragment](screenshots/favourites_fragment.png) | ![Details Fragment](screenshots/details_fragment.png) |
+![Home Fragment](screenshots/home_fragment_toast.png)
+Home
+
+![Home Fragment](screenshots/home_fragment_scroll.png)
+Home
+
+![Search Fragment](screenshots/search_fragment_empty.png)
+Search
+
+![Search Fragment](screenshots/search_fragment_history.png)
+Search
+
+![Search Fragment](screenshots/search_fragment_suggestions.png)
+Search
+
+![Search Fragment](screenshots/search_fragment_results.png)
+Search
+
+![Details Fragment](screenshots/details_fragment_1.png)
+Details
+
+![Details Fragment](screenshots/details_fragment_2.png)
+Details
+
+![Favourite Fragment](screenshots/favourite_fragment.png)
+Favourite
+
+![Settings Fragment](screenshots/settings_fragment.png)
+
 
 ## Additional References
 - **Type Colors:** [bulbapedia.bulbagarden.net](https://bulbapedia.bulbagarden.net/wiki/Category:Type_color_templates)
