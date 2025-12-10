@@ -43,34 +43,55 @@ This project was created to demonstrate my ability to:
 
 ## Screenshots
 
-![Home Fragment](screenshots/home_fragment_toast.png)
-Home
+<figure>
+  <img src="screenshots/home_fragment_toast.png" width="350">
+  <figcaption>Home</figcaption>
+</figure>
 
-![Home Fragment](screenshots/home_fragment_scroll.png)
-Home
+<figure>
+  <img src="screenshots/home_fragment_scroll.png" width="350">
+  <figcaption>Home</figcaption>
+</figure>
 
-![Search Fragment](screenshots/search_fragment_empty.png)
-Search
+<figure>
+  <img src="screenshots/search_fragment_empty.png" width="350">
+  <figcaption>Search</figcaption>
+</figure>
 
-![Search Fragment](screenshots/search_fragment_history.png)
-Search
+<figure>
+  <img src="screenshots/search_fragment_history.png" width="350">
+  <figcaption>Search</figcaption>
+</figure>
 
-![Search Fragment](screenshots/search_fragment_suggestions.png)
-Search
+<figure>
+  <img src="screenshots/search_fragment_suggestions.png" width="350">
+  <figcaption>Search</figcaption>
+</figure>
 
-![Search Fragment](screenshots/search_fragment_results.png)
-Search
+<figure>
+  <img src="screenshots/search_fragment_results.png" width="350">
+  <figcaption>Search</figcaption>
+</figure>
 
-![Details Fragment](screenshots/details_fragment_1.png)
-Details
+<figure>
+  <img src="screenshots/details_fragment_1.png" width="350">
+  <figcaption>Details</figcaption>
+</figure>
 
-![Details Fragment](screenshots/details_fragment_2.png)
-Details
+<figure>
+  <img src="screenshots/details_fragment_2.png" width="350">
+  <figcaption>Details</figcaption>
+</figure>
 
-![Favourite Fragment](screenshots/favourite_fragment.png)
-Favourite
+<figure>
+  <img src="screenshots/favourite_fragment.png" width="350">
+  <figcaption>Favourite</figcaption>
+</figure>
 
-![Settings Fragment](screenshots/settings_fragment.png)
+<figure>
+  <img src="screenshots/settings_fragment.png" width="350">
+  <figcaption>Settings</figcaption>
+</figure>
 
 
 ## Additional References
